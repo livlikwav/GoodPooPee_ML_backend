@@ -24,7 +24,7 @@ services:
         container_name: "gpp-flask"
         build:
             context: .
-            dockerfile: ./compose/flask/Dockerfile-dev
+            dockerfile: ./compose/Dockerfile-dev
         ports:
             - "5000:5000"
         volumes:
