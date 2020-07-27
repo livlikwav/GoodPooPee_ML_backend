@@ -1,0 +1,31 @@
+version: "3"
+
+volumes:
+    db_master:
+
+services:
+    mysql:
+        container_name: "gpp-db"
+        image: mysql:5.7
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD : 'goodpoopee'
+            MYSQL_DATABASE : 'gpp_db'
+            MYSQL_USER : "myuser"
+            MYSQL_PASSWORD : "1q2w3e4r5t" 
+        volumes:
+            - db_master:/var/lib/mysql
+        command: # 명령어 실행, 한국어 깨지지 않게
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+
+    flask:
+        container_name: "gpp-flask"
+        build:
+            context: .
+            dockerfile: ./compose/flask/Dockerfile-dev
+        ports:
+            - "5000:5000"
+        volumes:
+            - .:/app
