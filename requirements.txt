@@ -1,4 +1,7 @@
 flask
 flask_sqlalchemy
+flask-restful
+flask-marshmallow
+marshmallow-sqlalchemy
 pytest
 pymysql
