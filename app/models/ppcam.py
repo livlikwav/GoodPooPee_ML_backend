@@ -15,3 +15,26 @@ class Ppcam(db.Model):
 
     # def __repr__(self):
     #     return f"<Ppcam : {self.id}, {self.serial_num}>"
+
+    @staticmethod
+    def generate_fake(count):
+        # Generate a number of fake users for testing
+        from sqlalchemy.exc import IntegrityError
+        from random import seed, choice
+        from faker import Faker
+
+        fake = Faker()
+
+        seed()
+        for i in range(count):
+            p = Ppcam(
+                serial_num = fake.ean(),
+                # match one foreign_key by one user
+                # user id start from 1
+                user_id = i+1
+            )
+            db.session.add(p)
+            try:
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()

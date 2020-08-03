@@ -16,7 +16,7 @@ class User(db.Model):
     #     return f"<User : {self.id}, {self.email}, {self.first_name}, {self.last_name}>"
 
     @staticmethod
-    def generate_fake(count=100):
+    def generate_fake(count):
         # Generate a number of fake users for testing.
         from sqlalchemy.exc import IntegrityError
         from random import seed, choice
@@ -31,7 +31,7 @@ class User(db.Model):
                 first_name=fake.first_name(),
                 last_name=fake.last_name(),
                 password='password'
-                )
+            )
             db.session.add(u)
             try:
                 db.session.commit()
