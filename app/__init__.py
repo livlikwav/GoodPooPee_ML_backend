@@ -3,8 +3,8 @@ from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 
+from app.resources.routes import init_routes
 from config import config as Config
-from .resources.helloworld import HelloWorld 
 import os
 
 # basedir = os.path.abspath(os.path.dirname(__file__))
@@ -29,7 +29,8 @@ def create_app(config):
     ma.init_app(app)
     api.init_app(app)
 
+
     return app
 
-api.add_resource(HelloWorld, '/')
+init_routes(api)
 # api.add_resource(UserResource, '/user')
