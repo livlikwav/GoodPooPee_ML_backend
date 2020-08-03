@@ -1,14 +1,22 @@
 from flask import request
 from flask_restful import Resource
 from app.models.user import User
+from app.models.pet import Pet
 from app import db, ma
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
 
+class PetSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Pet
+
+# make instances of schemas
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
+pet_schema = PetSchema()
+pets_schema = PetSchema(many=True)
 
 class RegisterApi(Resource):
     def post(self):
@@ -42,3 +50,13 @@ class UserApi(Resource):
         db.session.delete(deleted_user)
         db.session.commit()
         return '', 204
+
+# class LoginApi(Resource):
+#     def post(self):
+#         return True
+
+class UserPetApi(Resource):
+    def get(self, user_id):
+        selected_user = User.query.filter_by(id = user_id).first()
+        selected_pet = Pet.query.with_parent(selected_user).first()
+        return pet_schema.dump(selected_pet)
