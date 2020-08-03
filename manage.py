@@ -2,7 +2,7 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
 from app import create_app, db
-from app.model import *
+from app.models import User, Ppcam, Pet, Pad, PetRecord
 # from config import config as Config
 import os
 
@@ -20,7 +20,7 @@ manager.add_command('db', MigrateCommand)
 
 @manager.command
 def run():
-    app.run()
+    app.run(host='0.0.0.0')
 
 @manager.command
 def recreate_db():
@@ -29,17 +29,21 @@ def recreate_db():
     db.create_all()
     db.session.commit()
 
-# @manager.option(
-#     '-n',
-#     '--number-users',
-#     default=10,
-#     type=int,
-#     help='Num of each model type to create',
-#     dest='number_users'
-# )
-# def add_fake_data(number_users):
-#     "Adds fake data to the db"
-#     User.generate_fake(count=number_users)
+@manager.option(
+    '-n',
+    '--number-users',
+    default=10,
+    type=int,
+    help='Num of each model type to create',
+    dest='number_users'
+)
+def add_fake_data(number_users):
+    "Adds fake data to the db"
+    User.generate_fake(count=number_users)
+    Ppcam.generate_fake(count=number_users)
+    Pet.generate_fake(count=number_users)
+    Pad.generate_fake(count=number_users)
+    PetRecord.generate_fake(count=number_users)
 
 @manager.command
 def setup_prod():

@@ -4,12 +4,6 @@ from flask_marshmallow import Marshmallow
 from datetime import datetime
 import os
 
-# init app
-app = Flask(__name__)
-# app config by config.py
-app.config.from_pyfile('config.py')
-
-
 # generate Marshmallow schemas
 class UserSchema(ma.SQLAlchemySchema):
     class Meta:
@@ -45,9 +39,6 @@ pets_schema = PetSchema(many=True)
 # init flask-restful
 api = Api(app)
 
-class HelloWorld(Resource):
-    def get(self):
-        return jsonify(msg = 'Hello, world')
 
 class UserResource(Resource):
     def post(self):
@@ -103,7 +94,6 @@ class PetResource(Resource):
         return pet_schema.dump(new_pet)
 
 # Restful Routes
-api.add_resource(HelloWorld, '/')
 api.add_resource(UserResource, '/user')
 api.add_resource(UserListResource, '/user/<int:user_id>')
 api.add_resource(UserPetResource, '/user/<int:user_id>/pet')
