@@ -10,7 +10,7 @@ class PetRecord(db.Model):
     last_modified_date = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
 
     pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), nullable=False)
-    pet = db.relationship('pet',
+    pet = db.relationship('Pet',
         backref = db.backref('records'), lazy = True)
     
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

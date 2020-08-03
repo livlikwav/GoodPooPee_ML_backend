@@ -13,7 +13,7 @@ class Pad(db.Model):
     last_modified_date = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
 
     ppcam_id = db.Column(db.Integer, db.ForeignKey('ppcam.id'), nullable = False)
-    ppcam = db.relationship('ppcam',
+    ppcam = db.relationship('Ppcam',
         backref = db.backref('pads'), lazy = True)
         
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)

@@ -10,7 +10,7 @@ class Ppcam(db.Model):
     last_modified_date = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
-    user = db.relationship('user',
+    user = db.relationship('User',
         backref=db.backref('ppcams', lazy = True))
 
     # def __repr__(self):
