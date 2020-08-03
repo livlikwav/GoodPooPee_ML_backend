@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from .. import db
 
 class Pet(db.Model):
@@ -22,7 +22,7 @@ class Pet(db.Model):
 
     @staticmethod
     def generate_fake(count):
-        # Generate a number of fake users for testing.
+        # Generate a number of fake pets for testing.
         from sqlalchemy.exc import IntegrityError
         from random import seed, choice
         from faker import Faker
@@ -32,12 +32,19 @@ class Pet(db.Model):
 
         seed()
         for i in range(count):
+            # get random datetime
+            timestamp = fake.date_time_between(start_date='-10y')
+            date = timestamp.date()
+            time = timestamp.time()
+            temp_datetime = datetime.combine(date, time)
             p = Pet(
                 name=choice(dog_name_samples),
                 breed=choice(breed_samples),
                 gender=choice(['male', 'female']),
-                # birth=fake.date_time_between(start_date='-10y'),
-                # adoption=fake.date_time_between(start_date='-10y'),
+                # get random datetime
+                birth=temp_datetime,
+                # be adopt after 8 weeks
+                adoption=temp_datetime + timedelta(weeks = 8),
                 
                 # match one foreign_key by one user
                 # user id start from 1

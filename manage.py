@@ -2,7 +2,7 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
 from app import create_app, db
-from app.models import User, Ppcam, Pet
+from app.models import User, Ppcam, Pet, Pad, PetRecord
 # from config import config as Config
 import os
 
@@ -42,6 +42,8 @@ def add_fake_data(number_users):
     User.generate_fake(count=number_users)
     Ppcam.generate_fake(count=number_users)
     Pet.generate_fake(count=number_users)
+    Pad.generate_fake(count=number_users)
+    PetRecord.generate_fake(count=number_users)
 
 @manager.command
 def setup_prod():

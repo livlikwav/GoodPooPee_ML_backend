@@ -18,7 +18,7 @@ class Ppcam(db.Model):
 
     @staticmethod
     def generate_fake(count):
-        # Generate a number of fake users for testing
+        # Generate a number of fake ppcams for testing
         from sqlalchemy.exc import IntegrityError
         from random import seed, choice
         from faker import Faker
