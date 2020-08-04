@@ -9,3 +9,4 @@ from .petrecord import *
 from .ppcam import *
 from .dailystatistics import *
 from .monthlystatistics import *
+from .blacklisttoken import *

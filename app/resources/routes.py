@@ -3,16 +3,19 @@
 
 def init_routes(api):
     from .helloworld import HelloWorld
-    from .user import UserApi, RegisterApi, UserPetApi, LoginApi
+    from .auth import RegisterApi, LoginApi, LogoutApi
+    from .user import UserApi, UserPetApi
     from .pet import PetRegisterApi, PetApi
     from .ppcam import PpcamRegisterApi, PpcamApi
 
     # Helloworld
     api.add_resource(HelloWorld, '/')
-    # User
+    # Auth
     api.add_resource(RegisterApi, '/user/register')
-    api.add_resource(UserApi, '/user/<int:user_id>')
     api.add_resource(LoginApi, '/user/login')
+    api.add_resource(LogoutApi, '/user/logout')
+    # User
+    api.add_resource(UserApi, '/user/<int:user_id>')
     api.add_resource(UserPetApi, '/user/<int:user_id>/pet')
     # Pet
     api.add_resource(PetRegisterApi, '/pet/register')

@@ -1,6 +1,9 @@
-from datetime import datetime
-from .. import db
+import datetime
+from app import db
+from app.models.blacklisttoken import BlacklistToken
 import bcrypt
+import jwt
+import sys
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -10,11 +13,54 @@ class User(db.Model):
     first_name = db.Column(db.String(250), nullable = False)
     last_name = db.Column(db.String(250), nullable = False)
     hashed_password = db.Column(db.String(250), nullable = False)
-    created_date = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
-    last_modified_date = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
+    created_date = db.Column(db.DateTime, nullable = False, default = datetime.datetime.utcnow)
+    last_modified_date = db.Column(db.DateTime, nullable = False, default = datetime.datetime.utcnow)
 
-    # def __repr__(self):
     #     return f"<User : {self.id}, {self.email}, {self.first_name}, {self.last_name}>"
+
+    def encode_auth_token(self, user_id):
+        # Generates the Auth token :return: string
+        try:
+            payload = {
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=0),
+                'iat': datetime.datetime.utcnow(),
+                'sub': user_id
+            }
+            from manage import app
+            return jwt.encode(
+                payload,
+                app.config['JWT_SECRET_KEY'],
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
+
+    @staticmethod
+    def decode_auth_token(auth_token):
+        """
+        Decodes the auth token
+        :param auth_token:
+        :return: integer|string
+        """
+        try:
+            from manage import app
+            payload = jwt.decode(auth_token, app.config['JWT_SECRET_KEY'])
+            is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
+            if is_blacklisted_token:
+                return 'Token blacklisted. Please log in again.'
+            else:
+                # user_id is Integer
+                return payload['sub']
+        except jwt.ExpiredSignatureError:
+            return 'Signature expired. Please log in again.'
+        except jwt.InvalidTokenError:
+            return 'Invalid token. Please log in again.'
+
+    def verify_password(self, password):
+        return bcrypt.checkpw(
+            password.encode('UTF-8'),
+            self.hashed_password.encode('UTF-8')
+        )
 
     @staticmethod
     def generate_fake(count):
@@ -38,9 +84,3 @@ class User(db.Model):
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
-
-    def verify_password(self, password):
-        return bcrypt.checkpw(
-            password.encode('UTF-8'),
-            self.hashed_password.encode('UTF-8')
-        )
