@@ -1,5 +1,6 @@
 from datetime import datetime
 from .. import db
+import bcrypt
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -8,7 +9,7 @@ class User(db.Model):
     email = db.Column(db.String(250), unique = True, nullable = False)
     first_name = db.Column(db.String(250), nullable = False)
     last_name = db.Column(db.String(250), nullable = False)
-    password = db.Column(db.String(250), nullable = False)
+    hashed_password = db.Column(db.String(250), nullable = False)
     created_date = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
     last_modified_date = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
 
@@ -30,10 +31,16 @@ class User(db.Model):
                 email=fake.email(),
                 first_name=fake.first_name(),
                 last_name=fake.last_name(),
-                password='password'
+                hashed_password='test_password'
             )
             db.session.add(u)
             try:
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
+
+    def verify_password(self, password):
+        return bcrypt.checkpw(
+            password.encode('UTF-8'),
+            self.hashed_password.encode('UTF-8')
+        )

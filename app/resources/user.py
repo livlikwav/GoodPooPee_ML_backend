@@ -1,8 +1,13 @@
-from flask import request
+from flask import request, jsonify
 from flask_restful import Resource
+from datetime import datetime, timedelta
+import bcrypt
+import jwt
+
+from manage import app
+from app import db, ma
 from app.models.user import User
 from app.models.pet import Pet
-from app import db, ma
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -20,12 +25,16 @@ pets_schema = PetSchema(many=True)
 
 class RegisterApi(Resource):
     def post(self):
+        hash = bcrypt.hashpw(
+            request.json['password'].encode('UTF-8'),
+            bcrypt.gensalt()
+        )
         new_user = User(
             # id = request.json['id'], < auto-increasing
             email = request.json['email'],
             first_name = request.json['first_name'],
             last_name = request.json['last_name'],
-            password = request.json['password']
+            hashed_password = hash
         )
         db.session.add(new_user)
         db.session.commit()
@@ -41,7 +50,7 @@ class UserApi(Resource):
         updated_user.email = request.json['email']
         updated_user.first_name = request.json['first_name']
         updated_user.last_name = request.json['last_name']
-        updated_user.password = request.json['password']
+        updated_user.hashed_password = request.json['password']
         db.session.commit()
         return user_schema.dump(updated_user)
 
@@ -51,9 +60,28 @@ class UserApi(Resource):
         db.session.commit()
         return '', 204
 
-# class LoginApi(Resource):
-#     def post(self):
-#         return True
+class LoginApi(Resource):
+    def post(self):
+        user_email = request.json['email']
+        user_pw = request.json['password']
+
+        login_user = User.query.filter_by(email = user_email).first()
+        if login_user is not None and login_user.verify_password(user_pw):
+            encoded_jwt = jwt.encode({
+                'user_id' : login_user.id,
+                'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
+                },
+                app.config['JWT_SECRET_KEY'],
+                algorithm = 'HS256'
+            )
+            return jsonify({
+                'access_token' : encoded_jwt.decode('UTF-8'),
+                # 'DEBUG id' : login_user.id,
+                # 'DEBUG exp' : (datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)),
+                # 'DEBUG key' : (app.config['JWT_SECRET_KEY'])
+            })
+        else:
+            return '', 401
 
 class UserPetApi(Resource):
     def get(self, user_id):

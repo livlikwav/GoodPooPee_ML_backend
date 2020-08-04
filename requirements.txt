@@ -8,3 +8,4 @@ flask_migrate
 pymysql
 faker
 bcrypt
+pyjwt
