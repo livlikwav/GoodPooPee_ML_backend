@@ -1,3 +1,4 @@
+from flask import jsonify
 from datetime import datetime
 from .. import db
 
@@ -15,6 +16,55 @@ class Ppcam(db.Model):
 
     # def __repr__(self):
     #     return f"<Ppcam : {self.id}, {self.serial_num}>"
+
+    def get_ppsnack(self, test=False):
+        """
+        request ppcam to get method for ppsnack
+        params Boolean
+        returns JSON(ppsnack data)
+        """
+        if(test):
+            # FAKE DATA FOR TESTING
+            return jsonify({
+                "serial_num":"thisisfakedata",
+                "connection":"True",
+                "power":"True",
+                "feedback_ratio":"1"
+            })
+        else:
+            pass
+
+    def put_ppsnack(self, feedback_ratio, test=False):
+        """
+        request ppcam to put method for ppsnack
+        params Float, Boolean
+        returns Boolean
+        """
+        if(test):
+            # FAKE SUCCESS MSG TEMPLATE
+            {
+                "status":"FAKESUCCESS",
+                "msg":"this is fake success"
+            }
+            return True
+        else:
+            pass
+
+    def get_ppsnack_feeding(self, test=False):
+        """
+        request ppsnack to feed dog via ppcam
+        params Boolean
+        returns Boolean
+        """
+        if(test):
+            # FAKE SUCCESS MSG TEMPLATE
+            {
+                "status":"FAKESUCCESS",
+                "msg":"this is fake success"
+            }
+            return True
+        else:
+            pass
 
     @staticmethod
     def generate_fake(count):

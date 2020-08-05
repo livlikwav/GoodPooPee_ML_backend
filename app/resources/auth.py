@@ -6,18 +6,24 @@ from app import db, ma
 from app.models.user import User
 from app.models.blacklisttoken import BlacklistToken
 
+
+class UserSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = User
+        
+# make instances of schemas
+user_schema = UserSchema()
+# users_schema = UserSchema(many=True)
+
 class RegisterApi(Resource):
     def post(self):
-        hash = bcrypt.hashpw(
-            request.json['password'].encode('UTF-8'),
-            bcrypt.gensalt()
-        )
         new_user = User(
             # id = request.json['id'], < auto-increasing
             email = request.json['email'],
             first_name = request.json['first_name'],
             last_name = request.json['last_name'],
-            hashed_password = hash
+            # automatically hash pw in User model
+            password = request.json['password']
         )
         db.session.add(new_user)
         db.session.commit()

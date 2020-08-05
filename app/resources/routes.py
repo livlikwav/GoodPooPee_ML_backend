@@ -4,9 +4,10 @@
 def init_routes(api):
     from .helloworld import HelloWorld
     from .auth import RegisterApi, LoginApi, LogoutApi
-    from .user import UserApi, UserPetApi
-    from .pet import PetRegisterApi, PetApi
+    from .user import UserApi, UserPetApi, UserPpcamApi
+    from .pet import PetRegisterApi, PetApi, PetRecordApi
     from .ppcam import PpcamRegisterApi, PpcamApi
+    from .ppsnack import PpsnackApi, PpsnackFeedingApi
 
     # Helloworld
     api.add_resource(HelloWorld, '/')
@@ -17,9 +18,14 @@ def init_routes(api):
     # User
     api.add_resource(UserApi, '/user/<int:user_id>')
     api.add_resource(UserPetApi, '/user/<int:user_id>/pet')
+    api.add_resource(UserPpcamApi, '/user/<int:user_id>/ppcam')
     # Pet
     api.add_resource(PetRegisterApi, '/pet/register')
     api.add_resource(PetApi, '/pet/<int:pet_id>')
+    api.add_resource(PetRecordApi, '/pet/<int:pet_id>/record')
     # Ppcam
     api.add_resource(PpcamRegisterApi, '/ppcam/register')
     api.add_resource(PpcamApi, '/ppcam/<int:ppcam_id>')
+    # Ppsnack
+    api.add_resource(PpsnackApi, '/ppcam/<int:ppcam_id>/ppsnack')
+    api.add_resource(PpsnackFeedingApi, '/ppcam/<int:ppcam_id>/ppsnack/feeding')

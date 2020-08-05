@@ -18,6 +18,21 @@ class User(db.Model):
 
     #     return f"<User : {self.id}, {self.email}, {self.first_name}, {self.last_name}>"
 
+    @property
+    def password(self):
+        raise AttributeError('password is not a readable attribute')
+
+    @password.setter
+    def password(self, password):
+        self.hashed_password = self.hash_password(password)
+
+    def hash_password(self, password):
+        hashed_password = bcrypt.hashpw(
+            password.encode('UTF-8'),
+            bcrypt.gensalt()
+        )
+        return hashed_password
+
     def encode_auth_token(self, user_id):
         # Generates the Auth token :return: string
         try:
@@ -77,7 +92,7 @@ class User(db.Model):
                 email=fake.email(),
                 first_name=fake.first_name(),
                 last_name=fake.last_name(),
-                hashed_password='test_password'
+                password='test'
             )
             db.session.add(u)
             try:
