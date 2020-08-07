@@ -2,6 +2,7 @@ from flask import request
 from flask_restful import Resource
 from app.models.ppcam import Ppcam
 from app import db, ma
+from app.utils.datetime import get_utc_now
 
 class PpcamSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -30,6 +31,7 @@ class PpcamApi(Resource):
     def put(self, ppcam_id):
         updated_ppcam = Ppcam.query.filter_by(id = ppcam_id).first()
         updated_ppcam.serial_num = request.json['serial_num']
+        updated_ppcam.last_modified_date = get_utc_now()
         db.session.commit()
         return ppcam_schema.dump(updated_ppcam)
 

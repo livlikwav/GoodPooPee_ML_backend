@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+from app.utils.datetime import get_utc_now
+import datetime
 from .. import db
 
 class PetRecord(db.Model):
@@ -6,17 +7,25 @@ class PetRecord(db.Model):
     timestamp = db.Column(db.DateTime, primary_key = True)
     result = db.Column(db.String(250), nullable = False)
     photo_url = db.Column(db.String(250), nullable = False)
-    created_date = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
-    last_modified_date = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
+    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=get_utc_now())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=get_utc_now())
 
-    pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), nullable=False)
+    pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), primary_key=True)
     pet = db.relationship('Pet',
         backref = db.backref('records'), lazy = True)
     
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 
     # def __repr__(self):
     #     return f"<Pet : {self.id}, {self.name}, {self.breed}, {self.gender}, {self.birth}, {self.adoption}>"
+
+    # def update_statistics(self):
+    #     """
+    #     Update daily_stat and monthly_stat tables
+    #     :Param:
+    #     :Return:
+    #     """
+        
 
     @staticmethod
     def generate_fake(count):
@@ -28,11 +37,11 @@ class PetRecord(db.Model):
         fake = Faker()
 
         seed()
-        # generate random time from now
-        time_now = datetime.utcnow() - timedelta(hours = count)
+        # get random utc datetime
+        time_now = get_utc_now() - datetime.timedelta(hours = count)
         for i in range(count):
             p = PetRecord(
-                timestamp = time_now + (timedelta(hours=1)*i),
+                timestamp = time_now + (datetime.timedelta(hours=1)*i),
                 result = choice(['SUCCESS', 'FAIL']),
                 photo_url = fake.image_url(),
 

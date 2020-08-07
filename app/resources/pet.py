@@ -4,7 +4,7 @@ from app.models.pet import Pet
 from app.models.petrecord import PetRecord
 from app import db, ma
 
-import datetime
+from app.utils.datetime import get_utc_now
 
 class PetSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -54,7 +54,7 @@ class PetApi(Resource):
         updated_pet.gender = request.json['gender']
         updated_pet.birth = request.json['birth']
         updated_pet.adoption = request.json['adoption']
-        updated_pet.last_modified_date = datetime.datetime.utcnow()
+        updated_pet.last_modified_date = get_utc_now()
         db.session.commit()
         return pet_schema.dump(updated_pet)
 
@@ -110,12 +110,14 @@ class PetRecordApi(Resource):
             })
         # get timestamp in query string
         timestamp = request.args.get("timestamp")
+        # querying record
         selected_record = PetRecord.query.filter_by(timestamp = timestamp).first()
         # update selected-record
         selected_record.timestamp = request.json['timestamp']
         selected_record.result = request.json['result']
         selected_record.photo_url = request.json['photo_url']
-        selected_record.last_modified_date = datetime.datetime.utcnow()
+        selected_record.last_modified_date = get_utc_now()
+        
         db.session.commit()
         return pet_record_schema.dump(selected_record)
 

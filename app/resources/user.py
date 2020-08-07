@@ -1,5 +1,6 @@
 from flask import request, jsonify
 from flask_restful import Resource
+from app.utils.datetime import get_utc_now
 import datetime
 
 from app import db, ma
@@ -37,7 +38,7 @@ class UserApi(Resource):
         updated_user.email = request.json['email']
         updated_user.first_name = request.json['first_name']
         updated_user.last_name = request.json['last_name']
-        updated_user.last_modified_date = datetime.datetime.utcnow()
+        updated_user.last_modified_date = get_utc_now()
         db.session.commit()
         return user_schema.dump(updated_user)
 

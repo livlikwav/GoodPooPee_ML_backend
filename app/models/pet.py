@@ -1,4 +1,6 @@
-from datetime import datetime, timedelta
+from app.utils.datetime import get_utc_now
+import pytz
+import datetime
 from .. import db
 
 class Pet(db.Model):
@@ -8,12 +10,12 @@ class Pet(db.Model):
     name = db.Column(db.String(250), nullable = False)
     breed = db.Column(db.String(250), nullable = False)
     gender = db.Column(db.String(250), nullable = False)
-    birth = db.Column(db.DateTime, nullable = True)
-    adoption = db.Column(db.DateTime, nullable = True)
-    created_date = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
-    last_modified_date = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
+    birth = db.Column(db.DateTime(timezone=True), nullable = True)
+    adoption = db.Column(db.DateTime(timezone=True), nullable = True)
+    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default = get_utc_now())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default = get_utc_now())
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
     user = db.relationship('User',
         backref = db.backref('pets'), lazy = True)
 
@@ -36,7 +38,8 @@ class Pet(db.Model):
             timestamp = fake.date_time_between(start_date='-10y')
             date = timestamp.date()
             time = timestamp.time()
-            temp_datetime = datetime.combine(date, time)
+            # get utc random datetime
+            temp_datetime = pytz.utc.localize(datetime.combine(date, time))
             p = Pet(
                 name=choice(dog_name_samples),
                 breed=choice(breed_samples),
@@ -44,7 +47,7 @@ class Pet(db.Model):
                 # get random datetime
                 birth=temp_datetime,
                 # be adopt after 8 weeks
-                adoption=temp_datetime + timedelta(weeks = 8),
+                adoption=temp_datetime + datetime.timedelta(weeks = 8),
                 
                 # match one foreign_key by one user
                 # user id start from 1

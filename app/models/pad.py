@@ -1,4 +1,4 @@
-from datetime import datetime
+from app.utils.datetime import get_utc_now
 from .. import db
 
 class Pad(db.Model):
@@ -9,14 +9,14 @@ class Pad(db.Model):
     ld = db.Column(db.Integer, nullable = False)
     ru = db.Column(db.Integer, nullable = False)
     rd = db.Column(db.Integer, nullable = False)
-    created_date = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
-    last_modified_date = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
+    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default = get_utc_now())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default = get_utc_now())
 
-    ppcam_id = db.Column(db.Integer, db.ForeignKey('ppcam.id'), nullable = False)
+    ppcam_id = db.Column(db.Integer, db.ForeignKey('ppcam.id'), primary_key = True)
     ppcam = db.relationship('Ppcam',
         backref = db.backref('pads'), lazy = True)
         
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
 
     # def __repr__(self):
     #     return f"<Pad : {self.id}, {self.iu}, {self.id}, {self.ru}, {self.rd}>"

@@ -1,4 +1,4 @@
-from datetime import datetime
+from app.utils.datetime import get_utc_now
 from app import db
 
 class BlacklistToken(db.Model):
@@ -7,8 +7,9 @@ class BlacklistToken(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     token = db.Column(db.String(500), unique=True, nullable=False)
-    created_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
+    created_date = db.Column(db.DateTime(timezone=True), nullable=False, default=get_utc_now())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable=False, default=get_utc_now())
+    
     @staticmethod
     def check_blacklist(auth_token):
         # check whether auth token has been blacklisted
