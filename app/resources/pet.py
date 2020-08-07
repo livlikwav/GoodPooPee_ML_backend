@@ -9,10 +9,12 @@ from app.utils.datetime import get_utc_now
 class PetSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Pet
+        include_fk = True
 
 class PetRecordSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = PetRecord
+        include_fk = True
 
 class RecordQuerySchema(ma.Schema):
     class Meta:

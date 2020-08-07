@@ -6,8 +6,8 @@ from .. import db
 class Pet(db.Model):
     __tablename__ = 'pet'
 
-    id = db.Column(db.Integer, primary_key = True, autoincrement = True)
-    name = db.Column(db.String(250), nullable = False)
+    id = db.Column(db.Integer, unique=True, autoincrement = True, nullable=True)
+    name = db.Column(db.String(250), primary_key = True)
     breed = db.Column(db.String(250), nullable = False)
     gender = db.Column(db.String(250), nullable = False)
     birth = db.Column(db.DateTime(timezone=True), nullable = True)

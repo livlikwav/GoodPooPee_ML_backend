@@ -1,3 +1,8 @@
+"""
+statistical data of pet's train result per month
+WARNING: 'pet_record' table's timestamp vals are base on UTC
+But, this table 'monthly_stat' timestamp vals are based on KST
+"""
 from app.utils.datetime import get_utc_now
 from .. import db
 

@@ -7,6 +7,7 @@ from app.utils.datetime import get_utc_now
 class PpcamSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Ppcam
+        include_fk = True
 
 # make instances of schemas
 ppcam_schema = PpcamSchema()

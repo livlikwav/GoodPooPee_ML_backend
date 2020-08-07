@@ -15,10 +15,12 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
 class PetSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Pet
+        include_fk = True
 
 class PpcamSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Ppcam
+        include_fk = True
 
 # make instances of schemas
 user_schema = UserSchema()
