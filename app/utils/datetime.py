@@ -12,11 +12,13 @@ KST = pytz.timezone('Asia/Seoul')
 
 def get_kst_date(naive_utc):
     """
-    Change naive utc datetime to Date by KST
-    :Param: datetime.datetime(tzinfo=None, but actually UTC)
+    Change String or naive utc datetime to Date by KST
+    :Param: String or datetime.datetime(tzinfo=None, but actually UTC)
     :Return: datetime.date(set by KST)
     """
-    if(naive_utc.tzinfo is not None):
+    if type(naive_utc) is str:
+        naive_utc = parse(naive_utc)
+    if naive_utc.tzinfo is not None:
         raise TypeError('datetime arg is not naive datetime')
     else:
         utc_datetime = pytz.utc.localize(naive_utc)
@@ -26,10 +28,12 @@ def get_kst_date(naive_utc):
 
 def get_kst_datetime(naive_utc):
     """
-    Change naive utc datetime to KST.datetime
-    :Param: datetime.datetime(tzinfo=None, but actually UTC)
+    Change String or naive utc datetime to KST.datetime
+    :Param: String or datetime.datetime(tzinfo=None, but actually UTC)
     :Return: datetime.datetime(tzinfo='Asia/Seoul', and actually KST)
     """
+    if type(naive_utc) is str:
+        naive_utc = parse(naive_utc)
     if(naive_utc.tzinfo is not None):
         raise TypeError('datetime arg is not naive datetime')
     else:

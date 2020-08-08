@@ -91,7 +91,6 @@ class PetRecordApi(Resource):
             pet_id = pet_id,
             user_id = selected_pet.user_id
         )
-        print(new_record, file=sys.stderr)
         if new_record:
             db.session.add(new_record)
             try:
@@ -99,11 +98,10 @@ class PetRecordApi(Resource):
             except IntegrityError as e:
                 return jsonify({
                     "status" : "Fail",
-                    "msg" : str(e)
+                    "msg" : "IntegrityError on post new pet_record, check primary keys"
                 })
-            # update statistics tables
-            print(new_record, file=sys.stderr)
-            new_record.update_stats_by_post()
+            # update stat tables
+            new_record.update_stats(request.json['timestamp'])
             return pet_record_schema.dump(new_record)
         else:
             return jsonify({

@@ -23,26 +23,18 @@ class PetRecord(db.Model):
         return f"<PetRecord : {self.timestamp}, {self.pet_id}, {self.user_id},\
              {self.result}, {self.photo_url}>"
 
-    def update_stats_by_post(self):
+    def update_stats(self, last_timestamp):
         """
         By new pet record, Update daily_stat and monthly_stat tables
-        :Param:
+        :Param: datetime.datetime(naive, but UTC)
         :Return:
         """
         # change UTC.datetime to KST.date
         kst_date = get_kst_date(self.timestamp)
         # update daily_stat first
         DailyStatistics.update_by_post(kst_date, self.pet_id, self.user_id, self.result)
-        MonthlyStatistics.update_by_post(kst_date, self.pet_id, self.user_id)
+        MonthlyStatistics.update(self, last_timestamp)
 
-    def update_stats_by_put(self, last_timestamp):
-        """
-        By updated pet record, Update daily_stat and monthly_stat tables
-        :Param: last_timestamp
-        :Return:
-        """
-        # change UTC to KST
-        # kst_date = utc_to_kst_date(self.timestamp)
         
         
 
