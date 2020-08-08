@@ -3,9 +3,8 @@ from flask_restful import Resource
 from app.models.pet import Pet
 from app.models.petrecord import PetRecord
 from app import db, ma
-
-from app.utils.datetime import get_utc_now
-
+import sys
+import datetime
 class PetSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Pet
@@ -30,6 +29,13 @@ record_query_schema = RecordQuerySchema()
 
 class PetRegisterApi(Resource):
     def post(self):
+        # check that pet's name already exists
+        pet = Pet.query.filter_by(user_id=request.json['user_id'], name=request.json['name']).first()
+        if pet:
+            return jsonify({
+                "status" : "Fail",
+                "msg" : f"name \'{pet.name}\' already exists"
+            })
         new_pet = Pet(
             name = request.json['name'],
             breed = request.json['breed'],
@@ -50,13 +56,20 @@ class PetApi(Resource):
         return pet_schema.dump(selected_pet)
 
     def put(self, pet_id):
+        # check that pet's name already exists
+        pet = Pet.query.filter_by(user_id=request.json['user_id'], name=request.json['name']).first()
+        if pet:
+            return jsonify({
+                "status" : "Fail",
+                "msg" : f"name \'{pet.name}\' already exists"
+            })
         updated_pet = Pet.query.filter_by(id = pet_id).first()
         updated_pet.name = request.json['name']
         updated_pet.breed = request.json['breed']
         updated_pet.gender = request.json['gender']
         updated_pet.birth = request.json['birth']
         updated_pet.adoption = request.json['adoption']
-        updated_pet.last_modified_date = get_utc_now()
+        updated_pet.last_modified_date = datetime.datetime.utcnow()
         db.session.commit()
         return pet_schema.dump(updated_pet)
 
@@ -68,6 +81,7 @@ class PetApi(Resource):
 
 class PetRecordApi(Resource):
     def post(self, pet_id):
+        from sqlalchemy.exc import IntegrityError
         # find user by pet_id
         selected_pet = Pet.query.filter_by(id = pet_id).first()
         new_record = PetRecord(
@@ -77,14 +91,24 @@ class PetRecordApi(Resource):
             pet_id = pet_id,
             user_id = selected_pet.user_id
         )
+        print(new_record, file=sys.stderr)
         if new_record:
             db.session.add(new_record)
-            db.session.commit()
+            try:
+                db.session.commit()
+            except IntegrityError as e:
+                return jsonify({
+                    "status" : "Fail",
+                    "msg" : str(e)
+                })
+            # update statistics tables
+            print(new_record, file=sys.stderr)
+            new_record.update_stats_by_post()
             return pet_record_schema.dump(new_record)
         else:
             return jsonify({
                 "status" : "Fail",
-                "msg" : new_record
+                "msg" : "failed to make new pet record instance"
             })
 
     def get(self, pet_id):
@@ -118,7 +142,7 @@ class PetRecordApi(Resource):
         selected_record.timestamp = request.json['timestamp']
         selected_record.result = request.json['result']
         selected_record.photo_url = request.json['photo_url']
-        selected_record.last_modified_date = get_utc_now()
+        selected_record.last_modified_date = datetime.datetime.utcnow()
         
         db.session.commit()
         return pet_record_schema.dump(selected_record)

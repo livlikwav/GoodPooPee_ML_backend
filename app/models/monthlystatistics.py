@@ -1,19 +1,24 @@
 """
 statistical data of pet's train result per month
-WARNING: 'pet_record' table's timestamp vals are base on UTC
-But, this table 'monthly_stat' timestamp vals are based on KST
+WARNING: 'pet_record' table's Timestamp vals are base on UTC
+But, this table 'monthly_stat' Date vals are based on KST
 """
-from app.utils.datetime import get_utc_now
+import datetime
+from dateutil.relativedelta import *
+from app.models.dailystatistics import DailyStatistics
+from flask import jsonify
 from .. import db
 
 class MonthlyStatistics(db.Model):
     __tablename__ = 'monthly_stat'
-    timestamp = db.Column(db.DateTime(timezone=True), primary_key=True)
+    # naive Date(tzinfo=None, but actually KST)
+    date = db.Column(db.Date, primary_key=True)
     count = db.Column(db.Integer, nullable = False)
     success = db.Column(db.Integer, nullable = False)
-    progress = db.Column(db.Integer, nullable = False)
-    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default = get_utc_now())
-    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default = get_utc_now())
+    ratio = db.Column(db.Float, nullable = False)
+    # (timezone=True) make DATETIME to TIMESTAMP in Mysql
+    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
 
     pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), primary_key=True)
     pet = db.relationship('Pet',
@@ -24,14 +29,54 @@ class MonthlyStatistics(db.Model):
     # def __repr__(self):
     #     return f"<MonthlyStatistics : {self.count}, {self.success}, {self.progress}>"
 
-    # @staticmethod
-    # def apply_new_record(timestamp, result, pet_id, user_id):
-    #     """
-    #     Apply new pet_record on monthly_stat tables
-    #     """
-    
-    # @staticmethod
-    # def apply_updated_record(timestamp, result, pet_id, user_id):
-    #     """
-    #     Apply updated pet_record(already existed) on monthly_stat tables 
-    #     """
+    @staticmethod
+    def update_by_post(kst_date, pet_id, user_id):
+        """
+        update monthly_stat by new pet record
+        :Params: datetime.date(naive, but actually KST), Integer, Integer
+        :Return:
+        """
+        # kst_date to day 1 (represent only month)
+        kst_month = kst_date.replace(day=1)
+        # find day records of the month
+        daily_records = DailyStatistics.query.\
+            filter_by(pet_id=pet_id, user_id=user_id).\
+            filter(DailyStatistics.date >= kst_month).\
+            filter(DailyStatistics.date < (kst_month + relativedelta(months=+1))).\
+            all()
+        if daily_records is None:
+            return jsonify({
+                "status" : "Fail",
+                "msg" : "No record in daily_stat table, maybe not updated yet"
+            })
+        # update month record
+        month_record = MonthlyStatistics.query.\
+            filter_by(date=kst_month, pet_id=pet_id, user_id=user_id).first()
+        if month_record:
+            count = 0
+            success = 0
+            # update month_record by all records of month
+            for day in daily_records:
+                count += day.count
+                success += day.success
+            month_record.count = count
+            month_record.success = success
+            month_record.ratio = success/count
+            month_record.last_modified_date = datetime.datetime.utcnow()
+        # first month record
+        else:
+            count = 0
+            success = 0
+            for day in daily_records:
+                count += day.count
+                success += day.success
+            new_month_record = MonthlyStatistics(
+                date = kst_month,
+                pet_id = pet_id,
+                user_id = user_id,
+                count = count,
+                success = success,
+                ratio = success/count
+            )
+            db.session.add(new_month_record)
+        db.session.commit()

@@ -1,4 +1,3 @@
-from app.utils.datetime import get_utc_now
 import datetime
 from app import db
 from app.models.blacklisttoken import BlacklistToken
@@ -13,8 +12,8 @@ class User(db.Model):
     first_name = db.Column(db.String(250), nullable = False)
     last_name = db.Column(db.String(250), nullable = False)
     hashed_password = db.Column(db.String(250), nullable = False)
-    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=get_utc_now())
-    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=get_utc_now())
+    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
 
     #     return f"<User : {self.id}, {self.email}, {self.first_name}, {self.last_name}>"
 
@@ -37,8 +36,8 @@ class User(db.Model):
         # Generates the Auth token :return: string
         try:
             payload = {
-                'exp': get_utc_now() + datetime.timedelta(days=1, seconds=0),
-                'iat': get_utc_now(),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=0),
+                'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
             from manage import app

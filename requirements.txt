@@ -10,3 +10,4 @@ faker
 bcrypt
 pyjwt
 pytz
+python-dateutil

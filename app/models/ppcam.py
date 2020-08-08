@@ -1,5 +1,5 @@
 from flask import jsonify
-from app.utils.datetime import get_utc_now
+import datetime
 from .. import db
 
 class Ppcam(db.Model):
@@ -7,8 +7,8 @@ class Ppcam(db.Model):
 
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     serial_num = db.Column(db.String(250), unique = True, nullable = False)
-    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=get_utc_now())
-    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=get_utc_now())
+    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
     user = db.relationship('User',

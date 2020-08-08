@@ -17,6 +17,7 @@ user_schema = UserSchema()
 
 class RegisterApi(Resource):
     def post(self):
+        from sqlalchemy.exc import IntegrityError
         new_user = User(
             # id = request.json['id'], < auto-increasing
             email = request.json['email'],
@@ -26,7 +27,13 @@ class RegisterApi(Resource):
             password = request.json['password']
         )
         db.session.add(new_user)
-        db.session.commit()
+        try: 
+            db.session.commit()
+        except IntegrityError:
+            return jsonify({
+                "status" : "Fail",
+                "msg" : "this email already exists"
+            })
         return user_schema.dump(new_user)
 
 class LoginApi(Resource):

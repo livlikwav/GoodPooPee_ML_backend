@@ -1,4 +1,4 @@
-from app.utils.datetime import get_utc_now
+import datetime
 from .. import db
 
 class Pad(db.Model):
@@ -9,8 +9,8 @@ class Pad(db.Model):
     ld = db.Column(db.Integer, nullable = False)
     ru = db.Column(db.Integer, nullable = False)
     rd = db.Column(db.Integer, nullable = False)
-    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default = get_utc_now())
-    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default = get_utc_now())
+    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
 
     ppcam_id = db.Column(db.Integer, db.ForeignKey('ppcam.id'), primary_key = True)
     ppcam = db.relationship('Ppcam',

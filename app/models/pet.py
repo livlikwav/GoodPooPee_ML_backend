@@ -1,4 +1,3 @@
-from app.utils.datetime import get_utc_now
 import pytz
 import datetime
 from .. import db
@@ -6,21 +5,21 @@ from .. import db
 class Pet(db.Model):
     __tablename__ = 'pet'
 
-    id = db.Column(db.Integer, unique=True, autoincrement = True, nullable=True)
-    name = db.Column(db.String(250), primary_key = True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(250), nullable = False)
     breed = db.Column(db.String(250), nullable = False)
     gender = db.Column(db.String(250), nullable = False)
     birth = db.Column(db.DateTime(timezone=True), nullable = True)
     adoption = db.Column(db.DateTime(timezone=True), nullable = True)
-    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default = get_utc_now())
-    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default = get_utc_now())
+    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default = datetime.datetime.utcnow())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default = datetime.datetime.utcnow())
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
     user = db.relationship('User',
         backref = db.backref('pets'), lazy = True)
 
-    # def __repr__(self):
-    #     return f"<Pet : {self.id}, {self.name}, {self.breed}, {self.gender}, {self.birth}, {self.adoption}>"
+    def __repr__(self):
+        return f"<Pet : {self.id}, {self.user_id}, {self.name}, {self.breed}, {self.gender}, {self.birth}, {self.adoption}>"
 
     @staticmethod
     def generate_fake(count):
