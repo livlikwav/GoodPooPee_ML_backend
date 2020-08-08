@@ -33,9 +33,6 @@ class PetRecord(db.Model):
         DailyStatistics.update(self, last_timestamp)
         MonthlyStatistics.update(self, last_timestamp)
 
-        
-        
-
     @staticmethod
     def generate_fake(count):
         # Generate a number of fake pet records for testing
@@ -64,3 +61,4 @@ class PetRecord(db.Model):
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
+

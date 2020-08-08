@@ -6,6 +6,7 @@ But, this table 'daily_stat' Date vals are based on KST
 import datetime
 from app.utils.datetime import get_kst_date
 from .. import db
+import sys
 
 class DailyStatistics(db.Model):
     __tablename__ = 'daily_stat'
@@ -36,7 +37,7 @@ class DailyStatistics(db.Model):
         """
         # check that date of record is changed
         last_kst_day = get_kst_date(last_timestamp)
-        kst_day = get_kst_date(last_timestamp)
+        kst_day = get_kst_date(pet_record.timestamp)
         if last_kst_day == kst_day: # 1 day update
             DailyStatistics.update_day(pet_record.pet_id, pet_record.user_id, kst_day)
         else: # 2 day update
@@ -59,14 +60,16 @@ class DailyStatistics(db.Model):
             filter(PetRecord.timestamp >= kst_daytime_min).\
             filter(PetRecord.timestamp <= kst_daytime_max).\
             all()
-        if len(pet_records) == 0:
-            return jsonify({
-                "status" : "Fail",
-                "msg" : "No record in pet_record table at the day"
-            })
-        # update day record
+        # find day record
         day_record = DailyStatistics.query.\
             filter_by(date=kst_day, pet_id=pet_id, user_id=user_id).first()
+        # if last pet_record of the day deleted
+        if len(pet_records) == 0:
+            if day_record:
+                db.session.delete(day_record)
+                db.session.commit()
+                return
+        # update day record
         count = 0
         success = 0
         if day_record: # exists

@@ -24,6 +24,7 @@ class RecordQuerySchema(ma.Schema):
 pet_schema = PetSchema()
 # pets_schema = PetSchema(many=True)
 pet_record_schema = PetRecordSchema()
+deleted_record_schema = PetRecordSchema(only=("timestamp", "pet_id", "user_id"))
 # pet_records_schema = PetRecordSchema(many=True)
 record_query_schema = RecordQuerySchema()
 
@@ -115,7 +116,7 @@ class PetRecordApi(Resource):
         if errors:
             return jsonify({
                 "status" : "fail",
-                "msg" : "error in query schema validation"
+                "msg" : "error in get method - query schema validation"
             })
         # get timestamp in query string
         timestamp = request.args.get("timestamp")
@@ -125,24 +126,33 @@ class PetRecordApi(Resource):
 
 
     def put(self, pet_id):
+        from sqlalchemy.exc import IntegrityError
         # validate query string by ma
         errors = record_query_schema.validate(request.args)
         if errors:
             return jsonify({
                 "status" : "fail",
-                "msg" : "error in query schema validation"
+                "msg" : "error in put method - query schema validation"
             })
         # get timestamp in query string
-        timestamp = request.args.get("timestamp")
+        last_timestamp = request.args.get("timestamp")
         # querying record
-        selected_record = PetRecord.query.filter_by(timestamp = timestamp).first()
+        selected_record = PetRecord.query.filter_by(timestamp = last_timestamp).first()
         # update selected-record
-        selected_record.timestamp = request.json['timestamp']
-        selected_record.result = request.json['result']
-        selected_record.photo_url = request.json['photo_url']
-        selected_record.last_modified_date = datetime.datetime.utcnow()
-        
-        db.session.commit()
+        try:
+            selected_record.timestamp = request.json['timestamp']
+            selected_record.result = request.json['result']
+            selected_record.photo_url = request.json['photo_url']
+            selected_record.last_modified_date = datetime.datetime.utcnow()
+            db.session.commit()
+        except IntegrityError as e:
+            db.session.rollback()
+            return jsonify({
+                "status" : "Fail",
+                "msg" : "Error in PetRecord, Put Api, check primary_keys"
+            })
+        # update stat tables
+        selected_record.update_stats(last_timestamp)
         return pet_record_schema.dump(selected_record)
 
     def delete(self, pet_id):
@@ -151,14 +161,15 @@ class PetRecordApi(Resource):
         if errors:
             return jsonify({
                 "status" : "fail",
-                "msg" : "error in query schema validation"
+                "msg" : "error in delete method - query schema validation"
             })
         # get timestamp in query string
-        timestamp = request.args.get("timestamp")
-        selected_record = PetRecord.query.filter_by(timestamp = timestamp).first()
-        # delete selected-record
+        last_timestamp = request.args.get("timestamp")
+        selected_record = PetRecord.query.filter_by(timestamp = last_timestamp).first()
         db.session.delete(selected_record)
         db.session.commit()
+        # update stat tables
+        selected_record.update_stats(last_timestamp)
         return jsonify({
             "status" : "success",
             "msg" : "successfully delete selected record"

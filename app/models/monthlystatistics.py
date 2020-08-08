@@ -61,14 +61,16 @@ class MonthlyStatistics(db.Model):
             filter(DailyStatistics.date >= kst_month).\
             filter(DailyStatistics.date < (kst_month + relativedelta(months=+1))).\
             all()
-        if len(daily_records) == 0:
-            return jsonify({
-                "status" : "Fail",
-                "msg" : "No record in daily_stat table, maybe not updated yet"
-            })
-        # update month record
+        # find month record
         month_record = MonthlyStatistics.query.\
             filter_by(date=kst_month, pet_id=pet_id, user_id=user_id).first()
+        # if last day_record of the month deleted
+        if len(daily_records) == 0:
+            if month_record:
+                db.session.delete(month_record)
+                db.session.commit()
+            return
+        # update month record
         count = 0
         success = 0
         if month_record: # exists
