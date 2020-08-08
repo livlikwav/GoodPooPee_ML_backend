@@ -18,13 +18,12 @@ def get_kst_date(naive_utc):
     """
     if type(naive_utc) is str:
         naive_utc = parse(naive_utc)
-    if naive_utc.tzinfo is not None:
-        raise TypeError('datetime arg is not naive datetime')
+    elif naive_utc.tzinfo is not None:
+        pass
     else:
-        utc_datetime = pytz.utc.localize(naive_utc)
-        ktc_datetime = utc_datetime.astimezone(KST)
-        ktc_date = ktc_datetime.date()
-        return ktc_date
+        naive_utc = pytz.utc.localize(naive_utc)
+    ktc_date = naive_utc.astimezone(KST).date()
+    return ktc_date
 
 def get_kst_datetime(naive_utc):
     """
@@ -34,10 +33,9 @@ def get_kst_datetime(naive_utc):
     """
     if type(naive_utc) is str:
         naive_utc = parse(naive_utc)
-    if(naive_utc.tzinfo is not None):
-        raise TypeError('datetime arg is not naive datetime')
+    elif naive_utc.tzinfo is not None:
+        pass
     else:
-        utc_datetime = pytz.utc.localize(naive_utc)
-        ktc_datetime = utc_datetime.astimezone(KST)
-        return ktc_datetime
-
+        naive_utc = pytz.utc.localize(naive_utc)
+    ktc_datetime = naive_utc.astimezone(KST)
+    return ktc_datetime

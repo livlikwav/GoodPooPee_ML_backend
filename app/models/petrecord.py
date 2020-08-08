@@ -29,10 +29,8 @@ class PetRecord(db.Model):
         :Param: datetime.datetime(naive, but UTC)
         :Return:
         """
-        # change UTC.datetime to KST.date
-        kst_date = get_kst_date(self.timestamp)
         # update daily_stat first
-        DailyStatistics.update_by_post(kst_date, self.pet_id, self.user_id, self.result)
+        DailyStatistics.update(self, last_timestamp)
         MonthlyStatistics.update(self, last_timestamp)
 
         

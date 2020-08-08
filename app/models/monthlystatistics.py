@@ -61,7 +61,7 @@ class MonthlyStatistics(db.Model):
             filter(DailyStatistics.date >= kst_month).\
             filter(DailyStatistics.date < (kst_month + relativedelta(months=+1))).\
             all()
-        if daily_records is None:
+        if len(daily_records) == 0:
             return jsonify({
                 "status" : "Fail",
                 "msg" : "No record in daily_stat table, maybe not updated yet"
@@ -69,9 +69,9 @@ class MonthlyStatistics(db.Model):
         # update month record
         month_record = MonthlyStatistics.query.\
             filter_by(date=kst_month, pet_id=pet_id, user_id=user_id).first()
-        if month_record:
-            count = 0
-            success = 0
+        count = 0
+        success = 0
+        if month_record: # exists
             # update month_record by all records of month
             for day in daily_records:
                 count += day.count
@@ -80,10 +80,7 @@ class MonthlyStatistics(db.Model):
             month_record.success = success
             month_record.ratio = success/count
             month_record.last_modified_date = datetime.datetime.utcnow()
-        # first month record
-        else:
-            count = 0
-            success = 0
+        else: # first month record
             for day in daily_records:
                 count += day.count
                 success += day.success

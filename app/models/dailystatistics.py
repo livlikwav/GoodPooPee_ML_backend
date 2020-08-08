@@ -4,6 +4,7 @@ WARNING: 'pet_record' table's Timestamp vals are base on UTC
 But, this table 'daily_stat' Date vals are based on KST
 """
 import datetime
+from app.utils.datetime import get_kst_date
 from .. import db
 
 class DailyStatistics(db.Model):
@@ -27,36 +28,72 @@ class DailyStatistics(db.Model):
     #     return f"<DailyStatistics : {self.count}, {self.success}, {self.fail}>"
 
     @staticmethod
-    def update_by_post(kst_date, pet_id, user_id, result):
+    def update(pet_record, last_timestamp):
         """
         update daily_stat by new pet record
-        :Params: datetime.date(naive, but actually KST), Integer, Integer, String
+        :Params: PetRecord(), datetime.datetime(naive, but UTC)
         :Return:
         """
-        day_record = DailyStatistics.query.filter_by(date=kst_date, pet_id=pet_id, user_id=user_id).first()
-        if day_record:
-            if result == 'SUCCESS':
-                day_record.count = day_record.count + 1
-                day_record.success = day_record.success + 1
-                day_record.ratio = day_record.success/day_record.count
-                day_record.last_modified_date = datetime.datetime.utcnow()
-            else:  # Fail
-                day_record.count = day_record.count + 1
-                day_record.ratio = day_record.success/day_record.count
-                day_record.last_modified_date = datetime.datetime.utcnow()
+        # check that date of record is changed
+        last_kst_day = get_kst_date(last_timestamp)
+        kst_day = get_kst_date(last_timestamp)
+        if last_kst_day == kst_day: # 1 day update
+            DailyStatistics.update_day(pet_record.pet_id, pet_record.user_id, kst_day)
+        else: # 2 day update
+            DailyStatistics.update_day(pet_record.pet_id, pet_record.user_id, kst_day)
+            DailyStatistics.update_day(pet_record.pet_id, pet_record.user_id, last_kst_day)
+
+    @staticmethod
+    def update_day(pet_id, user_id, kst_day):
+        """
+        Update one day_record by check all records of day
+        :Params: Integer, Integer, datetime.date(naive, but KST)
+        :Return:
+        """
+        from app.models.petrecord import PetRecord
+        from sqlalchemy.exc import IntegrityError
+        # find all pet records of the day
+        kst_daytime_min = datetime.datetime.combine(kst_day, datetime.time.min)
+        kst_daytime_max = datetime.datetime.combine(kst_day, datetime.time.max)
+        pet_records = PetRecord.query.filter_by(pet_id=pet_id, user_id=user_id).\
+            filter(PetRecord.timestamp >= kst_daytime_min).\
+            filter(PetRecord.timestamp <= kst_daytime_max).\
+            all()
+        if len(pet_records) == 0:
+            return jsonify({
+                "status" : "Fail",
+                "msg" : "No record in pet_record table at the day"
+            })
+        # update day record
+        day_record = DailyStatistics.query.\
+            filter_by(date=kst_day, pet_id=pet_id, user_id=user_id).first()
+        count = 0
+        success = 0
+        if day_record: # exists
+            # update day record by all pet records
+            for r in pet_records:
+                count += 1
+                if(r.result == 'SUCCESS'):
+                    success += 1
+            day_record.count = count
+            day_record.success = success
+            day_record.ratio = success/count
+            day_record.last_modified_date = datetime.datetime.utcnow()
         else: # first day record
+            for r in pet_records:
+                count += 1
+                if(r.result == 'SUCCESS'):
+                    success += 1
             new_day_record = DailyStatistics(
-                date = kst_date,
+                date = kst_day,
                 pet_id = pet_id,
                 user_id = user_id,
-                count = 1,
-                success = 0,
-                ratio = 0
+                count = count,
+                success = success,
+                ratio = success/count
             )
-            if result == 'SUCCESS':
-                new_day_record.success = new_day_record.success + 1
-            else: # Fail
-                pass
-            new_day_record.ratio = new_day_record.success/new_day_record.count
             db.session.add(new_day_record)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError as e:
+            print(str(e), file=sys.stderr)
