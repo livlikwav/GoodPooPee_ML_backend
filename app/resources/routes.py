@@ -8,6 +8,7 @@ def init_routes(api):
     from .pet import PetRegisterApi, PetApi, PetRecordApi
     from .ppcam import PpcamRegisterApi, PpcamApi
     from .ppsnack import PpsnackApi, PpsnackFeedingApi
+    from .statistics import DailyStatApi, MonthlyStatApi
 
     # Helloworld
     api.add_resource(HelloWorld, '/')
@@ -29,3 +30,8 @@ def init_routes(api):
     # Ppsnack
     api.add_resource(PpsnackApi, '/ppcam/<int:ppcam_id>/ppsnack')
     api.add_resource(PpsnackFeedingApi, '/ppcam/<int:ppcam_id>/ppsnack/feeding')
+    # Statistics
+    api.add_resource(DailyStatApi, '/pet/<int:pet_id>/report/daily')
+    #      weeklystatapi incomplete
+    api.add_resource(MonthlyStatApi, '/pet/<int:pet_id>/report/monthly')
+    
