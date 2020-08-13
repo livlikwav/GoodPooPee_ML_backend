@@ -47,6 +47,7 @@ class PadApi(Resource):
             selected_pad.last_modified_date = datetime.datetime.utcnow()
             db.session.commit()
         except:
+            db.session.rollback()
             return jsonify({
                 "status" : "Fail",
                 "msg" : "IntegrityError on Pad<int:pad_id> Put method"
@@ -54,9 +55,17 @@ class PadApi(Resource):
         return pad_schema.dump(selected_pad)
     
     def delete(self, ppcam_id, pad_id):
+        from sqlalchemy.exc import IntegrityError
         selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id, id = pad_id).first()
-        db.session.delete(selected_pad)
-        db.session.commit()
+        try:
+            db.session.delete(selected_pad)
+            db.session.commit()
+        except IntegrityError as e:
+            db.session.rollback()
+            return jsonify({
+                "status" : "Fail",
+                "msg" : "IntegrityError at pad profile, maybe primary key problem."
+            })
         return jsonify({
             "status" : "Success",
             "msg" : "Successfully delete pad"

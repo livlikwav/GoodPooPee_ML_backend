@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, jsonify
 from flask_restful import Resource
 from app.models.ppcam import Ppcam
 from app import db, ma
@@ -37,7 +37,18 @@ class PpcamApi(Resource):
         return ppcam_schema.dump(updated_ppcam)
 
     def delete(self, ppcam_id):
+        from sqlalchemy.exc import IntegrityError
         deleted_ppcam = Ppcam.query.filter_by(id = ppcam_id).first()
-        db.session.delete(deleted_ppcam)
-        db.session.commit()
-        return '', 204
+        try:
+            db.session.delete(deleted_ppcam)
+            db.session.commit()
+        except IntegrityError as e:
+            db.session.rollback()
+            return jsonify({
+                "status" : "Fail",
+                "msg" : "IntegrityError on that ppcam, maybe pad of ppcam still exists."
+            })
+        return jsonify({
+            "status" : "Success",
+            "msg" : "Successfully deleted that ppcam"
+        })

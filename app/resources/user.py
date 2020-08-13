@@ -35,19 +35,38 @@ class UserApi(Resource):
         return user_schema.dump(selected_user)
 
     def put(self, user_id):
+        from sqlalchemy.exc import IntegrityError
         updated_user = User.query.filter_by(id = user_id).first()
-        updated_user.email = request.json['email']
-        updated_user.first_name = request.json['first_name']
-        updated_user.last_name = request.json['last_name']
-        updated_user.last_modified_date = datetime.datetime.utcnow()
-        db.session.commit()
+        try:
+            updated_user.email = request.json['email']
+            updated_user.first_name = request.json['first_name']
+            updated_user.last_name = request.json['last_name']
+            updated_user.last_modified_date = datetime.datetime.utcnow()
+            db.session.commit()
+        except IntegrityError as e:
+            db.session.rollback()
+            return jsonify({
+                "status" : "Fail",
+                "msg" : "IntegrityError on updating user."
+            })
         return user_schema.dump(updated_user)
 
     def delete(self, user_id):
+        from sqlalchemy.exc import IntegrityError
         deleted_user = User.query.filter_by(id = user_id).first()
-        db.session.delete(deleted_user)
-        db.session.commit()
-        return '', 204
+        try:
+            db.session.delete(deleted_user)
+            db.session.commit()
+        except IntegrityError as e:
+            db.session.rollback()
+            return jsonify({
+                "status" : "Fail",
+                "msg" : "IntegrityError on deleting user, maybe because of foreign keys."
+            })
+        return jsonify({
+            "status" : "Success",
+            "msg" : "Successfully deleted user profile."
+        })
 
 class UserPetApi(Resource):
     def get(self, user_id):
