@@ -12,6 +12,8 @@ class DailyStatistics(db.Model):
     __tablename__ = 'daily_stat'
     # naive Date(tzinfo=None, but actually KST)
     date = db.Column(db.Date, primary_key=True)
+    pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     count = db.Column(db.Integer, nullable = False)
     success = db.Column(db.Integer, nullable = False)
     ratio = db.Column(db.Float, nullable = False)
@@ -19,11 +21,9 @@ class DailyStatistics(db.Model):
     created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
     last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
 
-    pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), primary_key=True)
     pet = db.relationship('Pet',
         backref = db.backref('daily_stats'), lazy = True )
     
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 
     # def __repr__(self):
     #     return f"<DailyStatistics : {self.count}, {self.success}, {self.fail}>"
@@ -56,13 +56,13 @@ class DailyStatistics(db.Model):
         # find all pet records of the day
         kst_daytime_min = datetime.datetime.combine(kst_day, datetime.time.min)
         kst_daytime_max = datetime.datetime.combine(kst_day, datetime.time.max)
-        pet_records = PetRecord.query.filter_by(pet_id=pet_id, user_id=user_id).\
+        pet_records = PetRecord.query.filter_by(pet_id=pet_id).\
             filter(PetRecord.timestamp >= kst_daytime_min).\
             filter(PetRecord.timestamp <= kst_daytime_max).\
             all()
         # find day record
         day_record = DailyStatistics.query.\
-            filter_by(date=kst_day, pet_id=pet_id, user_id=user_id).first()
+            filter_by(date=kst_day, pet_id=pet_id).first()
         # if last pet_record of the day deleted
         if len(pet_records) == 0:
             if day_record:

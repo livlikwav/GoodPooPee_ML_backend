@@ -17,6 +17,7 @@ class PpcamRegisterApi(Resource):
     def post(self):
         new_ppcam = Ppcam(
             serial_num = request.json['serial_num'],
+            ip_address = request.json['ip_address'],
             # user_id is not nullable
             user_id = request.json['user_id']
         )
@@ -30,10 +31,19 @@ class PpcamApi(Resource):
         return ppcam_schema.dump(selected_ppcam)
 
     def put(self, ppcam_id):
+        from sqlalchemy.exc import IntegrityError
         updated_ppcam = Ppcam.query.filter_by(id = ppcam_id).first()
-        updated_ppcam.serial_num = request.json['serial_num']
-        updated_ppcam.last_modified_date = datetime.datetime.utcnow()
-        db.session.commit()
+        try:
+            updated_ppcam.serial_num = request.json['serial_num']
+            updated_ppcam.ip_address = request.json['ip_address']
+            updated_ppcam.last_modified_date = datetime.datetime.utcnow()
+            db.session.commit()
+        except IntegrityError as e:
+            db.session.rollback()
+            return jsonify({
+                "status" : "fail",
+                "msg" : 'IntegrityError on updating ppcam'
+            })
         return ppcam_schema.dump(updated_ppcam)
 
     def delete(self, ppcam_id):

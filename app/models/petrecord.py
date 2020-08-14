@@ -7,17 +7,16 @@ from .. import db
 class PetRecord(db.Model):
     __tablename__ = 'pet_record'
     timestamp = db.Column(db.DateTime(timezone=True), primary_key = True)
+    pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     result = db.Column(db.String(250), nullable = False)
     photo_url = db.Column(db.String(250), nullable = False)
     # (timezone=True) make DATETIME to TIMESTAMP in Mysql
     created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
     last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
 
-    pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), primary_key=True)
     pet = db.relationship('Pet',
         backref = db.backref('records'), lazy = True)
-    
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 
     def __repr__(self):
         return f"<PetRecord : {self.timestamp}, {self.pet_id}, {self.user_id},\

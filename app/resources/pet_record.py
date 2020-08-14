@@ -62,7 +62,7 @@ class PetRecordApi(Resource):
         # get timestamp in query string
         timestamp = request.args.get("timestamp")
         # get record by timestamp
-        selected_record = PetRecord.query.filter_by(timestamp = timestamp).first()
+        selected_record = PetRecord.query.filter_by(timestamp = timestamp, pet_id = pet_id).first()
         return pet_record_schema.dump(selected_record)
 
 
@@ -78,7 +78,7 @@ class PetRecordApi(Resource):
         # get timestamp in query string
         last_timestamp = request.args.get("timestamp")
         # querying record
-        selected_record = PetRecord.query.filter_by(timestamp = last_timestamp).first()
+        selected_record = PetRecord.query.filter_by(timestamp = last_timestamp, pet_id = pet_id).first()
         # update selected-record
         try:
             selected_record.timestamp = request.json['timestamp']
@@ -107,7 +107,7 @@ class PetRecordApi(Resource):
             })
         # get timestamp in query string
         last_timestamp = request.args.get("timestamp")
-        selected_record = PetRecord.query.filter_by(timestamp = last_timestamp).first()
+        selected_record = PetRecord.query.filter_by(timestamp = last_timestamp, pet_id = pet_id).first()
         try:
             db.session.delete(selected_record)
             db.session.commit()

@@ -7,10 +7,11 @@ class Ppcam(db.Model):
 
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     serial_num = db.Column(db.String(250), unique = True, nullable = False)
+    ip_address = db.Column(db.String(250), unique = True, nullable = False)
     created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
     last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     user = db.relationship('User',
         backref=db.backref('ppcams', lazy = True))
 
@@ -79,6 +80,7 @@ class Ppcam(db.Model):
         for i in range(count):
             p = Ppcam(
                 serial_num = fake.ean(),
+                ip_address = fake.ipv4(),
                 # match one foreign_key by one user
                 # user id start from 1
                 user_id = i+1

@@ -14,7 +14,7 @@ class Pet(db.Model):
     created_date = db.Column(db.DateTime(timezone=True), nullable = False, default = datetime.datetime.utcnow())
     last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default = datetime.datetime.utcnow())
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     user = db.relationship('User',
         backref = db.backref('pets'), lazy = True)
 

@@ -15,6 +15,8 @@ class MonthlyStatistics(db.Model):
     __tablename__ = 'monthly_stat'
     # naive Date(tzinfo=None, but actually KST)
     date = db.Column(db.Date, primary_key=True)
+    pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     count = db.Column(db.Integer, nullable = False)
     success = db.Column(db.Integer, nullable = False)
     ratio = db.Column(db.Float, nullable = False)
@@ -22,11 +24,9 @@ class MonthlyStatistics(db.Model):
     created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
     last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
 
-    pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), primary_key=True)
     pet = db.relationship('Pet',
         backref = db.backref('montly_stats'), lazy = True )
     
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 
     # def __repr__(self):
     #     return f"<MonthlyStatistics : {self.count}, {self.success}, {self.progress}>"
@@ -57,13 +57,13 @@ class MonthlyStatistics(db.Model):
         from sqlalchemy.exc import IntegrityError
         # find all day records of the month
         daily_records = DailyStatistics.query.\
-            filter_by(pet_id=pet_id, user_id=user_id).\
+            filter_by(pet_id=pet_id).\
             filter(DailyStatistics.date >= kst_month).\
             filter(DailyStatistics.date < (kst_month + relativedelta(months=+1))).\
             all()
         # find month record
         month_record = MonthlyStatistics.query.\
-            filter_by(date=kst_month, pet_id=pet_id, user_id=user_id).first()
+            filter_by(date=kst_month, pet_id=pet_id).first()
         # if last day_record of the month deleted
         if len(daily_records) == 0:
             if month_record:
