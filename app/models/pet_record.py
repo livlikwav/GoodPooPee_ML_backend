@@ -1,8 +1,11 @@
+from flask import request
 from app.models.dailystatistics import DailyStatistics
 from app.models.monthlystatistics import MonthlyStatistics
 from app.utils.datetime import get_kst_date
+from app.utils.s3 import upload_fileobj
+from app import db
 import datetime
-from .. import db
+import uuid
 
 class PetRecord(db.Model):
     __tablename__ = 'pet_record'
@@ -10,7 +13,7 @@ class PetRecord(db.Model):
     pet_id = db.Column(db.Integer, db.ForeignKey('pet.id'), primary_key = True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     result = db.Column(db.String(250), nullable = False)
-    photo_url = db.Column(db.String(250), nullable = False)
+    image_uuid = db.Column(db.String(250), nullable = False)
     # (timezone=True) make DATETIME to TIMESTAMP in Mysql
     created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
     last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
@@ -19,8 +22,7 @@ class PetRecord(db.Model):
         backref = db.backref('records'), lazy = True)
 
     def __repr__(self):
-        return f"<PetRecord : {self.timestamp}, {self.pet_id}, {self.user_id},\
-             {self.result}, {self.photo_url}>"
+        return f"<PetRecord : {self.timestamp}, {self.pet_id}, {self.user_id}, {self.result}, {self.image_uuid}>"
 
     def update_stats(self, last_timestamp):
         """
@@ -31,7 +33,22 @@ class PetRecord(db.Model):
         # update daily_stat first
         DailyStatistics.update(self, last_timestamp)
         MonthlyStatistics.update(self, last_timestamp)
+    
+    def upload_record_image(self, image_file):
+        """
+        Upload record image file to S3
 
+        :Param image_file: image file stream
+        :Return: image_uuid if file was uploaded, else None
+        """
+        image_uuid = str(uuid.uuid4())
+        if upload_fileobj(image_file, image_uuid):
+            return image_uuid
+        else:
+            return None
+        
+        
+        
     @staticmethod
     def generate_fake(count):
         # Generate a number of fake pet records for testing
@@ -48,7 +65,7 @@ class PetRecord(db.Model):
             p = PetRecord(
                 timestamp = time_now + (datetime.timedelta(hours=1)*i),
                 result = choice(['SUCCESS', 'FAIL']),
-                photo_url = fake.image_url(),
+                image_uuid = '(FAKE)' + fake.uuid4(),
 
                 # match one foreign_key by one user
                 # id start from 1

@@ -51,7 +51,7 @@ class DailyStatistics(db.Model):
         :Params: Integer, Integer, datetime.date(naive, but KST)
         :Return:
         """
-        from app.models.petrecord import PetRecord
+        from app.models.pet_record import PetRecord
         from sqlalchemy.exc import IntegrityError
         # find all pet records of the day
         kst_daytime_min = datetime.datetime.combine(kst_day, datetime.time.min)

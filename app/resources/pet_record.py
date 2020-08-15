@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from flask_restful import Resource
 from app.models.pet import Pet
-from app.models.petrecord import PetRecord
+from app.models.pet_record import PetRecord
 from app.utils.decorators import device_permission_required
 from app import db, ma
 import datetime
@@ -25,33 +25,48 @@ record_query_schema = RecordQuerySchema()
 class PetRecordApi(Resource):
     @device_permission_required
     def post(self, pet_id):
+        """
+        Post new pet record by Ppcam(device)
+        TEST by form-data, not raw JSON
+
+        :Param pet_id: pet id of the record
+        """
         from sqlalchemy.exc import IntegrityError
         # find user by pet_id
         selected_pet = Pet.query.filter_by(id = pet_id).first()
+        if not selected_pet:
+            return jsonify({
+                "status" : "Fail",
+                "msg" : "Invalid pet_id"
+            })
+        # make new record object
         new_record = PetRecord(
-            timestamp = request.json['timestamp'],
-            result = request.json['result'],
-            photo_url = request.json['photo_url'],
+            timestamp = request.form['timestamp'],
+            result = request.form['result'],
             pet_id = pet_id,
             user_id = selected_pet.user_id
         )
-        if new_record:
-            db.session.add(new_record)
-            try:
-                db.session.commit()
-            except IntegrityError as e:
-                return jsonify({
-                    "status" : "Fail",
-                    "msg" : "IntegrityError on post new pet_record, check primary keys"
-                })
-            # update stat tables
-            new_record.update_stats(request.json['timestamp'])
-            return pet_record_schema.dump(new_record)
+        # Upload record image file
+        image_uuid = new_record.upload_record_image(request.files['image'])
+        if image_uuid:
+            new_record.image_uuid = image_uuid
         else:
             return jsonify({
                 "status" : "Fail",
-                "msg" : "failed to make new pet record instance"
+                "msg" : "Fail to upload record image."
             })
+        # persistancy
+        try:
+            db.session.add(new_record)
+            db.session.commit()
+        except IntegrityError as e:
+            return jsonify({
+                "status" : "Fail",
+                "msg" : "IntegrityError on post new pet_record, check primary keys"
+            })
+        # update stat tables
+        new_record.update_stats(request.form['timestamp'])
+        return pet_record_schema.dump(new_record)
 
     def get(self, pet_id):
         # validate query string by ma
@@ -85,7 +100,6 @@ class PetRecordApi(Resource):
         try:
             selected_record.timestamp = request.json['timestamp']
             selected_record.result = request.json['result']
-            selected_record.photo_url = request.json['photo_url']
             selected_record.last_modified_date = datetime.datetime.utcnow()
             db.session.commit()
         except IntegrityError as e:

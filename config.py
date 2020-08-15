@@ -21,6 +21,8 @@ class Config:
         JWT_SECRET_KEY = 'JWT_SECRET_KEY_ENV_VAR_NOT_SET'
         print('JWT_SECRET KEY ENV VAR NOT SET! SHOULD NOT SEE IN PRODUCTION')
 
+    BUCKET_NAME = 'gpp-bucket'
+
     @staticmethod
     def init_app(app):
         pass
