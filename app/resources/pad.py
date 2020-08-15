@@ -15,6 +15,7 @@ pads_schema = PadSchema(many=True)
 
 class PadRegisterApi(Resource):
     def post(self, ppcam_id):
+        from sqlalchemy.exc import IntegrityError
         new_pad = Pad(
             lu = request.json['lu'],
             ld = request.json['ld'],
@@ -23,8 +24,15 @@ class PadRegisterApi(Resource):
             user_id = request.json['user_id'],
             ppcam_id = ppcam_id
         )
-        db.session.add(new_pad)
-        db.session.commit()
+        try:
+            db.session.add(new_pad)
+            db.session.commit()
+        except IntegrityError as e:
+            db.session.rollback()
+            return jsonify({
+                "status" : "Fail",
+                "msg" : "Fail to add new pad, its IntegrityError"
+            })
         return pad_schema.dump(new_pad)
 
     def get(self, ppcam_id):

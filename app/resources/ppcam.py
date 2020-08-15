@@ -15,14 +15,22 @@ ppcams_schema = PpcamSchema(many=True)
 
 class PpcamRegisterApi(Resource):
     def post(self):
+        from sqlalchemy.exc import IntegrityError
         new_ppcam = Ppcam(
             serial_num = request.json['serial_num'],
             ip_address = request.json['ip_address'],
             # user_id is not nullable
             user_id = request.json['user_id']
         )
-        db.session.add(new_ppcam)
-        db.session.commit()
+        try:
+            db.session.add(new_ppcam)
+            db.session.commit()
+        except IntegrityError as e:
+            db.session.rollback()
+            return jsonify({
+                "status" : "fail",
+                "msg" : "Fail to add new ppcam, its IntegrityError."
+            })
         return ppcam_schema.dump(new_ppcam)
 
 class PpcamApi(Resource):
