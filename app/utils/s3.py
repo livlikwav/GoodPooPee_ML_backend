@@ -10,8 +10,8 @@ def upload_fileobj(file_obj, file_name):
     :param file_name: S3 object name that will be saved
     :return: True if file was uploaded, else False
     """
-    from manage import app
     # load bucket name 
+    from manage import app
     bucket_name = app.config['BUCKET_NAME']
     
     # Upload the file
@@ -23,31 +23,75 @@ def upload_fileobj(file_obj, file_name):
         return False
     return True
 
-
-def download_file(object_name, file_name=None):
+def delete_file(object_name):
     """
-    Download a file in an S3 bucket
+    Delete a image file in S3 by image_uuid
 
-    :param object_name: S3 object name.
-    :param file_name: File name to download. If not specified then object_name is used
-    :return: True if file was downloaded, else False
+    :Param object_name: String
+    :Return: True if successed, else False
     """
-    from manage import app
     # load bucket name 
+    from manage import app
     bucket_name = app.config['BUCKET_NAME']
 
-    # If S3 file_name was not specified, use object_name
-    if file_name is None:
-        file_name = object_name
-
-    # Download the file
+    # Delete the file
     s3_client = boto3.client('s3')
     try:
-        s3.download_file(bucket_name, object_name, file_name)
+        response = s3_client.delete_object(Bucket=bucket_name, Key=object_name)
     except ClientError as e:
         logging.error(e)
         return False
     return True
+
+def get_object(object_name):
+    """
+    Get object in an S3 bucket
+
+    :param object_name: S3 object name.
+    :return: file data if successed, else None
+    """
+    # load bucket name
+    from manage import app
+    bucket_name = app.config['BUCKET_NAME']
+
+    # get object in the bucket
+    s3_client = boto3.client('s3')
+    try:
+        response = s3_client.get_object(
+            Bucket=bucket_name,
+            Key=object_name
+        )
+        file_data = response['Body'].read()
+    except ClientError as e:
+        logging.error(e)
+        return None
+    return file_data
+
+
+# def download_file(object_name, file_name=None):
+#     """
+#     Download a file in an S3 bucket
+
+#     :param object_name: S3 object name.
+#     :param file_name: File name to download. If not specified then object_name is used
+#     :return: True if file was downloaded, else False
+#     """
+#     from manage import app
+#     # load bucket name 
+#     bucket_name = app.config['BUCKET_NAME']
+
+#     # If S3 file_name was not specified, use object_name
+#     if file_name is None:
+#         file_name = object_name
+
+#     # Download the file
+#     s3_client = boto3.client('s3')
+#     try:
+#         s3.download_file(bucket_name, object_name, file_name)
+#     except ClientError as e:
+#         logging.error(e)
+#         return False
+#     return True
 
 # def upload_file(file_name, bucket, object_name=None):
 #     """

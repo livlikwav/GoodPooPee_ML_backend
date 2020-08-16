@@ -2,7 +2,7 @@ from flask import request
 from app.models.dailystatistics import DailyStatistics
 from app.models.monthlystatistics import MonthlyStatistics
 from app.utils.datetime import get_kst_date
-from app.utils.s3 import upload_fileobj
+from app.utils.s3 import upload_fileobj, delete_file
 from app import db
 import datetime
 import uuid
@@ -46,6 +46,18 @@ class PetRecord(db.Model):
             return image_uuid
         else:
             return None
+    
+    def delete_record_image(self, object_name):
+        """
+        Delete record image file in S3
+
+        :Param object_name: String
+        :Return: True if successed, else False
+        """
+        if delete_file(object_name):
+            return True
+        else:
+            return False
         
         
         

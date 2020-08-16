@@ -60,6 +60,8 @@ class PetRecordApi(Resource):
             db.session.add(new_record)
             db.session.commit()
         except IntegrityError as e:
+            new_record.delete_record_image(image_uuid)
+            db.session.rollback()
             return jsonify({
                 "status" : "Fail",
                 "msg" : "IntegrityError on post new pet_record, check primary keys"
