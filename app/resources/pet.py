@@ -2,6 +2,7 @@ from flask import request, jsonify
 from flask_restful import Resource
 from app.models.pet import Pet
 from app import db, ma
+from app.utils.decorators import confirm_account
 import datetime
 class PetSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -13,6 +14,7 @@ pet_schema = PetSchema()
 # pets_schema = PetSchema(many=True)
 
 class PetRegisterApi(Resource):
+    @confirm_account
     def post(self):
         # check that pet's name already exists
         pet = Pet.query.filter_by(user_id=request.json['user_id'], name=request.json['name']).first()
@@ -36,10 +38,12 @@ class PetRegisterApi(Resource):
 
 
 class PetApi(Resource):
+    @confirm_account
     def get(self, pet_id):
         selected_pet = Pet.query.filter_by(id = pet_id).first()
         return pet_schema.dump(selected_pet)
 
+    @confirm_account
     def put(self, pet_id):
         from sqlalchemy.exc import IntegrityError
         # check that pet's name already exists
@@ -67,6 +71,7 @@ class PetApi(Resource):
             })
         return pet_schema.dump(updated_pet)
 
+    @confirm_account
     def delete(self, pet_id):
         from sqlalchemy.exc import IntegrityError
         deleted_pet = Pet.query.filter_by(id = pet_id).first()

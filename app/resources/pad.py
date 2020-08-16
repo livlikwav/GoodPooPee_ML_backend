@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from flask_restful import Resource
 from app.models.pad import Pad
+from app.utils.decorators import confirm_account
 from app import db, ma
 import datetime
 
@@ -14,6 +15,7 @@ pad_schema = PadSchema()
 pads_schema = PadSchema(many=True)
 
 class PadRegisterApi(Resource):
+    @confirm_account
     def post(self, ppcam_id):
         from sqlalchemy.exc import IntegrityError
         new_pad = Pad(
@@ -35,15 +37,18 @@ class PadRegisterApi(Resource):
             })
         return pad_schema.dump(new_pad)
 
+    @confirm_account
     def get(self, ppcam_id):
         selected_pads = Pad.query.filter_by(ppcam_id = ppcam_id).all()
         return pads_schema.dump(selected_pads)
 
 class PadApi(Resource):
+    @confirm_account
     def get(self, ppcam_id, pad_id):
         selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id, id = pad_id).first()
         return pad_schema.dump(selected_pad)
 
+    @confirm_account
     def put(self, ppcam_id, pad_id):
         from sqlalchemy.exc import IntegrityError
         selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id, id = pad_id).first()
@@ -62,6 +67,7 @@ class PadApi(Resource):
             })
         return pad_schema.dump(selected_pad)
     
+    @confirm_account
     def delete(self, ppcam_id, pad_id):
         from sqlalchemy.exc import IntegrityError
         selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id, id = pad_id).first()

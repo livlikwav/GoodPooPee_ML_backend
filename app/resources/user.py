@@ -6,6 +6,7 @@ from app import db, ma
 from app.models.user import User
 from app.models.pet import Pet
 from app.models.ppcam import Ppcam
+from app.utils.decorators import confirm_account
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
@@ -30,10 +31,12 @@ ppcam_schema = PpcamSchema()
 # ppcams_schema = PpcamSchema(many=True)
 
 class UserApi(Resource):
+    @confirm_account
     def get(self, user_id):
         selected_user = User.query.filter_by(id = user_id).first()
         return user_schema.dump(selected_user)
 
+    @confirm_account
     def put(self, user_id):
         from sqlalchemy.exc import IntegrityError
         updated_user = User.query.filter_by(id = user_id).first()
@@ -51,6 +54,7 @@ class UserApi(Resource):
             })
         return user_schema.dump(updated_user)
 
+    @confirm_account
     def delete(self, user_id):
         from sqlalchemy.exc import IntegrityError
         deleted_user = User.query.filter_by(id = user_id).first()
@@ -69,12 +73,14 @@ class UserApi(Resource):
         })
 
 class UserPetApi(Resource):
+    @confirm_account
     def get(self, user_id):
         selected_user = User.query.filter_by(id = user_id).first()
         selected_pet = Pet.query.with_parent(selected_user).first()
         return pet_schema.dump(selected_pet)
 
 class UserPpcamApi(Resource):
+    @confirm_account
     def get(self, user_id):
         selected_user = User.query.filter_by(id = user_id).first()
         selected_ppcam = Ppcam.query.with_parent(selected_user).first()
