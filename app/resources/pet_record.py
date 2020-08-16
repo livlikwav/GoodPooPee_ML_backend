@@ -60,7 +60,7 @@ class PetRecordApi(Resource):
             db.session.add(new_record)
             db.session.commit()
         except IntegrityError as e:
-            new_record.delete_record_image(image_uuid)
+            new_record.delete_record_image()
             db.session.rollback()
             return jsonify({
                 "status" : "Fail",
@@ -138,6 +138,8 @@ class PetRecordApi(Resource):
                 "status" : "Fail",
                 "msg" : "IntegrityError at deleting pet record"
             })
+        # delete record image in S3
+        selected_record.delete_record_image()
         # update stat tables
         selected_record.update_stats(last_timestamp)
         return jsonify({

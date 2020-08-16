@@ -47,14 +47,13 @@ class PetRecord(db.Model):
         else:
             return None
     
-    def delete_record_image(self, object_name):
+    def delete_record_image(self):
         """
         Delete record image file in S3
 
-        :Param object_name: String
         :Return: True if successed, else False
         """
-        if delete_file(object_name):
+        if delete_file(self.image_uuid):
             return True
         else:
             return False
