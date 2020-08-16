@@ -5,6 +5,7 @@ import bcrypt
 from app import db, ma
 from app.models.user import User
 from app.models.blacklisttoken import BlacklistToken
+from app.utils.decorators import confirm_account
 
 
 class UserSchema(ma.SQLAlchemyAutoSchema):
@@ -52,6 +53,7 @@ class LoginApi(Resource):
 
 class LogoutApi(Resource):
     # Logout Resource
+    @confirm_account
     def post(self):
         # get auth token
         auth_header = request.headers.get('Authorization')
@@ -59,31 +61,18 @@ class LogoutApi(Resource):
             auth_token = auth_header.split(" ")[1]
         else:
             auth_token = ''
-        if auth_token:
-            resp = User.decode_auth_token(auth_token)
-            if not isinstance(resp, str):
-                # mark the token as blacklisted
-                blacklist_token = BlacklistToken(token=auth_token)
-                try:
-                    # insert the token
-                    db.session.add(blacklist_token)
-                    db.session.commit()
-                    return jsonify({
-                        'status' : 'Success',
-                        'message' : 'Successfully logged out.'
-                    })
-                except Exception as e:
-                    return jsonify({
-                        'status' : 'Fail',
-                        'message' : e
-                    })
-            else:
-                return jsonify({
-                    'status' : 'Fail',
-                    'message' : resp
-                })
-        else:
+        # mark the token as blacklisted
+        blacklist_token = BlacklistToken(token=auth_token)
+        try:
+            # insert the token
+            db.session.add(blacklist_token)
+            db.session.commit()
+            return jsonify({
+                'status' : 'Success',
+                'message' : 'Successfully logged out.'
+            })
+        except Exception as e:
             return jsonify({
                 'status' : 'Fail',
-                'message' : 'Provide a valid auth token.'
+                'message' : e
             })
