@@ -1,41 +1,35 @@
-<!-- PROJECT LOGO -->
-<br />
-<p align="center">
-  <a href="https://git.swmgit.org/swmaestro/urillbwa-1.git">
-    <img src="readme_media/gpp_logo.png" alt="Logo">
-  </a>
+![gpp_log](readme_media/gpp_logo.png)
 
-  <h3 align="center">Backend & Machine Learning Repo</h3>
+# Backend & Machine Learning Repo
 
-  <p align="center">
-    SW Maestro 11기 팀 우릴봐 (하경민, 방승연, 전형준)
-    <br />
-    <a href="https://git.swmgit.org/swmaestro/urillbwa-1/-/wikis/Docs"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <!-- <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a> -->
-  </p>
-</p>
+SW Maestro 11기 팀 우릴봐
 
+- 하경민 (팀장)
+- 방승연
+- 전형준
 
+담당 멘토
+
+- 강진범
+- 김윤래
+- 박정규
+- 오은석
+- 최광선
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
 
-- [Table of Contents](#table-of-contents)
-- [About The Project](#about-the-project)
-  - [Backend](#backend)
-  - [Machine learning](#machine-learning)
-  - [Built With](#built-with)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Contact](#contact)
-  - [팀 우릴봐](#팀-우릴봐)
+- [Backend & Machine Learning Repo](#backend--machine-learning-repo)
+  - [Table of Contents](#table-of-contents)
+  - [About The Project](#about-the-project)
+    - [Backend](#backend)
+    - [Machine learning](#machine-learning)
+    - [Built With](#built-with)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+  - [Contact](#contact)
+    - [팀 우릴봐](#팀-우릴봐)
 
 
 
