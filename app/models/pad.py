@@ -5,6 +5,8 @@ class Pad(db.Model):
     __tablename__ = 'pad'
 
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    ppcam_id = db.Column(db.Integer, db.ForeignKey('ppcam.id'), nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     lu = db.Column(db.Integer, nullable = False)
     ld = db.Column(db.Integer, nullable = False)
     ru = db.Column(db.Integer, nullable = False)
@@ -12,10 +14,8 @@ class Pad(db.Model):
     created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
     last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
 
-    ppcam_id = db.Column(db.Integer, db.ForeignKey('ppcam.id'), nullable = False)
     ppcam = db.relationship('Ppcam',
         backref = db.backref('pads'), lazy = True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
 
     # def __repr__(self):
     #     return f"<Pad : {self.id}, {self.iu}, {self.id}, {self.ru}, {self.rd}>"

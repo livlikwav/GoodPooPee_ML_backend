@@ -6,6 +6,7 @@ class Pet(db.Model):
     __tablename__ = 'pet'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     name = db.Column(db.String(250), nullable = False)
     breed = db.Column(db.String(250), nullable = False)
     gender = db.Column(db.String(250), nullable = False)
@@ -14,7 +15,6 @@ class Pet(db.Model):
     created_date = db.Column(db.DateTime(timezone=True), nullable = False, default = datetime.datetime.utcnow())
     last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default = datetime.datetime.utcnow())
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     user = db.relationship('User',
         backref = db.backref('pets'), lazy = True)
 

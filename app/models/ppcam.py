@@ -6,12 +6,12 @@ class Ppcam(db.Model):
     __tablename__ = 'ppcam'
 
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     serial_num = db.Column(db.String(250), unique = True, nullable = False)
     ip_address = db.Column(db.String(250), unique = True, nullable = False)
     created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
     last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     user = db.relationship('User',
         backref=db.backref('ppcams', lazy = True))
 
