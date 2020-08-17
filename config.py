@@ -1,3 +1,5 @@
+import os
+
 # DB Config
 db = {
     'user' : 'myuser',
@@ -11,7 +13,15 @@ DB_URL = f"mysql+pymysql://{db['user']}:{db['password']}@{db['host']}:{db['port'
 
 class Config:
     DEBUG = False
-    # SECRET_KEY = os.getnev('SECRET_KEY', 'ngle_api_tongchun')
+
+    # JWT SECRET KEY
+    if os.environ.get('JWT_SECRET_KEY'):
+        JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
+    else:
+        JWT_SECRET_KEY = 'JWT_SECRET_KEY_ENV_VAR_NOT_SET'
+        print('JWT_SECRET KEY ENV VAR NOT SET! SHOULD NOT SEE IN PRODUCTION')
+
+    BUCKET_NAME = 'gpp-bucket'
 
     @staticmethod
     def init_app(app):
@@ -25,7 +35,7 @@ class DevConfig(Config):
 
     @classmethod
     def init_app(cls, app):
-        print('THIS APP IS IN DEBUG MODE. \
+        print('[Dev Config]THIS APP IS IN DEBUG MODE. \
                 YOU SHOULD NOT SEE THIS IN PRODUCTION.')
 
 class TestConfig(Config):
@@ -37,7 +47,7 @@ class TestConfig(Config):
 
     @classmethod
     def init_app(cls, app):
-        print('THIS APP IS IN DEBUG MODE. \
+        print('[Test Config]THIS APP IS IN DEBUG MODE. \
                 YOU SHOULD NOT SEE THIS IN PRODUCTION.')
                 
 class ProductionConfig(Config):

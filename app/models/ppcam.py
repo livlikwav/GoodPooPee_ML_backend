@@ -1,4 +1,5 @@
-from datetime import datetime
+from flask import jsonify
+import datetime
 from .. import db
 
 class Ppcam(db.Model):
@@ -6,8 +7,9 @@ class Ppcam(db.Model):
 
     id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     serial_num = db.Column(db.String(250), unique = True, nullable = False)
-    created_date = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
-    last_modified_date = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
+    ip_address = db.Column(db.String(250), unique = True, nullable = False)
+    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     user = db.relationship('User',
@@ -15,6 +17,55 @@ class Ppcam(db.Model):
 
     # def __repr__(self):
     #     return f"<Ppcam : {self.id}, {self.serial_num}>"
+
+    def get_ppsnack(self, test=False):
+        """
+        request ppcam to get method for ppsnack
+        params Boolean
+        returns JSON(ppsnack data)
+        """
+        if(test):
+            # FAKE DATA FOR TESTING
+            return jsonify({
+                "serial_num":"thisisfakedata",
+                "connection":"True",
+                "power":"True",
+                "feedback_ratio":"1"
+            })
+        else:
+            pass
+
+    def put_ppsnack(self, feedback_ratio, test=False):
+        """
+        request ppcam to put method for ppsnack
+        params Float, Boolean
+        returns Boolean
+        """
+        if(test):
+            # FAKE SUCCESS MSG TEMPLATE
+            {
+                "status":"FAKESUCCESS",
+                "msg":"this is fake success"
+            }
+            return True
+        else:
+            pass
+
+    def get_ppsnack_feeding(self, test=False):
+        """
+        request ppsnack to feed dog via ppcam
+        params Boolean
+        returns Boolean
+        """
+        if(test):
+            # FAKE SUCCESS MSG TEMPLATE
+            {
+                "status":"FAKESUCCESS",
+                "msg":"this is fake success"
+            }
+            return True
+        else:
+            pass
 
     @staticmethod
     def generate_fake(count):
@@ -29,6 +80,7 @@ class Ppcam(db.Model):
         for i in range(count):
             p = Ppcam(
                 serial_num = fake.ean(),
+                ip_address = fake.ipv4(),
                 # match one foreign_key by one user
                 # user id start from 1
                 user_id = i+1

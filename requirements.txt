@@ -7,3 +7,8 @@ flask_script
 flask_migrate
 pymysql
 faker
+bcrypt
+pyjwt
+pytz
+python-dateutil
+boto3

@@ -5,7 +5,8 @@ These imports enable us to make all defined models members of the models module
 from .user import *
 from .pet import *
 from .pad import *
-from .petrecord import *
+from .pet_record import *
 from .ppcam import *
 from .dailystatistics import *
 from .monthlystatistics import *
+from .blacklisttoken import *

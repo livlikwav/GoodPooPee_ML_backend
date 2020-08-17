@@ -1,3 +1,4 @@
+from flask import abort, request
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
@@ -5,11 +6,22 @@ from app import create_app, db
 from app.models import User, Ppcam, Pet, Pad, PetRecord
 # from config import config as Config
 import os
+import logging
+import sys
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 # flask-script and migrate be initialized out of __init__
 manager = Manager(app)
 migrate = Migrate(app, db)
+
+# IP Whitelist
+ip_whitelist = ['172.19.0.1']
+
+@app.before_request
+def limit_remote_addr():
+    if request.remote_addr not in ip_whitelist:
+        logging.error("forbidden ip request")
+        abort(403) # Forbidden
 
 # def make_shell_context():
 #     return dict(app=app, db=db)

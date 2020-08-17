@@ -29,3 +29,4 @@ services:
             - "5000:5000"
         volumes:
             - .:/gppserver
+            - ~/.aws:/root/.aws
