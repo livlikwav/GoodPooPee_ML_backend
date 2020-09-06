@@ -2,6 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from flasgger import Swagger
 
 from app.resources.routes import init_routes
 from config import config as Config
@@ -12,6 +13,7 @@ import os
 db = SQLAlchemy()
 ma = Marshmallow()
 api = Api()
+swagger = Swagger()
 
 def create_app(config):
     app = Flask(__name__)
@@ -28,7 +30,7 @@ def create_app(config):
     db.init_app(app)
     ma.init_app(app)
     api.init_app(app)
-
+    swagger.init_app(app)
 
     return app
 

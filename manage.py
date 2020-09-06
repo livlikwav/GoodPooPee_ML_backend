@@ -15,7 +15,7 @@ manager = Manager(app)
 migrate = Migrate(app, db)
 
 # IP Whitelist
-ip_whitelist = ['172.19.0.1']
+ip_whitelist = ['172.25.0.1']
 
 @app.before_request
 def limit_remote_addr():
