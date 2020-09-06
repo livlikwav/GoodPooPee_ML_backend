@@ -1,5 +1,6 @@
 from flask import request, jsonify
 from flask_restful import Resource
+from flasgger import swag_from
 import bcrypt
 
 from app import db, ma
@@ -17,6 +18,7 @@ user_schema = UserSchema()
 # users_schema = UserSchema(many=True)
 
 class RegisterApi(Resource):
+    @swag_from('../docs/register_post.yml')
     def post(self):
         from sqlalchemy.exc import IntegrityError
         new_user = User(

@@ -23,6 +23,10 @@ class Config:
 
     BUCKET_NAME = 'gpp-bucket'
 
+    # Flassger config
+    from swagger import swagger_config
+    SWAGGER = swagger_config
+
     @staticmethod
     def init_app(app):
         pass

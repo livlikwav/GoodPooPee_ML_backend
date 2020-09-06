@@ -1,0 +1,52 @@
+Register user profile
+Automatically hash password in model
+---
+  # ------------must change to OAS 3.0 
+  parameters:
+    - in: body
+      name: body
+      # schema:
+      #   id: New_user
+      properties:
+        email:
+          type: string
+          example: 'gaonrudal@gmail.com'
+        first_name:
+          type: string
+          example: 'Gyeongmin'
+        last_name:
+          type: string
+          example: 'Ha'
+        password:
+          type: string
+          example: '123'
+  definitions:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          example: 'gaonrudal@gmail.com'
+        first_name:
+          type: string
+          example: 'Gyeongmin'
+        last_name:
+          type: string
+          example: 'Ha'
+        hashed_password:
+          type: string
+          example: 'qef211rgr2365h123sdfwert123123'
+        created_date:
+          type: string
+          example: '2020-08-15T16:28:39'
+        last_modified_date:
+          type: string
+          example: '2020-08-15T16:28:39'
+  responses:
+    200:
+      description: Successfully registered user
+      schema:
+        $ref: '#/definitions/User'
