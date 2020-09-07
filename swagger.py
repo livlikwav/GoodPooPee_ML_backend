@@ -1,5 +1,5 @@
 swagger_config = {
-    'openapi' : '3.0.0',
+    'openapi': '3.0.0',
     'doc_dir': './app/docs/'
 }
 
@@ -36,27 +36,119 @@ swagger_template = {
     "externalDocs": {
         "description": "Rest API design note",
         "url": "https://docs.google.com/document/d/1CHvAOqb5mZXAMF3kW0egfUHieE0xZS5YCmDZ-UT2INI/edit?usp=sharing"
-    },
-    "components": {
+    }, "components": {
         "schemas": {
+            "user_auth_token": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string",
+                        "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+                    }
+                }
+            },
+            "device_auth_token": {
+                "type": "object",
+                "properties": {
+                    "device_access_token": {
+                        "type": "string",
+                        "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+                    }
+                }
+            },
+            "api_response": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "format": "int32",
+                        "example": "Success"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Success to ~~~"
+                    }
+                }
+            },
+            "api_fail_response": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "integer",
+                        "format": "int32",
+                        "example": "Fail"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Fail to ~~~"
+                    }
+                }
+            },
+            "register_user": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "gaonrudal@gmail.com"
+                    },
+                    "first_name": {
+                        "type": "string",
+                        "example": "Gyeongmin"
+                    },
+                    "last_name": {
+                        "type": "string",
+                        "example": "Ha"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "123"
+                    }
+                }
+            },
+            "login_user": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "gaonrudal@gmail.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "123"
+                    }
+                }
+            },
             "user": {
                 "type": "object",
                 "properties": {
                     "id": {
                         "type": "integer",
-                        "format": "int64"
+                        "format": "int64",
+                        "example": "1"
                     },
                     "email": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "gaonrudal@gmail.com"
                     },
                     "first_name": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "Gyeongmin"
                     },
                     "last_name": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "Ha"
                     },
-                    "password": {
-                        "type": "string"
+                    "hashed_password": {
+                        "type": "string",
+                        "example": "qef211rgr2365h123sdfwert123123"
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
+                    },
+                    "last_modified_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
                     }
                 }
             },
@@ -66,7 +158,8 @@ swagger_template = {
                 "properties": {
                     "id": {
                         "type": "integer",
-                        "format": "int64"
+                        "format": "int64",
+                        "example": "1"
                     },
                     "userId": {
                         "type": "string"
