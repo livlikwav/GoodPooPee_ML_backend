@@ -1,69 +1,229 @@
 swagger_config = {
-    'title': 'Goodpoopee server',
-    'description': 'For poopeecam, poopeesnackbar and goodpoopee app.',
-    'uiversion': 3,
-    'openapi': '3.0.2',
-    # 'doc_dir': './app/docs',
-    'components': {
-        'schemas': {
-            "ApiResponse": {
+    'openapi' : '3.0.0',
+    'doc_dir': './app/docs/'
+}
+
+swagger_template = {
+    "info": {
+        "description": "SWMaestro 11th, Team urillbwa, Goodpoopee. \
+        \n Maintainer: Gyeongmin Ha.",
+        "version": "2.0.0",
+        "termsOfService": "",
+        "contact": {
+            "email": "gaonrudal@gmail.com"
+        },
+        # "license": {
+        #     "name": "Apache 2.0",
+        #     "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        # },
+        "title": "Good-poopee Server"
+    },
+    "servers": [{
+        "description": "SwaggerHub API Auto Mocking",
+        "url": "https://virtserver.swaggerhub.com/livlikwav.github.io/goodpoopee/1.0.0"
+    }],
+    "tags": [{
+        "name": "user",
+        "description": "Operations about user"
+    }, {
+        "name": "pet",
+        "description": "Operations about pets"
+    }, {
+        "name": "ppcam",
+        "description": "Operations about poopee cam"
+    }],
+
+    "externalDocs": {
+        "description": "Rest API design note",
+        "url": "https://docs.google.com/document/d/1CHvAOqb5mZXAMF3kW0egfUHieE0xZS5YCmDZ-UT2INI/edit?usp=sharing"
+    },
+    "components": {
+        "schemas": {
+            "user": {
                 "type": "object",
                 "properties": {
-                    "status": {
+                    "id": {
                         "type": "integer",
-                        "format": "int32"
+                        "format": "int64"
                     },
-                    "message": {
-                        "type": "string",
-                        "example": "Success to ~~~"
+                    "email": {
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
                     }
                 }
             },
-            "ApiFailResponse": {
+            "pet": {
                 "type": "object",
+                "required": ["petid"],
                 "properties": {
-                    "status": {
+                    "id": {
                         "type": "integer",
-                        "format": "int32"
+                        "format": "int64"
                     },
-                    "message": {
+                    "userId": {
+                        "type": "string"
+                    },
+                    "petname": {
                         "type": "string",
-                        "example": "Fail to ~~~"
+                        "example": "mungchi"
+                    },
+                    "breed": {
+                        "type": "string",
+                        "example": "poodle"
+                    },
+                    "gender": {
+                        "type": "string",
+                        "example": "male"
+                    },
+                    "birth": {
+                        "type": "string",
+                        "example": "19981011"
+                    },
+                    "adopt": {
+                        "type": "string",
+                        "example": "20001011"
+                    }
+                }
+            },
+            "pet_record": {
+                "type": "object",
+                "required": ["petId", "timestamp"],
+                "properties": {
+                    "petId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "example": "1970-01-01 00:00:01"
+                    },
+                    "result": {
+                        "type": "string",
+                        "example": "SUCCESS"
+                    },
+                    "photoUrl": {
+                        "type": "string"
+                    }
+                }
+            },
+            "pet_daily_report": {
+                "type": "object",
+                "required": ["pet_id", "date"],
+                "properties": {
+                    "pet_id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "date": {
+                        "type": "string",
+                        "example": "DATE like YYYYMMDD"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "example": "total pooing count like 10"
+                    },
+                    "success": {
+                        "type": "integer",
+                        "example": "success count like 5"
+                    },
+                    "progress": {
+                        "type": "number",
+                        "example": "progress ratio like 0~1%"
+                    }
+                }
+            },
+            "pet_weekly_report": {
+                "type": "object",
+                "required": ["pet_id", "lastdate"],
+                "properties": {
+                    "pet_id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "lastdate": {
+                        "type": "string",
+                        "example": "DATE like YYYYMMDD"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "example": "total pooing count like 10"
+                    },
+                    "success": {
+                        "type": "integer",
+                        "example": "success count like 5"
+                    },
+                    "progress": {
+                        "type": "number",
+                        "example": "progress ratio like 0~1%"
+                    }
+                }
+            },
+            "pet_total_report": {
+                "type": "object",
+                "required": ["pet_id"],
+                "properties": {
+                    "pet_id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "example": "total pooing count like 10"
+                    },
+                    "success": {
+                        "type": "integer",
+                        "example": "success count like 5"
+                    },
+                    "progress": {
+                        "type": "number",
+                        "example": "progress ratio like 0~1%"
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "example": "20200501"
+                    },
+                    "last_date": {
+                        "type": "string",
+                        "example": "20200702"
                     }
                 }
             },
             "ppcam": {
-                "required": ["mac_address", "serial_num", "user_id"],
                 "type": "object",
+                "required": ["ppcamId", "userId", "serialNum"],
                 "properties": {
-                    "serial_num": {
-                        "type": "string",
-                        "example": "asd1234567893333"
+                    "ppcamId": {
+                        "type": "integer",
+                        "format": "int64"
                     },
-                    "mac_address": {
-                        "type": "string",
-                        "example": "98e08f333823"
+                    "userId": {
+                        "type": "integer",
+                        "format": "int64"
                     },
-                    "user_id": {
+                    "serialNum": {
                         "type": "integer",
                         "format": "int64"
                     }
                 }
             },
-            "device_auth_token": {
-                "required": ["token"],
-                "type": "object",
-                "properties": {
-                    "token": {
-                        "type": "string",
-                        "example": "asd1234asd5678933qgs33"
-                    }
-                }
-            },
             "pad": {
-                "required": ["ld", "lu", "ppcam_id", "rd", "ru", "user_id"],
                 "type": "object",
+                "required": ["padId", "ppcamId", "lu", "ld", "ru", "rd"],
                 "properties": {
+                    "padId": {
+                        "type": "integer"
+                    },
+                    "ppcamId": {
+                        "type": "integer"
+                    },
                     "lu": {
                         "type": "integer"
                     },
@@ -75,54 +235,41 @@ swagger_config = {
                     },
                     "rd": {
                         "type": "integer"
+                    }
+                }
+            },
+            "ppsnack": {
+                "type": "object",
+                "required": ["ppcamId", "serialNum"],
+                "properties": {
+                    "ppcamId": {
+                        "type": "integer",
+                        "format": "int64"
                     },
-                    "user_id": {
-                        "type": "integer"
-                    },
-                    "ppcam_id": {
-                        "type": "integer"
+                    "serialNum": {
+                        "type": "integer",
+                        "format": "int64"
                     }
                 }
             },
             "ppsnack_config": {
-                "required": ["feedback_ratio", "ppcam_id", "serial_num"],
                 "type": "object",
+                "required": ["ppcamId", "onoff", "ratio"],
                 "properties": {
-                    "serial_num": {
-                        "type": "string",
-                        "example": "ADW23123124124"
-                    },
-                    "feedback_ratio": {
-                        "type": "number"
-                    },
-                    "ppcam_id": {
+                    "ppcamId": {
                         "type": "integer",
                         "format": "int64"
+                    },
+                    "onoff": {
+                        "type": "boolean",
+                        "example": "True of False"
+                    },
+                    "ratio": {
+                        "type": "number",
+                        "example": "0~1 %"
                     }
                 }
-            },
-            "pet_record": {
-                "required": ["image_uuid", "pet_id", "result", "user_id"],
-                "type": "object",
-                "properties": {
-                    "user_id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "pet_id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "result": {
-                        "type": "string",
-                        "example": "Success"
-                    },
-                    "image_uuid": {
-                        "type": "string",
-                        "example": "3edfba2f-e180-45ed-b60d-58ef7fb35c96"
-                    }
-                }
-            },
+            }
         }
     }
 }

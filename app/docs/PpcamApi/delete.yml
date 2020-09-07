@@ -1,0 +1,31 @@
+tags:
+  - ppcam
+summary: Deletes ppcam profile
+operationId: delete_ppcam_by_id
+parameters:
+  - name: user_auth_token
+    in: header
+    description: jwt
+    required: true
+    schema:
+      type: string
+  - name: ppcamid
+    in: path
+    description: Ppcam id to delete
+    required: true
+    schema:
+      type: integer
+      format: int64
+responses:
+  '200':
+    description: Success to delete ppcam profile
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ppcam'
+  '400':
+    description: Fail
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ApiFailResponse'

@@ -3,6 +3,7 @@ from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from flasgger import Swagger
+from swagger import swagger_template
 
 from app.resources.routes import init_routes
 from config import config as Config
@@ -13,7 +14,7 @@ import os
 db = SQLAlchemy()
 ma = Marshmallow()
 api = Api()
-swagger = Swagger()
+swagger = Swagger(template=swagger_template, parse=True)
 
 def create_app(config):
     app = Flask(__name__)

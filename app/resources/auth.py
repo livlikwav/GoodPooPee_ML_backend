@@ -18,7 +18,6 @@ user_schema = UserSchema()
 # users_schema = UserSchema(many=True)
 
 class RegisterApi(Resource):
-    @swag_from('../docs/register_post.yml')
     def post(self):
         from sqlalchemy.exc import IntegrityError
         new_user = User(
