@@ -36,7 +36,8 @@ swagger_template = {
     "externalDocs": {
         "description": "Rest API design note",
         "url": "https://docs.google.com/document/d/1CHvAOqb5mZXAMF3kW0egfUHieE0xZS5YCmDZ-UT2INI/edit?usp=sharing"
-    }, "components": {
+    },
+    "components": {
         "schemas": {
             "user_auth_token": {
                 "type": "object",
@@ -152,19 +153,15 @@ swagger_template = {
                     }
                 }
             },
-            "pet": {
+            "register_pet": {
                 "type": "object",
                 "required": ["petid"],
                 "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64",
+                    "user_id": {
+                        "type": "string",
                         "example": "1"
                     },
-                    "userId": {
-                        "type": "string"
-                    },
-                    "petname": {
+                    "name": {
                         "type": "string",
                         "example": "mungchi"
                     },
@@ -180,44 +177,93 @@ swagger_template = {
                         "type": "string",
                         "example": "19981011"
                     },
-                    "adopt": {
+                    "adoption": {
                         "type": "string",
                         "example": "20001011"
                     }
                 }
             },
+            "pet": {
+                "type": "object",
+                "required": ["petid"],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "user_id": {
+                        "type": "string",
+                        "example": "1"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "mungchi"
+                    },
+                    "breed": {
+                        "type": "string",
+                        "example": "poodle"
+                    },
+                    "gender": {
+                        "type": "string",
+                        "example": "male"
+                    },
+                    "birth": {
+                        "type": "string",
+                        "example": "19981011"
+                    },
+                    "adoption": {
+                        "type": "string",
+                        "example": "20001011"
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
+                    },
+                    "last_modified_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
+                    }
+                }
+            },
             "pet_record": {
                 "type": "object",
-                "required": ["petId", "timestamp"],
+                "required": ["user_id", "pet_id", "result", "image_uuid"],
                 "properties": {
-                    "petId": {
+                    "user_id": {
                         "type": "integer",
                         "format": "int64"
                     },
-                    "timestamp": {
-                        "type": "string",
-                        "example": "1970-01-01 00:00:01"
+                    "pet_id": {
+                        "type": "integer",
+                        "format": "int64"
                     },
                     "result": {
                         "type": "string",
-                        "example": "SUCCESS"
+                        "example": "Success"
                     },
-                    "photoUrl": {
-                        "type": "string"
+                    "image_uuid": {
+                        "type": "string",
+                        "example": "3edfba2f-e180-45ed-b60d-58ef7fb35c96"
                     }
                 }
             },
             "pet_daily_report": {
                 "type": "object",
-                "required": ["pet_id", "date"],
                 "properties": {
                     "pet_id": {
                         "type": "integer",
-                        "format": "int64"
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
                     },
                     "date": {
                         "type": "string",
-                        "example": "DATE like YYYYMMDD"
+                        "example": "DATE like 2015-11-09"
                     },
                     "count": {
                         "type": "integer",
@@ -227,23 +273,36 @@ swagger_template = {
                         "type": "integer",
                         "example": "success count like 5"
                     },
-                    "progress": {
+                    "ratio": {
                         "type": "number",
-                        "example": "progress ratio like 0~1%"
+                        "example": "progress ratio like 0~1.0"
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
+                    },
+                    "last_modified_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
                     }
                 }
             },
             "pet_weekly_report": {
                 "type": "object",
-                "required": ["pet_id", "lastdate"],
                 "properties": {
                     "pet_id": {
                         "type": "integer",
-                        "format": "int64"
+                        "format": "int64",
+                        "example": "1"
                     },
-                    "lastdate": {
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "date": {
                         "type": "string",
-                        "example": "DATE like YYYYMMDD"
+                        "example": "DATE like 2015-11-09"
                     },
                     "count": {
                         "type": "integer",
@@ -253,19 +312,36 @@ swagger_template = {
                         "type": "integer",
                         "example": "success count like 5"
                     },
-                    "progress": {
+                    "ratio": {
                         "type": "number",
-                        "example": "progress ratio like 0~1%"
+                        "example": "progress ratio like 0~1.0"
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
+                    },
+                    "last_modified_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
                     }
                 }
             },
-            "pet_total_report": {
+            "pet_monthly_report": {
                 "type": "object",
-                "required": ["pet_id"],
                 "properties": {
                     "pet_id": {
                         "type": "integer",
-                        "format": "int64"
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "date": {
+                        "type": "string",
+                        "example": "DATE like 2015-11-09"
                     },
                     "count": {
                         "type": "integer",
@@ -275,17 +351,17 @@ swagger_template = {
                         "type": "integer",
                         "example": "success count like 5"
                     },
-                    "progress": {
+                    "ratio": {
                         "type": "number",
-                        "example": "progress ratio like 0~1%"
+                        "example": "progress ratio like 0~1.0"
                     },
-                    "start_date": {
+                    "created_date": {
                         "type": "string",
-                        "example": "20200501"
+                        "example": "2020-08-15T16:28:39"
                     },
-                    "last_date": {
+                    "last_modified_date": {
                         "type": "string",
-                        "example": "20200702"
+                        "example": "2020-08-15T16:28:39"
                     }
                 }
             },

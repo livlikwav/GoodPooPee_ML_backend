@@ -1,0 +1,53 @@
+tags:
+  - pet
+summary: put pet record
+description: This can only be done by the logged in user.
+parameters:
+  - name: user_auth_token
+    in: header
+    description: jwt
+    required: true
+    schema:
+      type: string
+      example: "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+  - name: petid
+    in: path
+    description: pet id to put record
+    required: true
+    schema:
+      type: integer
+responses:
+  "200":
+    description: successful operation
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/pet_record"
+  "400":
+    description: Invalid pet record object supplied
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/api_fail_response"
+  "404":
+    description: Pet record not found
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/api_fail_response"
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          image:
+            type: string
+            format: binary
+            example: "doo_poo_ex_1.jpeg"
+          timestamp:
+            type: string
+            example: "2015-08-09 10:11:32"
+          result:
+            type: string
+            example: "SUCCESS"
