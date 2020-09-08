@@ -1,6 +1,6 @@
 tags:
   - ppcam
-summary: put ppcam profile
+summary: put pad profile
 description: This can only be done by the logged in user.
 parameters:
   - name: user_auth_token
@@ -12,26 +12,26 @@ parameters:
       example: "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
   - name: ppcamid
     in: path
-    description: ppcam id to put
+    description: ppcam id
     required: true
     schema:
       type: integer
       example: "1"
 responses:
   "200":
-    description: successful operation
+    description: Successful operation
     content:
       application/json:
         schema:
-          $ref: "#/components/schemas/ppcam"
+          $ref: "#/components/schemas/pad"
   "400":
-    description: Invalid ppcam object supplied
+    description: Invalid pad object supplied
     content:
       application/json:
         schema:
           $ref: "#/components/schemas/api_fail_response"
   "404":
-    description: ppcam not found
+    description: Pad not found
     content:
       application/json:
         schema:
@@ -40,6 +40,6 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: "#/components/schemas/ppcam"
-  description: Updated ppcam object
+        $ref: "#/components/schemas/pad"
+  description: Modified pad object to update
   required: true

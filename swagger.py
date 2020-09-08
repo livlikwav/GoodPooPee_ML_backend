@@ -6,8 +6,9 @@ swagger_config = {
 swagger_template = {
     "info": {
         "description": "SWMaestro 11th, Team urillbwa, Goodpoopee. \
-        \n Maintainer: Gyeongmin Ha.",
-        "version": "2.0.0",
+        \n Maintainer: Gyeongmin Ha.\
+        \n API versioning V[major].[minor]",
+        "version": "2.0",
         "termsOfService": "",
         "contact": {
             "email": "gaonrudal@gmail.com"
@@ -287,45 +288,6 @@ swagger_template = {
                     }
                 }
             },
-            "pet_weekly_report": {
-                "type": "object",
-                "properties": {
-                    "pet_id": {
-                        "type": "integer",
-                        "format": "int64",
-                        "example": "1"
-                    },
-                    "user_id": {
-                        "type": "integer",
-                        "format": "int64",
-                        "example": "1"
-                    },
-                    "date": {
-                        "type": "string",
-                        "example": "DATE like 2015-11-09"
-                    },
-                    "count": {
-                        "type": "integer",
-                        "example": "total pooing count like 10"
-                    },
-                    "success": {
-                        "type": "integer",
-                        "example": "success count like 5"
-                    },
-                    "ratio": {
-                        "type": "number",
-                        "example": "progress ratio like 0~1.0"
-                    },
-                    "created_date": {
-                        "type": "string",
-                        "example": "2020-08-15T16:28:39"
-                    },
-                    "last_modified_date": {
-                        "type": "string",
-                        "example": "2020-08-15T16:28:39"
-                    }
-                }
-            },
             "pet_monthly_report": {
                 "type": "object",
                 "properties": {
@@ -407,35 +369,56 @@ swagger_template = {
                     }
                 }
             },
-            "ppsnack": {
+            "ppsnack_config": {
                 "type": "object",
-                "required": ["ppcamId", "serialNum"],
+                "required": ["serial_num", "feedback_ratio", "ppcam_id"],
                 "properties": {
-                    "ppcamId": {
-                        "type": "integer",
-                        "format": "int64"
+                    "serial_num": {
+                        "type": "string",
+                        "example": "ADW23123124124"
                     },
-                    "serialNum": {
+                    "feedback_ratio": {
+                        "type": "number",
+                        "example": "0~1 %"
+                    },
+                    "ppcam_id": {
                         "type": "integer",
                         "format": "int64"
                     }
                 }
             },
-            "ppsnack_config": {
+            "polling": {
                 "type": "object",
-                "required": ["ppcamId", "onoff", "ratio"],
+                "required": ["request_code", "message"],
                 "properties": {
-                    "ppcamId": {
+                    "request_code": {
                         "type": "integer",
-                        "format": "int64"
+                        "format": "int64",
+                        "example": "0 (ex: 0 is none, 1 is capture, 2 is streaming ...)"
                     },
-                    "onoff": {
-                        "type": "boolean",
-                        "example": "True of False"
+                    "message": {
+                        "type": "string",
+                        "example": "None"
+                    }
+                }
+            },
+            "stream_info": {
+                "type": "object",
+                "required": ["user_id", "ppcam_id", "user_ip"],
+                "properties": {
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
                     },
-                    "ratio": {
-                        "type": "number",
-                        "example": "0~1 %"
+                    "ppcam_id": {
+                        "type": "integer",
+                        "format": "int64",
+                        "example": "1"
+                    },
+                    "user_ip": {
+                        "type": "string",
+                        "example": "127.0.0.1"
                     }
                 }
             }
