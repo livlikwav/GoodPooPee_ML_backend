@@ -38,26 +38,39 @@ swagger_template = {
         "description": "Rest API design note",
         "url": "https://docs.google.com/document/d/1CHvAOqb5mZXAMF3kW0egfUHieE0xZS5YCmDZ-UT2INI/edit?usp=sharing"
     },
+    
     "components": {
+        "securitySchemes":{
+            "user_auth": {
+                "type" : "http",
+                "scheme" : "bearer",
+                "bearerFormat" : "JWT"
+            },
+            "device_auth":{
+                "type" : "http",
+                "scheme" : "bearer",
+                "bearerFormat" : "JWT"
+            }
+        },
         "schemas": {
-            "user_auth_token": {
-                "type": "object",
-                "properties": {
-                    "access_token": {
-                        "type": "string",
-                        "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
-                    }
-                }
-            },
-            "device_auth_token": {
-                "type": "object",
-                "properties": {
-                    "device_access_token": {
-                        "type": "string",
-                        "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
-                    }
-                }
-            },
+            # "user_auth_token": {
+            #     "type": "object",
+            #     "properties": {
+            #         "access_token": {
+            #             "type": "string",
+            #             "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+            #         }
+            #     }
+            # },
+            # "device_auth_token": {
+            #     "type": "object",
+            #     "properties": {
+            #         "device_access_token": {
+            #             "type": "string",
+            #             "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+            #         }
+            #     }
+            # },
             "api_response": {
                 "type": "object",
                 "properties": {

@@ -1,14 +1,8 @@
 tags:
   - user
 summary: Logs out current logged in user (blacklist token)
-parameters:
-  - name: user_auth_token
-    in: header
-    description: jwt
-    required: true
-    schema:
-      type: string
-      example: "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+security: 
+  - user_auth : []
 responses:
   "200":
     description: successful operation

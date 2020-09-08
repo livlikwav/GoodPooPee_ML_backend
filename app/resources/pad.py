@@ -14,10 +14,17 @@ class PadSchema(ma.SQLAlchemyAutoSchema):
 pad_schema = PadSchema()
 pads_schema = PadSchema(many=True)
 
-class PadRegisterApi(Resource):
+class PadApi(Resource):
     @confirm_account
     def post(self, ppcam_id):
         from sqlalchemy.exc import IntegrityError
+        existed_pad = Pad.query.filter_by(ppcam_id=ppcam_id).first()
+        if existed_pad:
+            return jsonify({
+                "status" : "Fail",
+                "msg" : "Pad profile already exists in that ppcam."
+            })
+            
         new_pad = Pad(
             lu = request.json['lu'],
             ld = request.json['ld'],
@@ -33,25 +40,33 @@ class PadRegisterApi(Resource):
             db.session.rollback()
             return jsonify({
                 "status" : "Fail",
-                "msg" : "Fail to add new pad, its IntegrityError"
+                "msg" : "IntegrityError"
             })
-        return pad_schema.dump(new_pad)
+        return pad_schema.dump(new_pad), 200
 
     @confirm_account
     def get(self, ppcam_id):
-        selected_pads = Pad.query.filter_by(ppcam_id = ppcam_id).all()
-        return pads_schema.dump(selected_pads)
+        selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id).first()
 
-class PadApi(Resource):
-    @confirm_account
-    def get(self, ppcam_id, pad_id):
-        selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id, id = pad_id).first()
-        return pad_schema.dump(selected_pad)
+        if not selected_pad:
+            return jsonify({
+                "status" : "Fail",
+                "msg" : "Pad not found."
+            })
+
+        return pad_schema.dump(selected_pad), 200
 
     @confirm_account
-    def put(self, ppcam_id, pad_id):
+    def put(self, ppcam_id):
         from sqlalchemy.exc import IntegrityError
-        selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id, id = pad_id).first()
+        selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id).first()
+
+        if not selected_pad:
+            return jsonify({
+                "status" : "Fail",
+                "msg" : "Pad not found."
+            })
+
         try:
             selected_pad.lu = request.json['lu']
             selected_pad.ld = request.json['ld']
@@ -63,14 +78,21 @@ class PadApi(Resource):
             db.session.rollback()
             return jsonify({
                 "status" : "Fail",
-                "msg" : "IntegrityError on Pad<int:pad_id> Put method"
-            })
-        return pad_schema.dump(selected_pad)
+                "msg" : "IntegrityError"
+            }), 400
+        return pad_schema.dump(selected_pad), 200
     
     @confirm_account
-    def delete(self, ppcam_id, pad_id):
+    def delete(self, ppcam_id):
         from sqlalchemy.exc import IntegrityError
-        selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id, id = pad_id).first()
+        selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id).first()
+
+        if not selected_pad:
+            return jsonify({
+                "status" : "Fail",
+                "msg" : "Pad not found."
+            })
+
         try:
             db.session.delete(selected_pad)
             db.session.commit()
@@ -78,10 +100,9 @@ class PadApi(Resource):
             db.session.rollback()
             return jsonify({
                 "status" : "Fail",
-                "msg" : "IntegrityError at pad profile, maybe primary key problem."
+                "msg" : "IntegrityError"
             })
         return jsonify({
             "status" : "Success",
             "msg" : "Successfully delete pad"
         })
-        
