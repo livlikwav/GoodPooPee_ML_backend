@@ -1,0 +1,2127 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "description" : "Just for design, check with postman, pass to Flasgger in project",
+    "version" : "2.0.0",
+    "termsOfService" : "http://swagger.io/terms/",
+    "contact" : {
+      "email" : "gaonrudal@gmail.com"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "title" : "Good-poopee Server"
+  },
+  "servers" : [ {
+    "description" : "SwaggerHub API Auto Mocking",
+    "url" : "https://virtserver.swaggerhub.com/livlikwav.github.io/goodpoopee/2.0.0"
+  } ],
+  "tags" : [ {
+    "name" : "user",
+    "description" : "Operations about user"
+  }, {
+    "name" : "pet",
+    "description" : "Operations about pets"
+  }, {
+    "name" : "ppcam",
+    "description" : "Operations about poopee cam"
+  } ],
+  "paths" : {
+    "/user/register" : {
+      "post" : {
+        "tags" : [ "user" ],
+        "summary" : "Register user profile by email and password",
+        "responses" : {
+          "200" : {
+            "description" : "Success to register user profile",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/user"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/register_user"
+              }
+            }
+          },
+          "description" : "New user object to register",
+          "required" : true
+        }
+      }
+    },
+    "/user/login" : {
+      "post" : {
+        "tags" : [ "user" ],
+        "summary" : "Logs user into the system",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/user_auth_token"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Invalid useremail/password supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/login_user"
+              }
+            }
+          },
+          "description" : "Login user object",
+          "required" : true
+        }
+      }
+    },
+    "/user/logout" : {
+      "post" : {
+        "tags" : [ "user" ],
+        "summary" : "Logs out current logged in user (blacklist token)",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_response"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Error caused by JWT",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/login_user"
+              }
+            }
+          },
+          "description" : "Login user object",
+          "required" : true
+        }
+      }
+    },
+    "/user/{userid}" : {
+      "get" : {
+        "tags" : [ "user" ],
+        "summary" : "Get user by userid",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "userid",
+          "in" : "path",
+          "description" : "id value of user",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : "1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/user"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid username supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "user" ],
+        "summary" : "Update user profile",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "userid",
+          "in" : "path",
+          "description" : "userid that need to be updated",
+          "required" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/user"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid user object supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/user"
+              }
+            }
+          },
+          "description" : "Modified user object to update",
+          "required" : true
+        }
+      },
+      "delete" : {
+        "tags" : [ "user" ],
+        "summary" : "Delete user",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "userid",
+          "in" : "path",
+          "description" : "User id to delete",
+          "required" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_response"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid username supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{userid}/pets" : {
+      "get" : {
+        "tags" : [ "user" ],
+        "summary" : "get user's pet profiles",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "userid",
+          "in" : "path",
+          "description" : "Use 1 for testing.",
+          "required" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/pet"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid userid supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{userid}/ppcams" : {
+      "get" : {
+        "tags" : [ "user" ],
+        "summary" : "get user's poopeecam profiles",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "userid",
+          "in" : "path",
+          "description" : "Use 1 for testing.",
+          "required" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/ppcam"
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid userid supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "User not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pet/register" : {
+      "post" : {
+        "tags" : [ "pet" ],
+        "summary" : "Register a pet profile",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/pet"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid pet object supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/register_pet"
+              }
+            }
+          },
+          "description" : "New pet object",
+          "required" : true
+        }
+      }
+    },
+    "/pet/{petid}" : {
+      "put" : {
+        "tags" : [ "pet" ],
+        "summary" : "Put an existing pet profile",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "petid",
+          "in" : "path",
+          "description" : "pet id to update",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : "1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/pet"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid pet object supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Pet not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/register_pet"
+              }
+            }
+          },
+          "description" : "Modified pet object to update",
+          "required" : true
+        }
+      },
+      "get" : {
+        "tags" : [ "pet" ],
+        "summary" : "get pet profile by pet id",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "petid",
+          "in" : "path",
+          "description" : "pet id to get",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : "1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/pet"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid pet object supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Pet not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "pet" ],
+        "summary" : "Delete a pet by pet id",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "petid",
+          "in" : "path",
+          "description" : "Pet id to delete",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : "1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_response"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid petid supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Pet not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pet/{petid}/record" : {
+      "post" : {
+        "tags" : [ "pet" ],
+        "summary" : "post pet's train record by ppcam",
+        "description" : "This can only be done by the logged in device",
+        "parameters" : [ {
+          "name" : "device_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "petid",
+          "in" : "path",
+          "description" : "Pet id to delete",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/pet_record"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Fail",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "image" : {
+                    "type" : "string",
+                    "format" : "binary",
+                    "example" : "doo_poo_ex_1.jpeg"
+                  },
+                  "timestamp" : {
+                    "type" : "string",
+                    "example" : "2015-08-09 10:11:32"
+                  },
+                  "result" : {
+                    "type" : "string",
+                    "example" : "SUCCESS"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get" : {
+        "tags" : [ "pet" ],
+        "summary" : "get pet record",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "petid",
+          "in" : "path",
+          "description" : "pet id to get record",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : "1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/pet_record"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid pet record object supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Pet record not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "pet" ],
+        "summary" : "put pet record",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "petid",
+          "in" : "path",
+          "description" : "pet id to put record",
+          "required" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/pet_record"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid pet record object supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Pet record not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "multipart/form-data" : {
+              "schema" : {
+                "type" : "object",
+                "properties" : {
+                  "image" : {
+                    "type" : "string",
+                    "format" : "binary",
+                    "example" : "doo_poo_ex_1.jpeg"
+                  },
+                  "timestamp" : {
+                    "type" : "string",
+                    "example" : "2015-08-09 10:11:32"
+                  },
+                  "result" : {
+                    "type" : "string",
+                    "example" : "SUCCESS"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "pet" ],
+        "summary" : "Deletes a pet record",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "petid",
+          "in" : "path",
+          "description" : "Pet id to delete",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : "1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Pet record not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pet/{petid}/report/daily" : {
+      "get" : {
+        "tags" : [ "pet" ],
+        "summary" : "get pet's daily training report",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "petid",
+          "in" : "path",
+          "description" : "pet id to get record",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : "1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/pet_daily_report"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Pet report not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pet/{petid}/report/monthly" : {
+      "get" : {
+        "tags" : [ "pet" ],
+        "summary" : "get pet's monthly training report",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "petid",
+          "in" : "path",
+          "description" : "pet id to get record",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : "1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/pet_monthly_report"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Pet report not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ppcam/register" : {
+      "post" : {
+        "tags" : [ "ppcam" ],
+        "summary" : "register ppcam profile by MAC address",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ppcam"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid Ppcam object",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ppcam"
+              }
+            }
+          },
+          "description" : "Ppcam object(user_id delivered by app to raspb)",
+          "required" : true
+        }
+      }
+    },
+    "/ppcam/login" : {
+      "post" : {
+        "tags" : [ "ppcam" ],
+        "summary" : "login ppcam profile by MAC address",
+        "operationId" : "login_ppcam",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/device_auth_token"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid ppcam object",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ppcam not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ppcam"
+              }
+            }
+          },
+          "description" : "Ppcam object(user_id delivered by app to raspb)",
+          "required" : true
+        }
+      }
+    },
+    "/ppcam/polling" : {
+      "post" : {
+        "tags" : [ "ppcam" ],
+        "summary" : "polling by ppcam to check request from server",
+        "operationId" : "polling_ppcam",
+        "parameters" : [ {
+          "name" : "device_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/polling"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid polling object",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ppcam/{ppcamid}" : {
+      "get" : {
+        "tags" : [ "ppcam" ],
+        "summary" : "get ppcam profile",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "ppcamid",
+          "in" : "path",
+          "description" : "ppcam id to get",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : "1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ppcam"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid ppcam object supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "ppcam not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "ppcam" ],
+        "summary" : "put ppcam profile",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "ppcamid",
+          "in" : "path",
+          "description" : "ppcam id to put",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : "1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ppcam"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid ppcam object supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "ppcam not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ppcam"
+              }
+            }
+          },
+          "description" : "Updated ppcam object",
+          "required" : true
+        }
+      },
+      "delete" : {
+        "tags" : [ "ppcam" ],
+        "summary" : "Deletes ppcam profile",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "ppcamid",
+          "in" : "path",
+          "description" : "Ppcam id to delete",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_response"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid ppcam object supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "ppcam not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ppcam/{ppcamid}/pad" : {
+      "post" : {
+        "tags" : [ "ppcam" ],
+        "summary" : "post pad profile",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "ppcamid",
+          "in" : "path",
+          "description" : "ppcam id to post pad",
+          "required" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/pad"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid pad object supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get" : {
+        "tags" : [ "ppcam" ],
+        "summary" : "get pad location (ppcam-pad 1 by 1)",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "ppcamid",
+          "in" : "path",
+          "description" : "ppcam id to get pad",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : "1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/pad"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid pad object supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Pad not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "ppcam" ],
+        "summary" : "put pad profile",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "ppcamid",
+          "in" : "path",
+          "description" : "ppcam id",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : "1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/pad"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid pad object supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Pad not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/pad"
+              }
+            }
+          },
+          "description" : "Modified pad object to update",
+          "required" : true
+        }
+      },
+      "delete" : {
+        "tags" : [ "ppcam" ],
+        "summary" : "Deletes pad profile",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "ppcamid",
+          "in" : "path",
+          "description" : "Ppcamid which has pad profile",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Pad not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ppcam/{ppcamid}/ppsnack" : {
+      "get" : {
+        "tags" : [ "ppcam" ],
+        "summary" : "Get ppsnack config",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "ppcamid",
+          "in" : "path",
+          "description" : "ppcam id to get ppsnack config",
+          "required" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ppsnack_config"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ppsnack config not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "ppcam" ],
+        "summary" : "request ppcam to put ppsnack config",
+        "description" : "This can only be done by the logged in user.",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }, {
+          "name" : "ppcamid",
+          "in" : "path",
+          "description" : "ppcam id to request put ppsnack config",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : "1"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ppsnack_config"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid ppsnack config object supplied",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ppsnack not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ppsnack_config"
+              }
+            }
+          },
+          "description" : "Modified ppsnack config object to update",
+          "required" : true
+        }
+      }
+    },
+    "/ppcam/{ppcamid}/streaming" : {
+      "post" : {
+        "tags" : [ "ppcam" ],
+        "summary" : "Get ppcam streaming",
+        "parameters" : [ {
+          "name" : "user_auth_token",
+          "in" : "header",
+          "description" : "jwt",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "ppcamid",
+          "in" : "path",
+          "description" : "Ppcam id to request streaming",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Success to set webRTC",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_response"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Invalid stream info object",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Ppcam not found",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/api_fail_response"
+                }
+              }
+            }
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/stream_info"
+              }
+            }
+          },
+          "description" : "Send user(client)'s info for ppcam to set webRTC connection",
+          "required" : true
+        }
+      }
+    }
+  },
+  "externalDocs" : {
+    "description" : "Find out more about Swagger",
+    "url" : "http://swagger.io"
+  },
+  "components" : {
+    "schemas" : {
+      "user_auth_token" : {
+        "type" : "object",
+        "properties" : {
+          "access_token" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }
+      },
+      "device_auth_token" : {
+        "type" : "object",
+        "properties" : {
+          "device_access_token" : {
+            "type" : "string",
+            "example" : "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+          }
+        }
+      },
+      "api_response" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : "Success"
+          },
+          "message" : {
+            "type" : "string",
+            "example" : "Success to ~~~"
+          }
+        }
+      },
+      "api_fail_response" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "integer",
+            "format" : "int32",
+            "example" : "Fail"
+          },
+          "message" : {
+            "type" : "string",
+            "example" : "Fail to ~~~"
+          }
+        }
+      },
+      "register_user" : {
+        "type" : "object",
+        "properties" : {
+          "email" : {
+            "type" : "string",
+            "example" : "gaonrudal@gmail.com"
+          },
+          "first_name" : {
+            "type" : "string",
+            "example" : "Gyeongmin"
+          },
+          "last_name" : {
+            "type" : "string",
+            "example" : "Ha"
+          },
+          "password" : {
+            "type" : "string",
+            "example" : "123"
+          }
+        }
+      },
+      "login_user" : {
+        "type" : "object",
+        "properties" : {
+          "email" : {
+            "type" : "string",
+            "example" : "gaonrudal@gmail.com"
+          },
+          "password" : {
+            "type" : "string",
+            "example" : "123"
+          }
+        }
+      },
+      "user" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : "1"
+          },
+          "email" : {
+            "type" : "string",
+            "example" : "gaonrudal@gmail.com"
+          },
+          "first_name" : {
+            "type" : "string",
+            "example" : "Gyeongmin"
+          },
+          "last_name" : {
+            "type" : "string",
+            "example" : "Ha"
+          },
+          "hashed_password" : {
+            "type" : "string",
+            "example" : "qef211rgr2365h123sdfwert123123"
+          },
+          "created_date" : {
+            "type" : "string",
+            "example" : "2020-08-15T16:28:39"
+          },
+          "last_modified_date" : {
+            "type" : "string",
+            "example" : "2020-08-15T16:28:39"
+          }
+        }
+      },
+      "register_pet" : {
+        "type" : "object",
+        "required" : [ "petid" ],
+        "properties" : {
+          "user_id" : {
+            "type" : "string",
+            "example" : "1"
+          },
+          "name" : {
+            "type" : "string",
+            "example" : "mungchi"
+          },
+          "breed" : {
+            "type" : "string",
+            "example" : "poodle"
+          },
+          "gender" : {
+            "type" : "string",
+            "example" : "male"
+          },
+          "birth" : {
+            "type" : "string",
+            "example" : "19981011"
+          },
+          "adoption" : {
+            "type" : "string",
+            "example" : "20001011"
+          }
+        }
+      },
+      "pet" : {
+        "type" : "object",
+        "required" : [ "petid" ],
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : "1"
+          },
+          "user_id" : {
+            "type" : "string",
+            "example" : "1"
+          },
+          "name" : {
+            "type" : "string",
+            "example" : "mungchi"
+          },
+          "breed" : {
+            "type" : "string",
+            "example" : "poodle"
+          },
+          "gender" : {
+            "type" : "string",
+            "example" : "male"
+          },
+          "birth" : {
+            "type" : "string",
+            "example" : "19981011"
+          },
+          "adoption" : {
+            "type" : "string",
+            "example" : "20001011"
+          },
+          "created_date" : {
+            "type" : "string",
+            "example" : "2020-08-15T16:28:39"
+          },
+          "last_modified_date" : {
+            "type" : "string",
+            "example" : "2020-08-15T16:28:39"
+          }
+        }
+      },
+      "pet_record" : {
+        "type" : "object",
+        "required" : [ "user_id", "pet_id", "result", "image_uuid" ],
+        "properties" : {
+          "user_id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "pet_id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "result" : {
+            "type" : "string",
+            "example" : "Success"
+          },
+          "image_uuid" : {
+            "type" : "string",
+            "example" : "3edfba2f-e180-45ed-b60d-58ef7fb35c96"
+          }
+        }
+      },
+      "pet_daily_report" : {
+        "type" : "object",
+        "properties" : {
+          "pet_id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : "1"
+          },
+          "user_id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : "1"
+          },
+          "date" : {
+            "type" : "string",
+            "example" : "DATE like 2015-11-09"
+          },
+          "count" : {
+            "type" : "integer",
+            "example" : "total pooing count like 10"
+          },
+          "success" : {
+            "type" : "integer",
+            "example" : "success count like 5"
+          },
+          "ratio" : {
+            "type" : "number",
+            "example" : "progress ratio like 0~1.0"
+          },
+          "created_date" : {
+            "type" : "string",
+            "example" : "2020-08-15T16:28:39"
+          },
+          "last_modified_date" : {
+            "type" : "string",
+            "example" : "2020-08-15T16:28:39"
+          }
+        }
+      },
+      "pet_monthly_report" : {
+        "type" : "object",
+        "properties" : {
+          "pet_id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : "1"
+          },
+          "user_id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : "1"
+          },
+          "date" : {
+            "type" : "string",
+            "example" : "DATE like 2015-11-09"
+          },
+          "count" : {
+            "type" : "integer",
+            "example" : "total pooing count like 10"
+          },
+          "success" : {
+            "type" : "integer",
+            "example" : "success count like 5"
+          },
+          "ratio" : {
+            "type" : "number",
+            "example" : "progress ratio like 0~1.0"
+          },
+          "created_date" : {
+            "type" : "string",
+            "example" : "2020-08-15T16:28:39"
+          },
+          "last_modified_date" : {
+            "type" : "string",
+            "example" : "2020-08-15T16:28:39"
+          }
+        }
+      },
+      "ppcam" : {
+        "type" : "object",
+        "required" : [ "ppcamId", "userId", "serialNum" ],
+        "properties" : {
+          "ppcamId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "userId" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "serialNum" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "pad" : {
+        "type" : "object",
+        "required" : [ "padId", "ppcamId", "lu", "ld", "ru", "rd" ],
+        "properties" : {
+          "padId" : {
+            "type" : "integer"
+          },
+          "ppcamId" : {
+            "type" : "integer"
+          },
+          "lu" : {
+            "type" : "integer"
+          },
+          "ld" : {
+            "type" : "integer"
+          },
+          "ru" : {
+            "type" : "integer"
+          },
+          "rd" : {
+            "type" : "integer"
+          }
+        }
+      },
+      "ppsnack_config" : {
+        "type" : "object",
+        "required" : [ "serial_num", "feedback_ratio", "ppcam_id" ],
+        "properties" : {
+          "serial_num" : {
+            "type" : "string",
+            "example" : "ADW23123124124"
+          },
+          "feedback_ratio" : {
+            "type" : "number",
+            "example" : "0~1 %"
+          },
+          "ppcam_id" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      },
+      "polling" : {
+        "type" : "object",
+        "required" : [ "request_code", "message" ],
+        "properties" : {
+          "request_code" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : "0 (ex: 0 is none, 1 is capture, 2 is streaming ...)"
+          },
+          "message" : {
+            "type" : "string",
+            "example" : "None"
+          }
+        }
+      },
+      "stream_info" : {
+        "type" : "object",
+        "required" : [ "user_id", "ppcam_id", "user_ip" ],
+        "properties" : {
+          "user_id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : "1"
+          },
+          "ppcam_id" : {
+            "type" : "integer",
+            "format" : "int64",
+            "example" : "1"
+          },
+          "user_ip" : {
+            "type" : "string",
+            "example" : "127.0.0.1"
+          }
+        }
+      }
+    }
+  }
+}

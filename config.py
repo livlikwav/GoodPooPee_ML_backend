@@ -13,6 +13,7 @@ DB_URL = f"mysql+pymysql://{db['user']}:{db['password']}@{db['host']}:{db['port'
 
 class Config:
     DEBUG = False
+    BUCKET_NAME = 'gpp-bucket'
 
     # JWT SECRET KEY
     if os.environ.get('JWT_SECRET_KEY'):
@@ -21,7 +22,9 @@ class Config:
         JWT_SECRET_KEY = 'JWT_SECRET_KEY_ENV_VAR_NOT_SET'
         print('JWT_SECRET KEY ENV VAR NOT SET! SHOULD NOT SEE IN PRODUCTION')
 
-    BUCKET_NAME = 'gpp-bucket'
+    # flasgger config
+    from swagger import swagger_config
+    SWAGGER = swagger_config
 
     @staticmethod
     def init_app(app):

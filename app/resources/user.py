@@ -25,10 +25,10 @@ class PpcamSchema(ma.SQLAlchemyAutoSchema):
 # make instances of schemas
 user_schema = UserSchema()
 # users_schema = UserSchema(many=True)
-pet_schema = PetSchema()
-# pets_schema = PetSchema(many=True)
-ppcam_schema = PpcamSchema()
-# ppcams_schema = PpcamSchema(many=True)
+# pet_schema = PetSchema()
+pets_schema = PetSchema(many=True)
+# ppcam_schema = PpcamSchema()
+ppcam_schemas = PpcamSchema(many=True)
 
 class UserApi(Resource):
     @confirm_account
@@ -75,13 +75,11 @@ class UserApi(Resource):
 class UserPetApi(Resource):
     @confirm_account
     def get(self, user_id):
-        selected_user = User.query.filter_by(id = user_id).first()
-        selected_pet = Pet.query.with_parent(selected_user).first()
-        return pet_schema.dump(selected_pet)
+        selected_pets = Pet.query.filter_by(user_id=user_id).all()
+        return pets_schema.dump(selected_pets)
 
 class UserPpcamApi(Resource):
     @confirm_account
     def get(self, user_id):
-        selected_user = User.query.filter_by(id = user_id).first()
-        selected_ppcam = Ppcam.query.with_parent(selected_user).first()
-        return ppcam_schema.dump(selected_ppcam)
+        selected_ppcams = Ppcam.query.filter_by(user_id=user_id).all()
+        return ppcam_schemas.dump(selected_ppcams)

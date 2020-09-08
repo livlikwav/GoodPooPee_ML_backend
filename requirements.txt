@@ -12,3 +12,4 @@ pyjwt
 pytz
 python-dateutil
 boto3
+flasgger

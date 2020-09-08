@@ -1,0 +1,31 @@
+tags:
+  - user
+summary: Logs out current logged in user (blacklist token)
+parameters:
+  - name: user_auth_token
+    in: header
+    description: jwt
+    required: true
+    schema:
+      type: string
+      example: "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+responses:
+  "200":
+    description: successful operation
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/api_response"
+  "400":
+    description: Error caused by JWT
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/api_fail_response"
+requestBody:
+  content:
+    application/json:
+      schema:
+        $ref: "#/components/schemas/login_user"
+  description: Login user object
+  required: true

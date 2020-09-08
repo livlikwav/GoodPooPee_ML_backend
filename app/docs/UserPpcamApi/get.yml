@@ -1,0 +1,39 @@
+tags:
+  - user
+summary: get user's poopeecam profiles
+description: This can only be done by the logged in user.
+parameters:
+  - name: user_auth_token
+    in: header
+    description: jwt
+    required: true
+    schema:
+      type: string
+      example: "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+  - name: userid
+    in: path
+    description: Use 1 for testing.
+    required: true
+    schema:
+      type: integer
+responses:
+  "200":
+    description: successful operation
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            $ref: "#/components/schemas/ppcam"
+  "400":
+    description: Invalid userid supplied
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/api_fail_response"
+  "404":
+    description: User not found
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/api_fail_response"
