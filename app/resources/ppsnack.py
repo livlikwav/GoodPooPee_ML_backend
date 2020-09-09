@@ -26,18 +26,3 @@ class PpsnackApi(Resource):
                 "msg":"request to ppcam was failed",
                 "feedback_ratio":feedback_ratio
             })
-
-class PpsnackFeedingApi(Resource):
-    def get(self, ppcam_id):
-        selected_ppcam = Ppcam.query.filter_by(id=ppcam_id).first()
-        # request GET method to ppcam
-        if(selected_ppcam.get_ppsnack_feeding(test=True)):
-            return jsonify({
-                "status":"Success",
-                "msg":"Successfully feed"
-            })
-        else:
-            return jsonify({
-                "status":"Fail",
-                "msg":"feed request failed"
-            })

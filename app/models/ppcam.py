@@ -51,22 +51,6 @@ class Ppcam(db.Model):
         else:
             pass
 
-    def get_ppsnack_feeding(self, test=False):
-        """
-        request ppsnack to feed dog via ppcam
-        params Boolean
-        returns Boolean
-        """
-        if(test):
-            # FAKE SUCCESS MSG TEMPLATE
-            {
-                "status":"FAKESUCCESS",
-                "msg":"this is fake success"
-            }
-            return True
-        else:
-            pass
-
     @staticmethod
     def generate_fake(count):
         # Generate a number of fake ppcams for testing

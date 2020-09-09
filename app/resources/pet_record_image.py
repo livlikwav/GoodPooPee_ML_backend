@@ -22,12 +22,6 @@ record_query_schema = RecordQuerySchema()
 class PetRecordImageApi(Resource):
     @confirm_account
     def get(self, pet_id):
-        """
-        Get pet record image in S3
-        
-        :Param pet_id: pet id of the record image
-        :QueryString: Timestamp of the record
-        """
         # validate query string by ma
         errors = record_query_schema.validate(request.args)
         if errors:
@@ -39,7 +33,7 @@ class PetRecordImageApi(Resource):
         last_timestamp = request.args.get("timestamp")
         # querying record
         selected_record = PetRecord.query.filter_by(timestamp = last_timestamp, pet_id = pet_id).first()
-        # 
+        # get image_uuid by timestamp of record
         image_uuid = selected_record.image_uuid
         file_data = get_object(image_uuid)
         if file_data:

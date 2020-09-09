@@ -1,0 +1,40 @@
+tags:
+  - pet
+summary: get image of pet record
+security: 
+  - user_auth : []
+description: This can only be done by the logged in user.
+parameters:
+  - name: petid
+    in: path
+    description: pet id to get record
+    required: true
+    schema:
+      type: integer
+      example: "1"
+  - name: timestamp
+    in: query
+    description: timestamp of record
+    schema:
+      type: string
+      example: '2015-08-09T10:11:32'
+responses:
+  "200":
+    description: successful operation
+    content:
+      image/png:
+        schema:
+          type: string
+          format: binary
+  "400":
+    description: Invalid parameters supplied
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/api_fail_response"
+  "404":
+    description: Pet record not found
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/api_fail_response"

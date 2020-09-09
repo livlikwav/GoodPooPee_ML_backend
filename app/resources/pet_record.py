@@ -68,7 +68,7 @@ class PetRecordApi(Resource):
             })
         # update stat tables
         new_record.update_stats(request.form['timestamp'])
-        return pet_record_schema.dump(new_record)
+        return pet_record_schema.dump(new_record), 200
 
     @confirm_account
     def get(self, pet_id):
