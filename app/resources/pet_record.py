@@ -23,7 +23,7 @@ deleted_record_schema = PetRecordSchema(only=("timestamp", "pet_id", "user_id"))
 record_query_schema = RecordQuerySchema()
 
 class PetRecordApi(Resource):
-    @device_permission_required
+    # @device_permission_required
     def post(self, pet_id):
         """
         Post new pet record by Ppcam(device)

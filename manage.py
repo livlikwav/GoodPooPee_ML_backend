@@ -40,6 +40,7 @@ def recreate_db():
     db.drop_all()
     db.create_all()
     db.session.commit()
+    logging.warning('DB was recreated')
 
 @manager.option(
     '-n',
@@ -55,7 +56,8 @@ def add_fake_data(number_users):
     Ppcam.generate_fake(count=number_users)
     Pet.generate_fake(count=number_users)
     Pad.generate_fake(count=number_users)
-    PetRecord.generate_fake(count=number_users)
+    # PetRecord.generate_fake(count=number_users)
+    logging.warning('Set fake data finished')
 
 @manager.command
 def setup_prod():

@@ -38,7 +38,7 @@ class Pet(db.Model):
             date = timestamp.date()
             time = timestamp.time()
             # get utc random datetime
-            temp_datetime = pytz.utc.localize(datetime.combine(date, time))
+            temp_datetime = pytz.utc.localize(datetime.datetime.combine(date, time))
             p = Pet(
                 name=choice(dog_name_samples),
                 breed=choice(breed_samples),
