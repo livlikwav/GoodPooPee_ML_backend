@@ -53,15 +53,16 @@ swagger_template = {
             }
         },
         "schemas": {
-            # "user_auth_token": {
-            #     "type": "object",
-            #     "properties": {
-            #         "access_token": {
-            #             "type": "string",
-            #             "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
-            #         }
-            #     }
-            # },
+            # for user login api's response schema
+            "user_auth_token": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string",
+                        "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+                    }
+                }
+            },
             # "device_auth_token": {
             #     "type": "object",
             #     "properties": {

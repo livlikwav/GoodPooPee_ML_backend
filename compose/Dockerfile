@@ -4,4 +4,6 @@ WORKDIR /gppserver/
 
 COPY    requirements.txt    ./
 RUN     pip install --no-cache-dir -r requirements.txt
-CMD     python manage.py run
+# remove python log buffering
+ENV     PYTHONUNBUFFERED=0
+ADD     https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /

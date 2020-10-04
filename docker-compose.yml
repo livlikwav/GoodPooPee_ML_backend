@@ -30,3 +30,10 @@ services:
         volumes:
             - .:/gppserver
             - ~/.aws:/root/.aws
+        # wait for init of db
+        command:
+            - bash
+            - -c
+            - |
+                /wait-for-it.sh db:3306 -t 10
+                python manage.py run
