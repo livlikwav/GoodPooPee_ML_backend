@@ -35,5 +35,5 @@ services:
             - bash
             - -c
             - |
-                /wait-for-it.sh db:3306 -t 10
+                sudo /wait-for-it.sh db:3306 -t 10
                 python manage.py run

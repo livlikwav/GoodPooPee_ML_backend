@@ -5,6 +5,8 @@ import bcrypt
 
 from app import db, ma
 from app.models.user import User
+from app.models.pet import Pet
+from app.models.ppcam import Ppcam
 from app.models.blacklisttoken import BlacklistToken
 from app.utils.decorators import confirm_account
 
@@ -44,13 +46,34 @@ class LoginApi(Resource):
         user_pw = request.json['password']
 
         login_user = User.query.filter_by(email = user_email).first()
+        pet_id_of_user = self.getPetId(login_user.id)
+        ppcam_id_of_user = self.getPpcamId(login_user.id)
+        
+
         if login_user is not None and login_user.verify_password(user_pw):
             token = login_user.encode_auth_token(login_user.id)
             return jsonify({
-                'access_token' : token.decode('UTF-8')
+                'access_token' : token.decode('UTF-8'),
+                'user_id' : login_user.id,
+                'pet_id' : pet_id_of_user,
+                'ppcam_id': ppcam_id_of_user
             })
         else:
             return '', 401
+
+    def getPetId(self, user_id):
+        owned_pet = Pet.query.filter_by(user_id = user_id).first()
+        if(owned_pet is not None):
+            return owned_pet.id
+        else:
+            return None
+    
+    def getPpcamId(self, user_id):
+        owned_ppcam = Ppcam.query.filter_by(user_id = user_id).first()
+        if(owned_ppcam is not None):
+            return owned_ppcam.id
+        else:
+            return None
 
 class LogoutApi(Resource):
     # Logout Resource
