@@ -26,7 +26,7 @@ services:
             context: .
             dockerfile: ./compose/Dockerfile-dev
         ports:
-            - "5000:5000"
+            - "80:80"
         volumes:
             - .:/gppserver
             - ~/.aws:/root/.aws
@@ -35,5 +35,5 @@ services:
             - bash
             - -c
             - |
-                sudo /wait-for-it.sh db:3306 -t 10
+                /wait-for-it.sh mysql:3306 -t 10
                 python manage.py run

@@ -14,15 +14,6 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
 
-# IP Whitelist
-ip_whitelist = ['172.26.0.1']
-
-@app.before_request
-def limit_remote_addr():
-    if request.remote_addr not in ip_whitelist:
-        logging.error("forbidden ip request")
-        abort(403) # Forbidden
-
 # def make_shell_context():
 #     return dict(app=app, db=db)
 
@@ -32,7 +23,7 @@ manager.add_command('db', MigrateCommand)
 
 @manager.command
 def run():
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port='80')
 
 @manager.command
 def recreate_db():
