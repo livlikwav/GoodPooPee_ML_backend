@@ -21,6 +21,7 @@ class MonthlyStatSchema(ma.SQLAlchemyAutoSchema):
 
 # make instances of schemas
 daily_stat_schema = DailyStatSchema()
+weekly_stat_schema = DailyStatSchema(many = True)
 monthly_stat_schema = MonthlyStatSchema()
 
 class DailyStatApi(Resource):
@@ -34,6 +35,25 @@ class DailyStatApi(Resource):
         else:
             return daily_stat_schema.dump(selected_record)
 
+class WeeklyStatApi(Resource):
+    def get(self, pet_id):
+        today_date = string_to_date(request.args.get("date"))
+        start_date = today_date - datetime.timedelta(days = 6)
+        date_max = datetime.datetime.combine(today_date, datetime.time.max)
+        date_min = datetime.datetime.combine(start_date, datetime.time.min)
+        # Find week records (7 days)
+        day_stat_records = DailyStatistics.query.filter_by(pet_id=pet_id).\
+            filter(DailyStatistics.date <= date_max).\
+            filter(DailyStatistics.date >= date_min).\
+            all()
+        # check 404
+        if len(day_stat_records) == 0:
+            return '', 404
+        else:
+            return weekly_stat_schema.dump(day_stat_records)
+        
+
+
 class MonthlyStatApi(Resource):
     @confirm_account
     def get(self, pet_id):
@@ -45,8 +65,4 @@ class MonthlyStatApi(Resource):
         else:
             return monthly_stat_schema.dump(selected_record)
 
-# class WeeklyStatApi(Resource):
-#     def get(self, pet_id):
-#         date = get_kst_date(request.args.get("date"))
-#         # how to define that week
         
