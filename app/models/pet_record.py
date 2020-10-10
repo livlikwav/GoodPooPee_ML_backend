@@ -1,3 +1,4 @@
+from app.utils.datetime import string_to_datetime
 import logging
 from flask import request
 from app.models.dailystatistics import DailyStatistics
@@ -72,13 +73,30 @@ class PetRecord(db.Model):
         from faker import Faker
         
         fake = Faker()
-        count = 10
+        delta_samples = [
+            datetime.timedelta(hours = 0),
+            datetime.timedelta(hours = 1),
+            datetime.timedelta(hours = 2),
+            datetime.timedelta(hours = 3),
+            datetime.timedelta(days = 1),
+            datetime.timedelta(days = 1, hours = 1),
+            datetime.timedelta(days = 2),
+            datetime.timedelta(days = 2, hours = 1),
+            datetime.timedelta(weeks = 1),
+            datetime.timedelta(weeks = 1, hours = 1),
+            datetime.timedelta(weeks = 2),
+            datetime.timedelta(weeks = 2, hours = 1),
+            datetime.timedelta(days = 31),
+            datetime.timedelta(days = 31, hours = 1),
+            datetime.timedelta(days = 31 * 2),
+            datetime.timedelta(days = 31 * 2, hours = 1),
+        ]
 
         seed()
         # get random utc datetime
-        time_now = datetime.datetime.utcnow() - datetime.timedelta(hours = count)
-        for i in range(count):
-            gen_time = time_now + (datetime.timedelta(hours=1)*i)
+        datetime_now = datetime.datetime.utcnow()
+        for i in range(len(delta_samples)):
+            gen_time = datetime_now - delta_samples[i]
             logging.info(f'gen_time : {gen_time}')
             new_record = PetRecord(
                 timestamp = gen_time,
