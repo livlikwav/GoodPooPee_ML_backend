@@ -1,3 +1,4 @@
+from pytz import timezone, utc
 from app.utils.datetime import string_to_datetime
 import logging
 from flask import request
@@ -93,8 +94,9 @@ class PetRecord(db.Model):
         ]
 
         seed()
-        # get random utc datetime
-        datetime_now = datetime.datetime.utcnow()
+        # get random kst datetime for test
+        datetime_now = utc.localize(datetime.datetime.utcnow()).astimezone(timezone('Asia/Seoul'))
+        logging.info(f'datetime_now = ${datetime_now}')
         for i in range(len(delta_samples)):
             gen_time = datetime_now - delta_samples[i]
             logging.info(f'gen_time : {gen_time}')
