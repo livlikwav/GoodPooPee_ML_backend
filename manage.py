@@ -51,6 +51,18 @@ def add_fake_data(number_users):
     # PetRecord.generate_fake(count=number_users)
     logging.warning('Set fake data finished')
 
+@manager.option(
+    '-i'
+    '--ids',
+    default=1,
+    type=int,
+    help='define user_id and pet_id (same)',
+    dest='id'
+)
+def add_fake_pet_records(id):
+    "Adds fake pet records to db"
+    PetRecord.generate_fake(id=id)
+
 @manager.command
 def setup_prod():
     "Runs the set-up needed for local dev"

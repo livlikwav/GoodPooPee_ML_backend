@@ -1,7 +1,7 @@
+import logging
 from flask import request
 from app.models.dailystatistics import DailyStatistics
 from app.models.monthlystatistics import MonthlyStatistics
-from app.utils.datetime import get_kst_date
 from app.utils.s3 import upload_fileobj, delete_file
 from app import db
 import datetime
@@ -24,15 +24,18 @@ class PetRecord(db.Model):
     def __repr__(self):
         return f"<PetRecord : {self.timestamp}, {self.pet_id}, {self.user_id}, {self.result}, {self.image_uuid}>"
 
-    def update_stats(self, last_timestamp):
+    @staticmethod
+    def update_stats(pet_id: int, user_id: int, new_datetime: datetime.datetime, old_datetime: datetime.datetime) -> None:
         """
         By new pet record, Update daily_stat and monthly_stat tables
-        :Param: datetime.datetime(naive, but UTC)
-        :Return:
         """
         # update daily_stat first
-        DailyStatistics.update(self, last_timestamp)
-        MonthlyStatistics.update(self, last_timestamp)
+        try:
+            DailyStatistics.update(pet_id, user_id, new_datetime, old_datetime)
+            MonthlyStatistics.update(pet_id, user_id, new_datetime, old_datetime)
+        except Exception as e:
+            # bubbling for transaction
+            raise e
     
     def upload_record_image(self, image_file):
         """
@@ -57,35 +60,44 @@ class PetRecord(db.Model):
             return True
         else:
             return False
+    
+    @staticmethod
+    def generate_fake(id):
+        '''
+        user_id and pet_id is same (id)
+        number of records == count var
+        '''
+        from sqlalchemy.exc import IntegrityError
+        from random import seed, choice
+        from faker import Faker
         
-        
-    # ----- set fake data not automatically, because of updating stats -----
-    # @staticmethod
-    # def generate_fake(count):
-    #     # Generate a number of fake pet records for testing
-    #     from sqlalchemy.exc import IntegrityError
-    #     from random import seed, choice
-    #     from faker import Faker
-        
-    #     fake = Faker()
+        fake = Faker()
+        count = 10
 
-    #     seed()
-    #     # get random utc datetime
-    #     time_now = datetime.datetime.utcnow() - datetime.timedelta(hours = count)
-    #     for i in range(count):
-    #         p = PetRecord(
-    #             timestamp = time_now + (datetime.timedelta(hours=1)*i),
-    #             result = choice(['SUCCESS', 'FAIL']),
-    #             image_uuid = '(FAKE)' + fake.uuid4(),
+        seed()
+        # get random utc datetime
+        time_now = datetime.datetime.utcnow() - datetime.timedelta(hours = count)
+        for i in range(count):
+            gen_time = time_now + (datetime.timedelta(hours=1)*i)
+            logging.info(f'gen_time : {gen_time}')
+            new_record = PetRecord(
+                timestamp = gen_time,
+                result = choice(['SUCCESS', 'FAIL']),
+                image_uuid = '(FAKE)' + fake.uuid4(),
 
-    #             # match one foreign_key by one user
-    #             # id start from 1
-    #             pet_id=i+1,
-    #             user_id=i+1
-    #         )
-    #         try:
-    #             db.session.add(p)
-    #             db.session.commit()
-    #         except IntegrityError:
-    #             db.session.rollback()
+                # only for user 1 and pet 1
+                pet_id=id,
+                user_id=id
+            )
+            try:
+                db.session.add(new_record)
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                logging.error(e)
+            
+            # update stat tables
+            PetRecord.update_stats(id, id, gen_time, gen_time)
 
+
+        logging.info('Successed to set fake pet records')

@@ -38,7 +38,7 @@ class DevConfig(Config):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # logging config
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(pathname)s>%(message)s')
 
     @classmethod
     def init_app(cls, app):
@@ -63,7 +63,7 @@ class ProductionConfig(Config):
     # SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # logging config
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.WARNING, format='%(levelname)s:%(pathname)s>%(message)s')
 
 config = {
     'dev' : DevConfig,
