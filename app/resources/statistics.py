@@ -29,7 +29,7 @@ class DailyStatApi(Resource):
         date = get_kst_date(request.args.get("date"))
         selected_record = DailyStatistics.query.filter_by(pet_id = pet_id, date = date).first()
         if(selected_record is None):
-            logging.error('Daily statistics record not found')
+            logging.info('Daily statistics record not found')
             return '',404
         else:
             return daily_stat_schema.dump(selected_record)
@@ -40,7 +40,7 @@ class MonthlyStatApi(Resource):
         month_date = get_kst_date(request.args.get("date")).replace(day = 1)
         selected_record = MonthlyStatistics.query.filter_by(pet_id = pet_id, date = month_date).first()
         if(selected_record is None):
-            logging.error('Monthly statistics record not found')
+            logging.info('Monthly statistics record not found')
             return '',404
         else:
             return monthly_stat_schema.dump(selected_record)

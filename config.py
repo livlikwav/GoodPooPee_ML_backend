@@ -1,3 +1,4 @@
+import logging
 import os
 
 # DB Config
@@ -36,6 +37,9 @@ class DevConfig(Config):
     SQLALCHEMY_DATABASE_URI = DB_URL
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # logging config
+    logging.basicConfig(level=logging.DEBUG)
+
     @classmethod
     def init_app(cls, app):
         print('[Dev Config]THIS APP IS IN DEBUG MODE. \
@@ -57,6 +61,9 @@ class ProductionConfig(Config):
     DEBUG = False
     # SQLALCHEMY_DATABASE_URI = DB_URL
     # SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # logging config
+    logging.basicConfig(level=logging.INFO)
 
 config = {
     'dev' : DevConfig,
