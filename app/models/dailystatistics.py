@@ -23,7 +23,6 @@ class DailyStatistics(db.Model):
 
     pet = db.relationship('Pet',
         backref = db.backref('daily_stats'), lazy = True )
-    
 
     # def __repr__(self):
     #     return f"<DailyStatistics : {self.count}, {self.success}, {self.fail}>"
