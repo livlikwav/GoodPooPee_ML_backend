@@ -341,6 +341,12 @@ swagger_template = {
                     }
                 }
             },
+            "total_month_report": {
+                "type": "array",
+                "items" : {
+                    "$ref" : "#/components/schemas/pet_monthly_report"
+                }
+            },
             "ppcam": {
                 "type": "object",
                 "required": ["ppcamId", "userId", "serialNum"],

@@ -23,6 +23,7 @@ class MonthlyStatSchema(ma.SQLAlchemyAutoSchema):
 daily_stat_schema = DailyStatSchema()
 weekly_stat_schema = DailyStatSchema(many = True)
 monthly_stat_schema = MonthlyStatSchema()
+total_month_stat_schema = MonthlyStatSchema(many = True)
 
 class DailyStatApi(Resource):
     @confirm_account
@@ -59,10 +60,20 @@ class MonthlyStatApi(Resource):
     def get(self, pet_id):
         month_date = string_to_date(request.args.get("date")).replace(day = 1)
         selected_record = MonthlyStatistics.query.filter_by(pet_id = pet_id, date = month_date).first()
+        # check 404
         if(selected_record is None):
             logging.info('Monthly statistics record not found')
             return '',404
         else:
             return monthly_stat_schema.dump(selected_record)
 
-        
+class TotalMonthStatApi(Resource):
+    @confirm_account
+    def get(self, pet_id: int) -> str:
+        records = MonthlyStatistics.query.filter_by(pet_id = pet_id).all()
+        # check 404
+        if (records is None):
+            logging.info('Monthly statistic records not found')
+            return '', 404
+        else:
+            return total_month_stat_schema.dump(records)
