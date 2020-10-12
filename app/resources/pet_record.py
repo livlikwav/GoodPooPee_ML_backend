@@ -4,7 +4,7 @@ from flask import request, jsonify
 from flask_restful import Resource
 from app.models.pet import Pet
 from app.models.pet_record import PetRecord
-from app.utils.decorators import device_permission_required, confirm_account
+from app.utils.decorators import confirm_account
 from app import db, ma
 import datetime
 
@@ -25,7 +25,6 @@ deleted_record_schema = PetRecordSchema(only=("timestamp", "pet_id", "user_id"))
 record_query_schema = RecordQuerySchema()
 
 class PetRecordApi(Resource):
-    # @device_permission_required
     def post(self, pet_id):
         """
         Post new pet record by Ppcam(device)

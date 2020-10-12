@@ -7,7 +7,7 @@ from app import db, ma
 from app.models.user import User
 from app.models.pet import Pet
 from app.models.ppcam import Ppcam
-from app.models.blacklisttoken import BlacklistToken
+from app.models.blacklist_user_token import BlacklistUserToken
 from app.utils.decorators import confirm_account
 
 
@@ -92,7 +92,7 @@ class LogoutApi(Resource):
         else:
             auth_token = ''
         # mark the token as blacklisted
-        blacklist_token = BlacklistToken(token=auth_token)
+        blacklist_token = BlacklistUserToken(token=auth_token)
         try:
             # insert the token
             db.session.add(blacklist_token)

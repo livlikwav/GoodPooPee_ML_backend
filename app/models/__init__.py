@@ -9,4 +9,4 @@ from .pet_record import *
 from .ppcam import *
 from .dailystatistics import *
 from .monthlystatistics import *
-from .blacklisttoken import *
+from .blacklist_user_token import *

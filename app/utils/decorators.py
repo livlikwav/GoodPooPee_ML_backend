@@ -1,25 +1,10 @@
-from flask import request, abort, jsonify
-from app.models.ppcam import Ppcam
+from flask import request, jsonify
 from app.models.user import User
 import functools
 
-def device_permission_required(func):
-    """
-    Restrict API to ppcams with the given permission.
-    """
-    @functools.wraps(func)
-    def decorator(*args, **kwargs):
-        # check remote IP address
-        selected_ppcam = Ppcam.query.filter_by(ip_address = request.remote_addr).first()
-        if selected_ppcam:
-            return func(*args, **kwargs)
-        else: # no permission
-            abort(403)
-    return decorator
-    
 def confirm_account(func):
     """
-    Confirm JWT
+    Confirm user JWT
     
     :Return: func if vaild token, else json string(fail msg)
     """
@@ -41,11 +26,11 @@ def confirm_account(func):
                 return jsonify({
                     'status' : 'Fail',
                     'message' : resp
-                })
+                }), 401
         else:
             return jsonify({
                 'status' : 'Fail',
                 'message' : 'Request provide a invalid auth token.'
-            })
+            }), 401
 
     return decorator

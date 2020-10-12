@@ -1,6 +1,6 @@
 import datetime
 from app import db
-from app.models.blacklisttoken import BlacklistToken
+from app.models.blacklist_user_token import BlacklistUserToken
 import bcrypt
 import jwt
 
@@ -59,7 +59,7 @@ class User(db.Model):
         try:
             from manage import app
             payload = jwt.decode(auth_token, app.config['JWT_SECRET_KEY'])
-            is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
+            is_blacklisted_token = BlacklistUserToken.check_blacklist(auth_token)
             if is_blacklisted_token:
                 return 'Token blacklisted. Please log in again.'
             else:
