@@ -1,15 +1,15 @@
 tags:
-  - user
-summary: Logs user into the system
+  - ppcam
+summary: Logs ppcam into the system
 responses:
   "200":
     description: successful operation
     content:
       application/json:
         schema:
-          $ref: "#/components/schemas/user_log_in"
+          $ref: "#/components/schemas/device_log_in"
   "401":
-    description: Invalid useremail/password supplied
+    description: Serial number is invalid
     content:
       application/json:
         schema:
@@ -18,6 +18,6 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: "#/components/schemas/login_user"
-  description: Login user object
+        $ref: "#/components/schemas/login_device"
+  description: Login device object
   required: true

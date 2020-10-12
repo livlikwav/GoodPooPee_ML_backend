@@ -18,21 +18,25 @@ ppcam_schema = PpcamSchema()
 ppcams_schema = PpcamSchema(many=True)
 
 class PpcamRegisterApi(Resource):
+    '''
+    When first time to register ppcam profile to server
+    Post ppcam profile to table
+    '''
     def post(self):
         from sqlalchemy.exc import IntegrityError
 
         # check serial nums is valid
         exist_serial_record = PpcamSerialNums.query.filter_by(serial_num = request.json['serial_num']).first()
         if(exist_serial_record is None):
-            return jsonify({
+            return {
                 "msg" : "Serial number is invalid. check again."
-            }), 401
+            }, 401
         # check user email is valid
         exist_user_record = User.query.filter_by(email = request.json['user_email']).first()
         if(exist_user_record is None):
-            return jsonify({
+            return {
                 "msg" : "User email is invalid. check again."
-            }), 401
+            }, 401
         # create new ppcam profile
         new_ppcam = Ppcam(
             serial_num = request.json['serial_num'],
@@ -44,10 +48,28 @@ class PpcamRegisterApi(Resource):
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
-            return jsonify({
+            return {
                 "msg" : "Fail to add new ppcam(IntegrityError)."
-            }), 400
+            }, 400
         return ppcam_schema.dump(new_ppcam), 200
+
+class PpcamLoginApi(Resource):
+    '''
+    To issue device auth token
+    '''
+    def post(self):
+        # check that ppcam profile exist
+        login_device = Ppcam.query.filter_by(serial_num = request.json['serial_num']).first()
+        if login_device is not None:
+            device_auth_token = login_device.encode_auth_token(login_device.id)
+            return {
+                'device_access_token' : device_auth_token.decode('UTF-8')
+            }, 200
+        else:
+            return {
+                "msg" : "Serial number is invalid"
+            }, 401
+        
 
 class PpcamApi(Resource):
     @confirm_account

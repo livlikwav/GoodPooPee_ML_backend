@@ -1,6 +1,8 @@
 from flask import jsonify
 import datetime
 from .. import db
+from app.models.blacklist_device_token import BlacklistDeviceToken
+import jwt
 
 class Ppcam(db.Model):
     __tablename__ = 'ppcam'
@@ -17,6 +19,48 @@ class Ppcam(db.Model):
 
     # def __repr__(self):
     #     return f"<Ppcam : {self.id}, {self.serial_num}>"
+
+
+    def encode_auth_token(self, ppcam_id: int) -> str:
+        '''
+        Generate device auth token
+        :Param: Integer
+        :Return: String|String(error msg)
+        '''
+        try:
+            payload = {
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=0),
+                'iat': datetime.datetime.utcnow(),
+                'sub': ppcam_id
+            }
+            from manage import app
+            return jwt.encode(
+                payload,
+                app.config['JWT_SECRET_KEY'],
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
+
+    @staticmethod
+    def decode_auth_token(device_auth_token: str):
+        """
+        Decodes the device auth token
+        :Params: String
+        :Return: integer|string
+        """
+        try:
+            from manage import app
+            payload = jwt.decode(device_auth_token, app.config['JWT_SECRET_KEY'])
+            is_blacklisted_token = BlacklistDeviceToken.check_blacklist(device_auth_token)
+            if is_blacklisted_token:
+                return 'Device token blacklisted. Please log in again.'
+            else:
+                return payload['sub']
+        except jwt.ExpiredSignatureError:
+            return 'Signature expired. Please log in again.'
+        except jwt.InvalidTokenError:
+            return 'Invalid token. Please log in again.'
 
     def get_ppsnack(self, test=False):
         """

@@ -24,9 +24,9 @@ class RegisterApi(Resource):
         # check that email already exist
         exist_user = User.query.filter_by(email = request.json['email']).first()
         if(exist_user is not None):
-            return jsonify({
+            return {
                 "msg" : "this email already exists"
-            }), 409
+            }, 409
         # create new user profile
         new_user = User(
             # id = request.json['id'], < auto-increasing
@@ -40,9 +40,9 @@ class RegisterApi(Resource):
         try: 
             db.session.commit()
         except IntegrityError:
-            return jsonify({
+            return {
                 "msg" : "Fail to register user because of IntegrityError on db"
-            }), 400
+            }, 400
         return user_schema.dump(new_user)
 
 class LoginApi(Resource):
@@ -50,31 +50,30 @@ class LoginApi(Resource):
         # parsing request
         user_email = request.json['email']
         user_pw = request.json['password']
-
+        # query related info of user
         login_user = User.query.filter_by(email = user_email).first()
-        pet_id_of_user = self.getPetId(login_user.id)
-        ppcam_id_of_user = self.getPpcamId(login_user.id)
-        
-
+        pet_id_of_user = self.get_pet_id(login_user.id)
+        ppcam_id_of_user = self.get_ppcam_id(login_user.id)
+        # check user profile existency and password
         if login_user is not None and login_user.verify_password(user_pw):
             token = login_user.encode_auth_token(login_user.id)
-            return jsonify({
+            return {
                 'access_token' : token.decode('UTF-8'),
                 'user_id' : login_user.id,
                 'pet_id' : pet_id_of_user,
                 'ppcam_id': ppcam_id_of_user
-            })
+            }, 200
         else:
             return '', 401
 
-    def getPetId(self, user_id):
+    def get_pet_id(self, user_id):
         owned_pet = Pet.query.filter_by(user_id = user_id).first()
         if(owned_pet is not None):
             return owned_pet.id
         else:
             return None
     
-    def getPpcamId(self, user_id):
+    def get_ppcam_id(self, user_id):
         owned_ppcam = Ppcam.query.filter_by(user_id = user_id).first()
         if(owned_ppcam is not None):
             return owned_ppcam.id
@@ -97,12 +96,12 @@ class LogoutApi(Resource):
             # insert the token
             db.session.add(blacklist_token)
             db.session.commit()
-            return jsonify({
+            return {
                 'status' : 'Success',
                 'message' : 'Successfully logged out.'
-            })
+            }, 200
         except Exception as e:
-            return jsonify({
+            return {
                 'status' : 'Fail',
                 'message' : e
-            })
+            }, 400

@@ -54,24 +54,36 @@ swagger_template = {
         },
         "schemas": {
             # for user login api's response schema
-            "user_auth_token": {
+            "user_log_in": {
                 "type": "object",
                 "properties": {
                     "access_token": {
                         "type": "string",
                         "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+                    },
+                    "user_id" : {
+                        "type" : "integer",
+                        "format" : "int32"
+                    },
+                    "pet_id" : {
+                        "type" : "integer",
+                        "format" : "int32"
+                    },
+                    "ppcam_id" : {
+                        "type" : "integer",
+                        "format" : "int32"
                     }
                 }
             },
-            # "device_auth_token": {
-            #     "type": "object",
-            #     "properties": {
-            #         "device_access_token": {
-            #             "type": "string",
-            #             "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
-            #         }
-            #     }
-            # },
+            "device_log_in": {
+                "type": "object",
+                "properties": {
+                    "device_access_token": {
+                        "type": "string",
+                        "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+                    }
+                }
+            },
             "api_response": {
                 "type": "object",
                 "properties": {
@@ -131,6 +143,15 @@ swagger_template = {
                     "password": {
                         "type": "string",
                         "example": "123"
+                    }
+                }
+            },
+            "login_device": {
+                "type": "object",
+                "properties": {
+                    "serial_num": {
+                        "type": "string",
+                        "example": "PC1K1P210101N001"
                     }
                 }
             },
