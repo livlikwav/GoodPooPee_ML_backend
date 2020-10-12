@@ -21,7 +21,6 @@ class PpcamRegisterApi(Resource):
         new_ppcam = Ppcam(
             serial_num = request.json['serial_num'],
             ip_address = request.json['ip_address'],
-            # user_id is not nullable
             user_id = request.json['user_id']
         )
         try:
@@ -30,10 +29,9 @@ class PpcamRegisterApi(Resource):
         except IntegrityError as e:
             db.session.rollback()
             return jsonify({
-                "status" : "fail",
                 "msg" : "Fail to add new ppcam, its IntegrityError."
-            })
-        return ppcam_schema.dump(new_ppcam)
+            }), 400
+        return ppcam_schema.dump(new_ppcam), 200
 
 class PpcamApi(Resource):
     @confirm_account

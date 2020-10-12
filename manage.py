@@ -1,3 +1,4 @@
+from app.models.ppcam_serial_nums import PpcamSerialNums
 from flask import abort, request
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
@@ -62,6 +63,11 @@ def add_fake_data(number_users):
 def add_fake_pet_records(id):
     "Adds fake pet records to db"
     PetRecord.generate_fake(id=id)
+
+@manager.command
+def add_fake_serial_nums():
+    "Adds fake ppcam serial nums to db"
+    PpcamSerialNums.generate_fake()
 
 @manager.command
 def setup_prod():

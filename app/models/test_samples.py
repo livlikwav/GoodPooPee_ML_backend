@@ -1,4 +1,17 @@
 
+serial_num_samples = [
+    'PC1K1P210101N001',
+    'PC1K1P210101N002',
+    'PC1K1P210101N003',
+    'PC1K1P210101N004',
+    'PC1K1P210101N005',
+    'PC1K1P210101N006',
+    'PC1K1P210101N007',
+    'PC1K1P210101N008',
+    'PC1K1P210101N009',
+    'PC1K1P210101N010',
+]
+
 breed_samples = [
     'Labrador Retriever',
     'German Shepherd Dog',
