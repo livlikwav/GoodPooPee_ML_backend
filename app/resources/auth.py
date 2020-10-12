@@ -64,7 +64,9 @@ class LoginApi(Resource):
                 'ppcam_id': ppcam_id_of_user
             }, 200
         else:
-            return '', 401
+            return {
+                "msg" : "Fail to authentication"
+            }, 401
 
     def get_pet_id(self, user_id):
         owned_pet = Pet.query.filter_by(user_id = user_id).first()

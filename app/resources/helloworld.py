@@ -3,4 +3,6 @@ from flask import jsonify
 
 class HelloWorld(Resource):
     def get(self):
-        return jsonify(msg = 'Hello, world')
+        return {
+            "msg" : "Hello, world"
+        }, 200

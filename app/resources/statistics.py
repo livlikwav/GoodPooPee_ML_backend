@@ -32,9 +32,11 @@ class DailyStatApi(Resource):
         selected_record = DailyStatistics.query.filter_by(pet_id = pet_id, date = date).first()
         if(selected_record is None):
             logging.info('Daily statistics record not found')
-            return '',404
+            return {
+                "msg" : "Daily stat record not found"
+            }, 404
         else:
-            return daily_stat_schema.dump(selected_record)
+            return daily_stat_schema.dump(selected_record), 200
 
 class WeeklyStatApi(Resource):
     def get(self, pet_id):
@@ -49,9 +51,11 @@ class WeeklyStatApi(Resource):
             all()
         # check 404
         if len(day_stat_records) == 0:
-            return '', 404
+            return {
+                "msg" : "Daily records not found"
+            }, 404
         else:
-            return weekly_stat_schema.dump(day_stat_records)
+            return weekly_stat_schema.dump(day_stat_records), 200
         
 
 
@@ -63,9 +67,11 @@ class MonthlyStatApi(Resource):
         # check 404
         if(selected_record is None):
             logging.info('Monthly statistics record not found')
-            return '',404
+            return {
+                "msg" : "Monthly stat record not found"
+            },404
         else:
-            return monthly_stat_schema.dump(selected_record)
+            return monthly_stat_schema.dump(selected_record), 200
 
 class TotalMonthStatApi(Resource):
     @confirm_account
@@ -74,6 +80,8 @@ class TotalMonthStatApi(Resource):
         # check 404
         if (records is None):
             logging.info('Monthly statistic records not found')
-            return '', 404
+            return {
+                "msg" : "Monthly stat records not found"
+            }, 404
         else:
-            return total_month_stat_schema.dump(records)
+            return total_month_stat_schema.dump(records), 200

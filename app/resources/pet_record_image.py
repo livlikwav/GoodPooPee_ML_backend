@@ -25,10 +25,10 @@ class PetRecordImageApi(Resource):
         # validate query string by ma
         errors = record_query_schema.validate(request.args)
         if errors:
-            return jsonify({
+            return {
                 "status" : "fail",
                 "msg" : "error in put method - query schema validation"
-            })
+            }, 400
         # get timestamp in query string
         last_timestamp = request.args.get("timestamp")
         # querying record
@@ -40,9 +40,9 @@ class PetRecordImageApi(Resource):
             return Response(
                 file_data,
                 mimetype='image/png'
-            )
+            ), 200
         else:
-            return jsonify({
+            return {
                 "status" : "Fail",
                 "msg" : "Fail to get object from S3 bucket."
-            })
+            }, 500

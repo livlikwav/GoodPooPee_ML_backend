@@ -75,12 +75,20 @@ class PpcamApi(Resource):
     @confirm_account
     def get(self, ppcam_id):
         selected_ppcam = Ppcam.query.filter_by(id = ppcam_id).first()
-        return ppcam_schema.dump(selected_ppcam)
+        if(selected_ppcam is None):
+            return {
+                "msg" : "Ppcam not found"
+            }, 404
+        return ppcam_schema.dump(selected_ppcam), 200
 
     @confirm_account
     def put(self, ppcam_id):
         from sqlalchemy.exc import IntegrityError
         updated_ppcam = Ppcam.query.filter_by(id = ppcam_id).first()
+        if(updated_ppcam is None):
+            return {
+                "msg" : "Ppcam not found"
+            }, 404
         try:
             updated_ppcam.serial_num = request.json['serial_num']
             updated_ppcam.ip_address = request.json['ip_address']
@@ -88,26 +96,27 @@ class PpcamApi(Resource):
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
-            return jsonify({
-                "status" : "fail",
+            return {
                 "msg" : 'IntegrityError on updating ppcam'
-            })
-        return ppcam_schema.dump(updated_ppcam)
+            }, 409
+        return ppcam_schema.dump(updated_ppcam), 200
 
     @confirm_account
     def delete(self, ppcam_id):
         from sqlalchemy.exc import IntegrityError
         deleted_ppcam = Ppcam.query.filter_by(id = ppcam_id).first()
+        if(deleted_ppcam is None):
+            return {
+                "msg" : "Ppcam not found"
+            }, 404
         try:
             db.session.delete(deleted_ppcam)
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
-            return jsonify({
-                "status" : "Fail",
+            return {
                 "msg" : "IntegrityError on that ppcam, maybe pad of ppcam still exists."
-            })
-        return jsonify({
-            "status" : "Success",
+            }, 409
+        return {
             "msg" : "Successfully deleted that ppcam"
-        })
+        }, 200
