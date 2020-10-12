@@ -7,7 +7,7 @@ responses:
     content:
       application/json:
         schema:
-          $ref: "#/components/schemas/ppcam"
+          $ref: "#/components/schemas/register_ppcam"
   "400":
     description: Invalid Ppcam object
     content:

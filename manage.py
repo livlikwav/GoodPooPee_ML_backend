@@ -49,8 +49,7 @@ def add_fake_data(number_users):
     Ppcam.generate_fake(count=number_users)
     Pet.generate_fake(count=number_users)
     Pad.generate_fake(count=number_users)
-    # PetRecord.generate_fake(count=number_users)
-    logging.warning('Set fake data finished')
+    logging.info('Set fake data finished')
 
 @manager.option(
     '-i'

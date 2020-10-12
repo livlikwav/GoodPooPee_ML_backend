@@ -1,3 +1,6 @@
+from flask import json
+from app.models.user import User
+from app.models.ppcam_serial_nums import PpcamSerialNums
 from flask import request, jsonify
 from flask_restful import Resource
 from app.models.ppcam import Ppcam
@@ -15,13 +18,26 @@ ppcam_schema = PpcamSchema()
 ppcams_schema = PpcamSchema(many=True)
 
 class PpcamRegisterApi(Resource):
-    @confirm_account
     def post(self):
         from sqlalchemy.exc import IntegrityError
+
+        # check serial nums is valid
+        exist_serial_record = PpcamSerialNums.query.filter_by(serial_num = request.json['serial_num']).first()
+        if(exist_serial_record is None):
+            return jsonify({
+                "msg" : "Serial number is invalid. check again."
+            }), 401
+        # check user email is valid
+        exist_user_record = User.query.filter_by(email = request.json['user_email']).first()
+        if(exist_user_record is None):
+            return jsonify({
+                "msg" : "User email is invalid. check again."
+            }), 401
+        # create new ppcam profile
         new_ppcam = Ppcam(
             serial_num = request.json['serial_num'],
             ip_address = request.json['ip_address'],
-            user_id = request.json['user_id']
+            user_id = exist_user_record.id,
         )
         try:
             db.session.add(new_ppcam)
@@ -29,7 +45,7 @@ class PpcamRegisterApi(Resource):
         except IntegrityError as e:
             db.session.rollback()
             return jsonify({
-                "msg" : "Fail to add new ppcam, its IntegrityError."
+                "msg" : "Fail to add new ppcam(IntegrityError)."
             }), 400
         return ppcam_schema.dump(new_ppcam), 200
 

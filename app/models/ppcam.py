@@ -57,13 +57,14 @@ class Ppcam(db.Model):
         from sqlalchemy.exc import IntegrityError
         from random import seed, choice
         from faker import Faker
+        from .test_samples import serial_num_samples
 
         fake = Faker()
 
         seed()
         for i in range(count):
             p = Ppcam(
-                serial_num = fake.ean(),
+                serial_num = serial_num_samples[(i % 10)], # 10 is number of samples
                 ip_address = fake.ipv4(),
                 # match one foreign_key by one user
                 # user id start from 1

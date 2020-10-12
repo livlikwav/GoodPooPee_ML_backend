@@ -17,11 +17,17 @@ class UserSchema(ma.SQLAlchemyAutoSchema):
         
 # make instances of schemas
 user_schema = UserSchema()
-# users_schema = UserSchema(many=True)
 
 class RegisterApi(Resource):
     def post(self):
         from sqlalchemy.exc import IntegrityError
+        # check that email already exist
+        exist_user = User.query.filter_by(email = request.json['email']).first()
+        if(exist_user is not None):
+            return jsonify({
+                "msg" : "this email already exists"
+            }), 409
+        # create new user profile
         new_user = User(
             # id = request.json['id'], < auto-increasing
             email = request.json['email'],
@@ -35,13 +41,13 @@ class RegisterApi(Resource):
             db.session.commit()
         except IntegrityError:
             return jsonify({
-                "status" : "Fail",
-                "msg" : "this email already exists"
-            })
+                "msg" : "Fail to register user because of IntegrityError on db"
+            }), 400
         return user_schema.dump(new_user)
 
 class LoginApi(Resource):
     def post(self):
+        # parsing request
         user_email = request.json['email']
         user_pw = request.json['password']
 

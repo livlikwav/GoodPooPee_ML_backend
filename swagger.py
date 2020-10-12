@@ -365,6 +365,23 @@ swagger_template = {
                     }
                 }
             },
+            "register_ppcam": {
+                "type": "object",
+                "required": ["ppcamId", "userEmail", "serialNum"],
+                "properties": {
+                    "ppcamId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "userEmail": {
+                        "type": "String",
+                    },
+                    "serialNum": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            },
             "pad": {
                 "type": "object",
                 "required": ["padId", "ppcamId", "lu", "ld", "ru", "rd"],
