@@ -14,7 +14,7 @@ DB_URL = f"mysql+pymysql://{db['user']}:{db['password']}@{db['host']}:{db['port'
 
 class Config:
     DEBUG = False
-    BUCKET_NAME = 'gpp-bucket'
+    BUCKET_NAME = 'gpp-images-1'
 
     # JWT SECRET KEY
     if os.environ.get('JWT_SECRET_KEY'):
