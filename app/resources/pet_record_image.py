@@ -40,7 +40,7 @@ class PetRecordImageApi(Resource):
             return Response(
                 file_data,
                 mimetype='image/png'
-            ), 200
+            )
         else:
             return {
                 "status" : "Fail",
