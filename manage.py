@@ -35,6 +35,14 @@ def recreate_db():
     db.session.commit()
     logging.warning('DB was recreated')
 
+
+@manager.command
+def set_test_env_1():
+    User.generate_fake(count=10)
+    Pet.generate_fake(count=10)
+    PetRecord.generate_fake(id=1)
+    PpcamSerialNums.generate_fake()
+
 @manager.option(
     '-n',
     '--number-users',
