@@ -46,10 +46,11 @@ def recreate_db():
 def add_fake_data(number_users):
     "Adds fake data to the db"
     User.generate_fake(count=number_users)
-    Ppcam.generate_fake(count=number_users)
     Pet.generate_fake(count=number_users)
-    Pad.generate_fake(count=number_users)
-    logging.info('Set fake data finished')
+
+    # Dont need to make these fake datas
+    # Pad.generate_fake(count=number_users)
+    # Ppcam.generate_fake(count=number_users)
 
 @manager.option(
     '-i'

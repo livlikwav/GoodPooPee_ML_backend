@@ -1,3 +1,4 @@
+from app.models.pet import Pet
 from flask import json
 from app.models.user import User
 from app.models.ppcam_serial_nums import PpcamSerialNums
@@ -18,11 +19,14 @@ ppcam_schema = PpcamSchema()
 ppcams_schema = PpcamSchema(many=True)
 
 class PpcamRegisterApi(Resource):
-    '''
-    When first time to register ppcam profile to server
-    Post ppcam profile to table
-    '''
     def post(self):
+        '''
+        When first time to register ppcam profile to server
+        Post ppcam profile to table
+        :url: {{baseUrl}}/ppcam/register
+        :path: None
+        :body: serial_num: str, ip_address: str, user_email: str
+        '''
         from sqlalchemy.exc import IntegrityError
 
         # check serial nums is valid
@@ -30,13 +34,13 @@ class PpcamRegisterApi(Resource):
         if(exist_serial_record is None):
             return {
                 "msg" : "Serial number is invalid. check again."
-            }, 401
+            }, 404
         # check user email is valid
         exist_user_record = User.query.filter_by(email = request.json['user_email']).first()
         if(exist_user_record is None):
             return {
                 "msg" : "User email is invalid. check again."
-            }, 401
+            }, 404
         # create new ppcam profile
         new_ppcam = Ppcam(
             serial_num = request.json['serial_num'],
@@ -52,7 +56,7 @@ class PpcamRegisterApi(Resource):
             db.session.rollback()
             return {
                 "msg" : "Fail to add new ppcam(IntegrityError)."
-            }, 400
+            }, 409
         return ppcam_schema.dump(new_ppcam), 200
 
 class PpcamLoginApi(Resource):
@@ -65,20 +69,25 @@ class PpcamLoginApi(Resource):
         if login_device is None:
             return {
                 "msg" : "Serial number is invalid"
-            }, 401
+            }, 404
         # check that ppcam registered(sold == 1)
         if login_device.sold != 1:
             device_auth_token = login_device.encode_auth_token(login_device.id)
-            user_id = login_device.id
+            user_id = login_device.user_id
+            users_pet = Pet.query.filter_by(user_id = user_id).first()
+            users_pet_id = 'null'
+            if(users_pet is not None):
+                users_pet_id = users_pet.id
             return {
                 'device_access_token' : device_auth_token.decode('UTF-8'),
-                'user_id' : login_device.id,
-                
+                'ppcam_id' : login_device.id,
+                'user_id' : user_id,
+                'pet_id' : users_pet_id
             }, 200
         else:
             return {
                 "msg" : "This device is not registered"
-            }, 409
+            }, 403
 
 class PpcamApi(Resource):
     @confirm_account

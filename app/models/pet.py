@@ -1,3 +1,4 @@
+import logging
 import pytz
 import datetime
 from .. import db
@@ -57,3 +58,5 @@ class Pet(db.Model):
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
+
+        logging.info('Successed to set fake pets')

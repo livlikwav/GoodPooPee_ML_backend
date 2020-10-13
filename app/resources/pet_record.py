@@ -34,8 +34,7 @@ class PetRecordApi(Resource):
         :Param pet_id: pet id of the record
         """
         from sqlalchemy.exc import IntegrityError
-        # debug
-        logging.warning(request.form)
+        logging.debug(request.form)
 
         # find user by pet_id
         selected_pet = Pet.query.filter_by(id = pet_id).first()
@@ -57,7 +56,6 @@ class PetRecordApi(Resource):
             new_record.image_uuid = image_uuid
         else:
             return {
-                "status" : "Fail",
                 "msg" : "Fail to upload record image."
             }, 500
         # persistancy
@@ -73,7 +71,7 @@ class PetRecordApi(Resource):
             }, 409
         # update stat tables
         PetRecord.update_stats(new_record.pet_id, new_record.user_id, new_record.timestamp, string_to_datetime(request.form['timestamp']))
-        return pet_record_schema.dump(new_record), 200
+        return pet_record_schema.dump(new_record)
 
     @confirm_account
     def get(self, pet_id):

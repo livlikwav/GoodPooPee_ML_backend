@@ -8,7 +8,13 @@ responses:
       application/json:
         schema:
           $ref: "#/components/schemas/device_log_in"
-  "401":
+  "403":
+    description: This device is not registered
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/api_fail_response"
+  "404":
     description: Serial number is invalid
     content:
       application/json:

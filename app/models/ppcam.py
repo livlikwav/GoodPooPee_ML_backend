@@ -1,3 +1,4 @@
+import logging
 from flask import jsonify
 import datetime
 from .. import db
@@ -119,3 +120,5 @@ class Ppcam(db.Model):
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
+            
+        logging.info('Successed to set fake ppcams')

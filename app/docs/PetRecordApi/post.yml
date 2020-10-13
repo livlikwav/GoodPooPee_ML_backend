@@ -11,7 +11,7 @@ parameters:
     required: true
     schema:
       type: integer
-      format: int64
+      format: int32
 responses:
   "200":
     description: Success
@@ -19,8 +19,20 @@ responses:
       application/json:
         schema:
           $ref: "#/components/schemas/pet_record"
-  "400":
-    description: Fail
+  "404":
+    description: Pet not found
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/api_fail_response"
+  "409":
+    description: IntegrityError on post new pet_record, check primary keys
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/api_fail_response"
+  "500":
+    description: Fail to upload record image.
     content:
       application/json:
         schema:

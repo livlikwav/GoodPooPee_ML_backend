@@ -1,4 +1,5 @@
 import datetime
+import logging
 from app import db
 from app.models.blacklist_user_token import BlacklistUserToken
 import bcrypt
@@ -97,3 +98,5 @@ class User(db.Model):
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
+        
+        logging.info('Successed to set fake users')

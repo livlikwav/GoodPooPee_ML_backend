@@ -1,4 +1,5 @@
 import datetime
+import logging
 from .. import db
 
 class Pad(db.Model):
@@ -47,3 +48,5 @@ class Pad(db.Model):
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
+        
+        logging.info('Successed to set fake pads')
