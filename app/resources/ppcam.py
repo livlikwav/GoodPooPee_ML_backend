@@ -43,8 +43,10 @@ class PpcamRegisterApi(Resource):
             ip_address = request.json['ip_address'],
             user_id = exist_user_record.id,
         )
+        db.session.add(new_ppcam)
+        # update serial nums table
+        exist_serial_record.sold = 1
         try:
-            db.session.add(new_ppcam)
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
@@ -60,16 +62,23 @@ class PpcamLoginApi(Resource):
     def post(self):
         # check that ppcam profile exist
         login_device = Ppcam.query.filter_by(serial_num = request.json['serial_num']).first()
-        if login_device is not None:
-            device_auth_token = login_device.encode_auth_token(login_device.id)
-            return {
-                'device_access_token' : device_auth_token.decode('UTF-8')
-            }, 200
-        else:
+        if login_device is None:
             return {
                 "msg" : "Serial number is invalid"
             }, 401
-        
+        # check that ppcam registered(sold == 1)
+        if login_device.sold != 1:
+            device_auth_token = login_device.encode_auth_token(login_device.id)
+            user_id = login_device.id
+            return {
+                'device_access_token' : device_auth_token.decode('UTF-8'),
+                'user_id' : login_device.id,
+                
+            }, 200
+        else:
+            return {
+                "msg" : "This device is not registered"
+            }, 409
 
 class PpcamApi(Resource):
     @confirm_account

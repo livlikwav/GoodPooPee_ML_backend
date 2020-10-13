@@ -34,6 +34,9 @@ class PetRecordApi(Resource):
         :Param pet_id: pet id of the record
         """
         from sqlalchemy.exc import IntegrityError
+        # debug
+        logging.warning(request.form)
+
         # find user by pet_id
         selected_pet = Pet.query.filter_by(id = pet_id).first()
         # check 404
