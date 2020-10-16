@@ -61,17 +61,13 @@ swagger_template = {
                         "type": "string",
                         "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
                     },
-                    "user_id" : {
-                        "type" : "integer",
-                        "format" : "int32"
+                    "user" : {
+                        "type" : "object",
+                        "$ref" : "#/components/schemas/user"
                     },
-                    "pet_id" : {
-                        "type" : "integer",
-                        "format" : "int32"
-                    },
-                    "ppcam_id" : {
-                        "type" : "integer",
-                        "format" : "int32"
+                    "pet" : {
+                        "type" : "object",
+                        "$ref" : "#/components/schemas/pet",
                     }
                 }
             },
@@ -176,18 +172,6 @@ swagger_template = {
                     "last_name": {
                         "type": "string",
                         "example": "Ha"
-                    },
-                    "hashed_password": {
-                        "type": "string",
-                        "example": "qef211rgr2365h123sdfwert123123"
-                    },
-                    "created_date": {
-                        "type": "string",
-                        "example": "2020-08-15T16:28:39"
-                    },
-                    "last_modified_date": {
-                        "type": "string",
-                        "example": "2020-08-15T16:28:39"
                     }
                 }
             },
@@ -248,17 +232,9 @@ swagger_template = {
                     },
                     "birth": {
                         "type": "string",
-                        "example": "19981011"
-                    },
-                    "adoption": {
-                        "type": "string",
-                        "example": "20001011"
-                    },
-                    "created_date": {
-                        "type": "string",
                         "example": "2020-08-15T16:28:39"
                     },
-                    "last_modified_date": {
+                    "adoption": {
                         "type": "string",
                         "example": "2020-08-15T16:28:39"
                     }

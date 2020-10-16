@@ -96,19 +96,15 @@
       "pet": {
         "properties": {
           "adoption": {
-            "example": "20001011", 
+            "example": "2020-08-15T16:28:39", 
             "type": "string"
           }, 
           "birth": {
-            "example": "19981011", 
+            "example": "2020-08-15T16:28:39", 
             "type": "string"
           }, 
           "breed": {
             "example": "poodle", 
-            "type": "string"
-          }, 
-          "created_date": {
-            "example": "2020-08-15T16:28:39", 
             "type": "string"
           }, 
           "gender": {
@@ -119,10 +115,6 @@
             "example": "1", 
             "format": "int64", 
             "type": "integer"
-          }, 
-          "last_modified_date": {
-            "example": "2020-08-15T16:28:39", 
-            "type": "string"
           }, 
           "name": {
             "example": "mungchi", 
@@ -441,10 +433,6 @@
       }, 
       "user": {
         "properties": {
-          "created_date": {
-            "example": "2020-08-15T16:28:39", 
-            "type": "string"
-          }, 
           "email": {
             "example": "gaonrudal@gmail.com", 
             "type": "string"
@@ -453,18 +441,10 @@
             "example": "Gyeongmin", 
             "type": "string"
           }, 
-          "hashed_password": {
-            "example": "qef211rgr2365h123sdfwert123123", 
-            "type": "string"
-          }, 
           "id": {
             "example": "1", 
             "format": "int64", 
             "type": "integer"
-          }, 
-          "last_modified_date": {
-            "example": "2020-08-15T16:28:39", 
-            "type": "string"
           }, 
           "last_name": {
             "example": "Ha", 
@@ -479,17 +459,13 @@
             "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg", 
             "type": "string"
           }, 
-          "pet_id": {
-            "format": "int32", 
-            "type": "integer"
+          "pet": {
+            "$ref": "#/components/schemas/pet", 
+            "type": "object"
           }, 
-          "ppcam_id": {
-            "format": "int32", 
-            "type": "integer"
-          }, 
-          "user_id": {
-            "format": "int32", 
-            "type": "integer"
+          "user": {
+            "$ref": "#/components/schemas/user", 
+            "type": "object"
           }
         }, 
         "type": "object"
