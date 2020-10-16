@@ -10,13 +10,20 @@ from app.models.ppcam import Ppcam
 from app.models.blacklist_user_token import BlacklistUserToken
 from app.utils.decorators import confirm_account
 
-
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
-        
+        include_fk = True
+
+
+class PetSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Pet
+        include_fk = True
+
 # make instances of schemas
 user_schema = UserSchema()
+pet_schema = PetSchema()
 
 class RegisterApi(Resource):
     def post(self):
@@ -52,33 +59,23 @@ class LoginApi(Resource):
         user_pw = request.json['password']
         # query related info of user
         login_user = User.query.filter_by(email = user_email).first()
-        pet_id_of_user = self.get_pet_id(login_user.id)
-        ppcam_id_of_user = self.get_ppcam_id(login_user.id)
         # check user profile existency and password
         if login_user is not None and login_user.verify_password(user_pw):
             token = login_user.encode_auth_token(login_user.id)
             return {
                 'access_token' : token.decode('UTF-8'),
-                'user_id' : login_user.id,
-                'pet_id' : pet_id_of_user,
-                'ppcam_id': ppcam_id_of_user
+                'user' : user_schema.dump(login_user),
+                'pet' : pet_schema.dump(self.get_pet(login_user.id)),
             }, 200
         else:
             return {
                 "msg" : "Fail to authentication"
             }, 401
 
-    def get_pet_id(self, user_id):
+    def get_pet(self, user_id: int) -> str:
         owned_pet = Pet.query.filter_by(user_id = user_id).first()
         if(owned_pet is not None):
-            return owned_pet.id
-        else:
-            return None
-    
-    def get_ppcam_id(self, user_id):
-        owned_ppcam = Ppcam.query.filter_by(user_id = user_id).first()
-        if(owned_ppcam is not None):
-            return owned_ppcam.id
+            return owned_pet
         else:
             return None
 
