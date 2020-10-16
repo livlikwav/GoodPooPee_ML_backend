@@ -28,6 +28,7 @@ class DailyStatApi(Resource):
             return daily_stat_schema.dump(selected_record), 200
 
 class WeeklyStatApi(Resource):
+    @confirm_account
     def get(self, pet_id):
         today_date = string_to_date(request.args.get("date"))
         start_date = today_date - datetime.timedelta(days = 6)
