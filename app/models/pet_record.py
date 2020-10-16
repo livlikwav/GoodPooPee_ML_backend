@@ -5,7 +5,7 @@ from flask import request
 from app.models.dailystatistics import DailyStatistics
 from app.models.monthlystatistics import MonthlyStatistics
 from app.utils.s3 import upload_fileobj, delete_file
-from app import db
+from app import db, ma
 import datetime
 import uuid
 
@@ -121,3 +121,21 @@ class PetRecord(db.Model):
 
 
         logging.info('Successed to set fake pet records')
+
+
+class PetRecordSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = PetRecord
+        include_fk = True
+
+class DelPetRecordSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = PetRecord
+    
+    timestamp = ma.auto_field()
+    pet_id = ma.auto_field()
+    user_id = ma.auto_field()
+
+class RecordQuerySchema(ma.Schema):
+    class Meta:
+        fields = ["timestamp"]

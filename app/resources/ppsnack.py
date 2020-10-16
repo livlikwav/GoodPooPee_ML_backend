@@ -1,7 +1,6 @@
-from flask import request, jsonify
+from flask import request
 from flask_restful import Resource
 from app.models.ppcam import Ppcam
-from app import db, ma
 
 class PpsnackApi(Resource):
     def get(self, ppcam_id):

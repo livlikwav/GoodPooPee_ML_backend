@@ -1,18 +1,12 @@
 from app.models.pet import Pet
-from flask import json
 from app.models.user import User
 from app.models.ppcam_serial_nums import PpcamSerialNums
-from flask import request, jsonify
+from flask import request
 from flask_restful import Resource
-from app.models.ppcam import Ppcam
+from app.models.ppcam import Ppcam, PpcamSchema
 from app.utils.decorators import confirm_account
-from app import db, ma
+from app import db
 import datetime
-
-class PpcamSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Ppcam
-        include_fk = True
 
 # make instances of schemas
 ppcam_schema = PpcamSchema()

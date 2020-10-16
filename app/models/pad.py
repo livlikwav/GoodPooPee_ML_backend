@@ -1,6 +1,6 @@
 import datetime
 import logging
-from .. import db
+from .. import db, ma
 
 class Pad(db.Model):
     __tablename__ = 'pad'
@@ -50,3 +50,8 @@ class Pad(db.Model):
                 db.session.rollback()
         
         logging.info('Successed to set fake pads')
+
+class PadSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Pad
+        include_fk = True

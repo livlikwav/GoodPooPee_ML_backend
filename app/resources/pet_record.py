@@ -1,32 +1,22 @@
 import logging
 from app.utils.datetime import string_to_datetime
-from flask import request, jsonify
+from flask import request
 from flask_restful import Resource
 from app.models.pet import Pet
-from app.models.pet_record import PetRecord
+from app.models.pet_record import DelPetRecordSchema, PetRecord, PetRecordSchema, RecordQuerySchema
 from app.utils.decorators import confirm_account, confirm_device
-from app import db, ma
+from app import db
 import datetime
-
-class PetRecordSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = PetRecord
-        include_fk = True
-
-class RecordQuerySchema(ma.Schema):
-    class Meta:
-        fields = ["timestamp"]
-
 
 # make instances of schemas
 pet_record_schema = PetRecordSchema()
 # pet_records_schema = PetRecordSchema(many=True)
-deleted_record_schema = PetRecordSchema(only=("timestamp", "pet_id", "user_id"))
+deleted_record_schema = DelPetRecordSchema()
 record_query_schema = RecordQuerySchema()
 
 class PetRecordApi(Resource):
     @confirm_device
-    def post(self, pet_id):
+    def post(self, pet_id: int):
         """
         Post new pet record by Ppcam(device)
         TEST by form-data, not raw JSON

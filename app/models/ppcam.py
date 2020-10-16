@@ -1,7 +1,7 @@
 import logging
 from flask import jsonify
 import datetime
-from .. import db
+from .. import db, ma
 from app.models.blacklist_device_token import BlacklistDeviceToken
 import jwt
 
@@ -122,3 +122,9 @@ class Ppcam(db.Model):
                 db.session.rollback()
             
         logging.info('Successed to set fake ppcams')
+
+
+class PpcamSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Ppcam
+        include_fk = True

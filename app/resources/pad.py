@@ -1,14 +1,9 @@
-from flask import request, jsonify
+from flask import request
 from flask_restful import Resource
-from app.models.pad import Pad
+from app.models.pad import Pad, PadSchema
 from app.utils.decorators import confirm_account
-from app import db, ma
+from app import db
 import datetime
-
-class PadSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Pad
-        include_fk = True
 
 # make instances of schemas
 pad_schema = PadSchema()

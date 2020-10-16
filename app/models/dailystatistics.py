@@ -1,8 +1,6 @@
 import datetime
 import logging
-from app.utils.datetime import string_to_date
-from .. import db
-import sys
+from .. import db, ma
 
 class DailyStatistics(db.Model):
     __tablename__ = 'daily_stat'
@@ -101,3 +99,8 @@ class DailyStatistics(db.Model):
             # db.session.rollback()
             # bubbling for transaction
             raise e
+    
+class DailyStatSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = DailyStatistics
+        include_fk = True

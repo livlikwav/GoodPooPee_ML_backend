@@ -1,37 +1,11 @@
-from flask import request, jsonify
+from flask import request
 from flask_restful import Resource
-from flasgger import swag_from
-import bcrypt
 
-from app import db, ma
-from app.models.user import User
-from app.models.pet import Pet
-from app.models.ppcam import Ppcam
+from app import db
+from app.models.user import User, UserSchema
+from app.models.pet import Pet, PetSchema
 from app.models.blacklist_user_token import BlacklistUserToken
 from app.utils.decorators import confirm_account
-
-class UserSchema(ma.SQLAlchemySchema):
-    class Meta:
-        model = User
-    
-    id = ma.auto_field()
-    email = ma.auto_field()
-    first_name = ma.auto_field()
-    last_name = ma.auto_field()
-
-
-class PetSchema(ma.SQLAlchemySchema):
-    class Meta:
-        model = Pet
-        include_fk = True
-
-    id = ma.auto_field()
-    user_id = ma.auto_field()
-    name = ma.auto_field()
-    breed = ma.auto_field()
-    gender = ma.auto_field()
-    birth = ma.auto_field()
-    adoption = ma.auto_field()
 
 # make instances of schemas
 user_schema = UserSchema()

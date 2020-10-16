@@ -1,23 +1,9 @@
-from flask import request, jsonify
+from flask import request
 from flask_restful import Resource
-from app.models.pet import Pet
-from app import db, ma
+from app.models.pet import Pet, PetSchema
+from app import db
 from app.utils.decorators import confirm_account
 import datetime
-
-
-class PetSchema(ma.SQLAlchemySchema):
-    class Meta:
-        model = Pet
-        include_fk = True
-
-    id = ma.auto_field()
-    user_id = ma.auto_field()
-    name = ma.auto_field()
-    breed = ma.auto_field()
-    gender = ma.auto_field()
-    birth = ma.auto_field()
-    adoption = ma.auto_field()
 
 # make instances of schemas
 pet_schema = PetSchema()

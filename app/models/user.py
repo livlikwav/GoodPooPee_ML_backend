@@ -1,6 +1,6 @@
 import datetime
 import logging
-from app import db
+from app import db, ma
 from app.models.blacklist_user_token import BlacklistUserToken
 import bcrypt
 import jwt
@@ -100,3 +100,13 @@ class User(db.Model):
                 db.session.rollback()
         
         logging.info('Successed to set fake users')
+
+
+class UserSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = User
+    
+    id = ma.auto_field()
+    email = ma.auto_field()
+    first_name = ma.auto_field()
+    last_name = ma.auto_field()

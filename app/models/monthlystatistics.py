@@ -4,12 +4,9 @@ WARNING: ' table's Timestamp vals are base on UTC
 But, this table 'monthly_stat' Date vals are based on KST
 """
 import datetime
-import logging
 from dateutil.relativedelta import *
 from app.models.dailystatistics import DailyStatistics
-from flask import jsonify
-from .. import db
-import sys
+from .. import db, ma
 
 class MonthlyStatistics(db.Model):
     __tablename__ = 'monthly_stat'
@@ -102,3 +99,8 @@ class MonthlyStatistics(db.Model):
         except IntegrityError as e:
             # bubbling for transaction
             raise e
+
+class MonthlyStatSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = MonthlyStatistics
+        include_fk = True

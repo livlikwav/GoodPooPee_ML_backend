@@ -1,23 +1,12 @@
 from app.utils.datetime import string_to_date
 import logging
-from flask import request, jsonify
+from flask import request
 from flask_restful import Resource
 import datetime
 
-from app import db, ma
-from app.models.dailystatistics import DailyStatistics
-from app.models.monthlystatistics import MonthlyStatistics
+from app.models.dailystatistics import DailyStatSchema, DailyStatistics
+from app.models.monthlystatistics import MonthlyStatSchema, MonthlyStatistics
 from app.utils.decorators import confirm_account
-
-class DailyStatSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = DailyStatistics
-        include_fk = True
-
-class MonthlyStatSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = MonthlyStatistics
-        include_fk = True
 
 # make instances of schemas
 daily_stat_schema = DailyStatSchema()

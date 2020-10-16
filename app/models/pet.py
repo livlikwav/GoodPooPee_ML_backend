@@ -1,7 +1,7 @@
 import logging
 import pytz
 import datetime
-from .. import db
+from .. import db, ma
 
 class Pet(db.Model):
     __tablename__ = 'pet'
@@ -60,3 +60,18 @@ class Pet(db.Model):
                 db.session.rollback()
 
         logging.info('Successed to set fake pets')
+
+
+
+class PetSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Pet
+        include_fk = True
+
+    id = ma.auto_field()
+    user_id = ma.auto_field()
+    name = ma.auto_field()
+    breed = ma.auto_field()
+    gender = ma.auto_field()
+    birth = ma.auto_field()
+    adoption = ma.auto_field()
