@@ -8,3 +8,4 @@ RUN     pip install --no-cache-dir -r requirements.txt
 ENV     PYTHONUNBUFFERED=0
 ADD     https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /
 RUN     chmod +x /wait-for-it.sh
+ENTRYPOINT ["bash","-c","/wait-for-it.sh mysql:3306 -t 30 -- python manage.py run"]
