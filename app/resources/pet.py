@@ -1,13 +1,9 @@
-from flask import request, jsonify
+from flask import request
 from flask_restful import Resource
-from app.models.pet import Pet
-from app import db, ma
+from app.models.pet import Pet, PetSchema
+from app import db
 from app.utils.decorators import confirm_account
 import datetime
-class PetSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Pet
-        include_fk = True
 
 # make instances of schemas
 pet_schema = PetSchema()
@@ -19,10 +15,9 @@ class PetRegisterApi(Resource):
         # check that pet's name already exists
         pet = Pet.query.filter_by(user_id=request.json['user_id'], name=request.json['name']).first()
         if pet:
-            return jsonify({
-                "status" : "Fail",
+            return {
                 "msg" : f"name \'{pet.name}\' already exists"
-            })
+            }, 409
         new_pet = Pet(
             name = request.json['name'],
             breed = request.json['breed'],
@@ -34,14 +29,14 @@ class PetRegisterApi(Resource):
         )
         db.session.add(new_pet)
         db.session.commit()
-        return pet_schema.dump(new_pet)
+        return pet_schema.dump(new_pet), 200
 
 
 class PetApi(Resource):
     @confirm_account
     def get(self, pet_id):
         selected_pet = Pet.query.filter_by(id = pet_id).first()
-        return pet_schema.dump(selected_pet)
+        return pet_schema.dump(selected_pet), 200
 
     @confirm_account
     def put(self, pet_id):
@@ -50,10 +45,9 @@ class PetApi(Resource):
         # check with updated user_id
         duplicated_pet = Pet.query.filter_by(user_id=request.json['user_id'], name=request.json['name']).first()
         if duplicated_pet:
-            return jsonify({
-                "status" : "Fail",
-                "msg" : f"name \'{pet.name}\' already exists"
-            })
+            return {
+                "msg" : f"name \'{duplicated_pet.name}\' already exists"
+            }, 409
         try:
             updated_pet = Pet.query.filter_by(id = pet_id).first()
             updated_pet.name = request.json['name']
@@ -65,11 +59,11 @@ class PetApi(Resource):
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
-            return jsonify({
+            return {
                 "status" : "Fail",
                 "msg" : "Integrity error on updating pet profile"
-            })
-        return pet_schema.dump(updated_pet)
+            }, 409
+        return pet_schema.dump(updated_pet), 200
 
     @confirm_account
     def delete(self, pet_id):
@@ -80,11 +74,9 @@ class PetApi(Resource):
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
-            return jsonify({
-                "status" : "Fail",
+            return {
                 "msg" : "IntegrityError of deleting pet profile, maybe because of foreign keys."
-            })
-        return jsonify({
-            "status" : "Success",
+            }, 409
+        return {
             "msg" : "Successfully deleted pet profile."
-        })
+        }, 200

@@ -1,9 +1,10 @@
+from pytz import timezone, utc
+import logging
 from flask import request
 from app.models.dailystatistics import DailyStatistics
 from app.models.monthlystatistics import MonthlyStatistics
-from app.utils.datetime import get_kst_date
 from app.utils.s3 import upload_fileobj, delete_file
-from app import db
+from app import db, ma
 import datetime
 import uuid
 
@@ -24,15 +25,18 @@ class PetRecord(db.Model):
     def __repr__(self):
         return f"<PetRecord : {self.timestamp}, {self.pet_id}, {self.user_id}, {self.result}, {self.image_uuid}>"
 
-    def update_stats(self, last_timestamp):
+    @staticmethod
+    def update_stats(pet_id: int, user_id: int, new_datetime: datetime.datetime, old_datetime: datetime.datetime) -> None:
         """
         By new pet record, Update daily_stat and monthly_stat tables
-        :Param: datetime.datetime(naive, but UTC)
-        :Return:
         """
         # update daily_stat first
-        DailyStatistics.update(self, last_timestamp)
-        MonthlyStatistics.update(self, last_timestamp)
+        try:
+            DailyStatistics.update(pet_id, user_id, new_datetime, old_datetime)
+            MonthlyStatistics.update(pet_id, user_id, new_datetime, old_datetime)
+        except Exception as e:
+            # bubbling for transaction
+            raise e
     
     def upload_record_image(self, image_file):
         """
@@ -57,35 +61,80 @@ class PetRecord(db.Model):
             return True
         else:
             return False
+    
+    @staticmethod
+    def generate_fake(id):
+        '''
+        user_id and pet_id is same (id)
+        number of records == count var
+        '''
+        from sqlalchemy.exc import IntegrityError
+        from random import seed, choice
+        from faker import Faker
         
-        
-    # ----- set fake data not automatically, because of updating stats -----
-    # @staticmethod
-    # def generate_fake(count):
-    #     # Generate a number of fake pet records for testing
-    #     from sqlalchemy.exc import IntegrityError
-    #     from random import seed, choice
-    #     from faker import Faker
-        
-    #     fake = Faker()
+        fake = Faker()
+        delta_samples = [
+            datetime.timedelta(hours = 0),
+            datetime.timedelta(hours = 1),
+            datetime.timedelta(hours = 2),
+            datetime.timedelta(hours = 3),
+            datetime.timedelta(days = 1),
+            datetime.timedelta(days = 1, hours = 1),
+            datetime.timedelta(days = 2),
+            datetime.timedelta(days = 2, hours = 1),
+            datetime.timedelta(weeks = 1),
+            datetime.timedelta(weeks = 1, hours = 1),
+            datetime.timedelta(weeks = 2),
+            datetime.timedelta(weeks = 2, hours = 1),
+            datetime.timedelta(days = 31),
+            datetime.timedelta(days = 31, hours = 1),
+            datetime.timedelta(days = 31 * 2),
+            datetime.timedelta(days = 31 * 2, hours = 1),
+        ]
 
-    #     seed()
-    #     # get random utc datetime
-    #     time_now = datetime.datetime.utcnow() - datetime.timedelta(hours = count)
-    #     for i in range(count):
-    #         p = PetRecord(
-    #             timestamp = time_now + (datetime.timedelta(hours=1)*i),
-    #             result = choice(['SUCCESS', 'FAIL']),
-    #             image_uuid = '(FAKE)' + fake.uuid4(),
+        seed()
+        # get random kst datetime for test
+        datetime_now = utc.localize(datetime.datetime.utcnow()).astimezone(timezone('Asia/Seoul'))
+        logging.info(f'datetime_now = ${datetime_now}')
+        for i in range(len(delta_samples)):
+            gen_time = datetime_now - delta_samples[i]
+            logging.info(f'gen_time : {gen_time}')
+            new_record = PetRecord(
+                timestamp = gen_time,
+                result = choice(['SUCCESS', 'FAIL']),
+                image_uuid = '(FAKE)' + fake.uuid4(),
 
-    #             # match one foreign_key by one user
-    #             # id start from 1
-    #             pet_id=i+1,
-    #             user_id=i+1
-    #         )
-    #         try:
-    #             db.session.add(p)
-    #             db.session.commit()
-    #         except IntegrityError:
-    #             db.session.rollback()
+                # only for user 1 and pet 1
+                pet_id=id,
+                user_id=id
+            )
+            try:
+                db.session.add(new_record)
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                logging.error(e)
+            
+            # update stat tables
+            PetRecord.update_stats(id, id, gen_time, gen_time)
 
+
+        logging.info('Successed to set fake pet records')
+
+
+class PetRecordSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = PetRecord
+        include_fk = True
+
+class DelPetRecordSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = PetRecord
+    
+    timestamp = ma.auto_field()
+    pet_id = ma.auto_field()
+    user_id = ma.auto_field()
+
+class RecordQuerySchema(ma.Schema):
+    class Meta:
+        fields = ["timestamp"]

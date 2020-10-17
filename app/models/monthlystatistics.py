@@ -1,15 +1,12 @@
 """
 statistical data of pet's train result per month
-WARNING: 'pet_record' table's Timestamp vals are base on UTC
+WARNING: ' table's Timestamp vals are base on UTC
 But, this table 'monthly_stat' Date vals are based on KST
 """
 import datetime
 from dateutil.relativedelta import *
-from app.utils.datetime import get_kst_date
 from app.models.dailystatistics import DailyStatistics
-from flask import jsonify
-from .. import db
-import sys
+from app import db, ma
 
 class MonthlyStatistics(db.Model):
     __tablename__ = 'monthly_stat'
@@ -32,23 +29,25 @@ class MonthlyStatistics(db.Model):
     #     return f"<MonthlyStatistics : {self.count}, {self.success}, {self.progress}>"
 
     @staticmethod
-    def update(pet_record, last_timestamp):
+    def update(pet_id: int, user_id: int, new_datetime: datetime.datetime, old_datetime: datetime.datetime) -> None:
         """
         update monthly_stat by new pet record
-        :Params: PetRecord(), datetime.datetime(naive, but UTC)
-        :Return:
         """
         # check that month value of record is changed
-        last_kst_month = get_kst_date(last_timestamp).replace(day=1)
-        kst_month = get_kst_date(pet_record.timestamp).replace(day=1)
-        if(last_kst_month == kst_month): # 1 month update
-            MonthlyStatistics.update_month(pet_record.pet_id, pet_record.user_id, kst_month)
-        else: # 2 month update
-            MonthlyStatistics.update_month(pet_record.pet_id, pet_record.user_id, kst_month)
-            MonthlyStatistics.update_month(pet_record.pet_id, pet_record.user_id, last_kst_month)
+        old_month = old_datetime.date().replace(day=1)
+        new_month = new_datetime.date().replace(day=1)
+        try:
+            if(old_month == new_month): # 1 month update
+                MonthlyStatistics.update_month(pet_id, user_id, new_month)
+            else: # 2 month update
+                MonthlyStatistics.update_month(pet_id, user_id, new_month)
+                MonthlyStatistics.update_month(pet_id, user_id, old_month)
+        except Exception as e:
+            # bubbling for transaction
+            raise e
 
     @staticmethod
-    def update_month(pet_id, user_id, kst_month):
+    def update_month(pet_id, user_id, selected_month):
         """
         Update one month_record by check all records of month
         :Params: Integer, Integer, datetime.date(naive, but KST)
@@ -58,12 +57,12 @@ class MonthlyStatistics(db.Model):
         # find all day records of the month
         daily_records = DailyStatistics.query.\
             filter_by(pet_id=pet_id).\
-            filter(DailyStatistics.date >= kst_month).\
-            filter(DailyStatistics.date < (kst_month + relativedelta(months=+1))).\
+            filter(DailyStatistics.date >= selected_month).\
+            filter(DailyStatistics.date < (selected_month + relativedelta(months=+1))).\
             all()
         # find month record
         month_record = MonthlyStatistics.query.\
-            filter_by(date=kst_month, pet_id=pet_id).first()
+            filter_by(date=selected_month, pet_id=pet_id).first()
         # if last day_record of the month deleted
         if len(daily_records) == 0:
             if month_record:
@@ -87,7 +86,7 @@ class MonthlyStatistics(db.Model):
                 count += day.count
                 success += day.success
             new_month_record = MonthlyStatistics(
-                date = kst_month,
+                date = selected_month,
                 pet_id = pet_id,
                 user_id = user_id,
                 count = count,
@@ -98,4 +97,10 @@ class MonthlyStatistics(db.Model):
         try:
             db.session.commit()
         except IntegrityError as e:
-            print(str(e), file=sys.stderr)
+            # bubbling for transaction
+            raise e
+
+class MonthlyStatSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = MonthlyStatistics
+        include_fk = True

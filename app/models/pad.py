@@ -1,5 +1,6 @@
 import datetime
-from .. import db
+import logging
+from app import db, ma
 
 class Pad(db.Model):
     __tablename__ = 'pad'
@@ -47,3 +48,10 @@ class Pad(db.Model):
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
+        
+        logging.info('Successed to set fake pads')
+
+class PadSchema(ma.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Pad
+        include_fk = True

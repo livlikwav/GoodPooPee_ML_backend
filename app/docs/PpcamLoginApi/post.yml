@@ -1,21 +1,21 @@
 tags:
   - ppcam
-summary: register ppcam profile by serial number
+summary: Logs ppcam into the system
 responses:
   "200":
     description: successful operation
     content:
       application/json:
         schema:
-          $ref: "#/components/schemas/register_ppcam"
-  "404":
-    description: Serial number or user email is invalid. check again.
+          $ref: "#/components/schemas/device_log_in"
+  "403":
+    description: This device is not registered
     content:
       application/json:
         schema:
           $ref: "#/components/schemas/api_fail_response"
-  "409":
-    description: Fail to add new ppcam(IntegrityError).
+  "404":
+    description: Serial number is invalid
     content:
       application/json:
         schema:
@@ -24,6 +24,6 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: "#/components/schemas/ppcam"
-  description: Ppcam object(user_id delivered by app to raspb)
+        $ref: "#/components/schemas/login_device"
+  description: Login device object
   required: true

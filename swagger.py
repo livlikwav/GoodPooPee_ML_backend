@@ -1,5 +1,5 @@
 swagger_config = {
-    'openapi': '3.0.0',
+    'openapi': '3.0.2',
     'doc_dir': './app/docs/'
 }
 
@@ -8,7 +8,7 @@ swagger_template = {
         "description": "SWMaestro 11th, Team urillbwa, Goodpoopee. \
         \n Maintainer: Gyeongmin Ha.\
         \n API versioning V[major].[minor]",
-        "version": "2.0",
+        "version": "2.0", # API version
         "termsOfService": "",
         "contact": {
             "email": "gaonrudal@gmail.com"
@@ -54,32 +54,47 @@ swagger_template = {
         },
         "schemas": {
             # for user login api's response schema
-            "user_auth_token": {
+            "user_log_in": {
                 "type": "object",
                 "properties": {
                     "access_token": {
                         "type": "string",
                         "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+                    },
+                    "user" : {
+                        "type" : "object",
+                        "$ref" : "#/components/schemas/user"
+                    },
+                    "pet" : {
+                        "type" : "object",
+                        "$ref" : "#/components/schemas/pet",
                     }
                 }
             },
-            # "device_auth_token": {
-            #     "type": "object",
-            #     "properties": {
-            #         "device_access_token": {
-            #             "type": "string",
-            #             "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
-            #         }
-            #     }
-            # },
+            "device_log_in": {
+                "type": "object",
+                "properties": {
+                    "device_access_token": {
+                        "type": "string",
+                        "example": "eyJ0dasd1g3V1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1OTk1Njc0MTMsImlhdCI6MTU5OTQ4MTAxMywic3ViIjoxfQ.ZSkYoZituRfGkoO44xNF7zDS01Dnk6IaTHVQOKNvzOg"
+                    },
+                    "ppcam_id" : {
+                        "type" : "integer",
+                        "format" : "int32"
+                    },
+                    "user_id" : {
+                        "type" : "integer",
+                        "format" : "int32"
+                    },
+                    "pet_id" : {
+                        "type" : "integer",
+                        "format" : "int32"
+                    }
+                }
+            },
             "api_response": {
                 "type": "object",
                 "properties": {
-                    "status": {
-                        "type": "integer",
-                        "format": "int32",
-                        "example": "Success"
-                    },
                     "message": {
                         "type": "string",
                         "example": "Success to ~~~"
@@ -89,11 +104,6 @@ swagger_template = {
             "api_fail_response": {
                 "type": "object",
                 "properties": {
-                    "status": {
-                        "type": "integer",
-                        "format": "int32",
-                        "example": "Fail"
-                    },
                     "message": {
                         "type": "string",
                         "example": "Fail to ~~~"
@@ -134,6 +144,15 @@ swagger_template = {
                     }
                 }
             },
+            "login_device": {
+                "type": "object",
+                "properties": {
+                    "serial_num": {
+                        "type": "string",
+                        "example": "PC1K1P210101N001"
+                    }
+                }
+            },
             "user": {
                 "type": "object",
                 "properties": {
@@ -153,18 +172,6 @@ swagger_template = {
                     "last_name": {
                         "type": "string",
                         "example": "Ha"
-                    },
-                    "hashed_password": {
-                        "type": "string",
-                        "example": "qef211rgr2365h123sdfwert123123"
-                    },
-                    "created_date": {
-                        "type": "string",
-                        "example": "2020-08-15T16:28:39"
-                    },
-                    "last_modified_date": {
-                        "type": "string",
-                        "example": "2020-08-15T16:28:39"
                     }
                 }
             },
@@ -225,17 +232,9 @@ swagger_template = {
                     },
                     "birth": {
                         "type": "string",
-                        "example": "19981011"
-                    },
-                    "adoption": {
-                        "type": "string",
-                        "example": "20001011"
-                    },
-                    "created_date": {
-                        "type": "string",
                         "example": "2020-08-15T16:28:39"
                     },
-                    "last_modified_date": {
+                    "adoption": {
                         "type": "string",
                         "example": "2020-08-15T16:28:39"
                     }
@@ -243,8 +242,12 @@ swagger_template = {
             },
             "pet_record": {
                 "type": "object",
-                "required": ["user_id", "pet_id", "result", "image_uuid"],
+                "required": ["timestamp", "user_id", "pet_id", "result", "image_uuid", "created_date", "last_modified_date"],
                 "properties": {
+                    "timestamp": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
+                    },
                     "user_id": {
                         "type": "integer",
                         "format": "int64"
@@ -260,6 +263,14 @@ swagger_template = {
                     "image_uuid": {
                         "type": "string",
                         "example": "3edfba2f-e180-45ed-b60d-58ef7fb35c96"
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
+                    },
+                    "last_modified_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
                     }
                 }
             },
@@ -341,17 +352,52 @@ swagger_template = {
                     }
                 }
             },
+            "total_month_report": {
+                "type": "array",
+                "items" : {
+                    "$ref" : "#/components/schemas/pet_monthly_report"
+                }
+            },
             "ppcam": {
                 "type": "object",
-                "required": ["ppcamId", "userId", "serialNum"],
+                "required": ["id", "user_id", "serial_num", "ip_address", "created_date", "last_modified_date"],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "serial_num": {
+                        "type": "string",
+                        "example": "PC1K1P210101N001",
+                    },
+                    "ip_address": {
+                        "type": "string",
+                        "example": "172.172.172.172",
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
+                    },
+                    "last_modified_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
+                    }
+                }
+            },
+            "register_ppcam": {
+                "type": "object",
+                "required": ["ppcamId", "userEmail", "serialNum"],
                 "properties": {
                     "ppcamId": {
                         "type": "integer",
                         "format": "int64"
                     },
-                    "userId": {
-                        "type": "integer",
-                        "format": "int64"
+                    "userEmail": {
+                        "type": "String",
                     },
                     "serialNum": {
                         "type": "integer",

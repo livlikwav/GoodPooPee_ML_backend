@@ -7,7 +7,7 @@ responses:
     content:
       application/json:
         schema:
-          $ref: "#/components/schemas/user_auth_token"
+          $ref: "#/components/schemas/user_log_in"
   "401":
     description: Invalid useremail/password supplied
     content:

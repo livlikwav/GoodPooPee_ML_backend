@@ -1,6 +1,7 @@
 import datetime
-from app import db
-from app.models.blacklisttoken import BlacklistToken
+import logging
+from app import db, ma
+from app.models.blacklist_user_token import BlacklistUserToken
 import bcrypt
 import jwt
 
@@ -59,11 +60,10 @@ class User(db.Model):
         try:
             from manage import app
             payload = jwt.decode(auth_token, app.config['JWT_SECRET_KEY'])
-            is_blacklisted_token = BlacklistToken.check_blacklist(auth_token)
+            is_blacklisted_token = BlacklistUserToken.check_blacklist(auth_token)
             if is_blacklisted_token:
-                return 'Token blacklisted. Please log in again.'
+                return 'User token blacklisted. Please log in again.'
             else:
-                # user_id is Integer
                 return payload['sub']
         except jwt.ExpiredSignatureError:
             return 'Signature expired. Please log in again.'
@@ -98,3 +98,15 @@ class User(db.Model):
                 db.session.commit()
             except IntegrityError:
                 db.session.rollback()
+        
+        logging.info('Successed to set fake users')
+
+
+class UserSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = User
+    
+    id = ma.auto_field()
+    email = ma.auto_field()
+    first_name = ma.auto_field()
+    last_name = ma.auto_field()

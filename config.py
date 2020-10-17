@@ -1,3 +1,4 @@
+import logging
 import os
 
 # DB Config
@@ -13,7 +14,7 @@ DB_URL = f"mysql+pymysql://{db['user']}:{db['password']}@{db['host']}:{db['port'
 
 class Config:
     DEBUG = False
-    BUCKET_NAME = 'gpp-bucket'
+    BUCKET_NAME = 'gpp-images-1'
 
     # JWT SECRET KEY
     if os.environ.get('JWT_SECRET_KEY'):
@@ -36,6 +37,9 @@ class DevConfig(Config):
     SQLALCHEMY_DATABASE_URI = DB_URL
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # logging config
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(pathname)s>%(message)s')
+
     @classmethod
     def init_app(cls, app):
         print('[Dev Config]THIS APP IS IN DEBUG MODE. \
@@ -57,6 +61,9 @@ class ProductionConfig(Config):
     DEBUG = False
     # SQLALCHEMY_DATABASE_URI = DB_URL
     # SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # logging config
+    logging.basicConfig(level=logging.WARNING, format='%(levelname)s:%(pathname)s>%(message)s')
 
 config = {
     'dev' : DevConfig,

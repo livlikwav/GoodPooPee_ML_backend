@@ -1,14 +1,9 @@
-from flask import request, jsonify
+from flask import request
 from flask_restful import Resource
-from app.models.pad import Pad
+from app.models.pad import Pad, PadSchema
 from app.utils.decorators import confirm_account
-from app import db, ma
+from app import db
 import datetime
-
-class PadSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Pad
-        include_fk = True
 
 # make instances of schemas
 pad_schema = PadSchema()
@@ -20,10 +15,10 @@ class PadApi(Resource):
         from sqlalchemy.exc import IntegrityError
         existed_pad = Pad.query.filter_by(ppcam_id=ppcam_id).first()
         if existed_pad:
-            return jsonify({
+            return {
                 "status" : "Fail",
                 "msg" : "Pad profile already exists in that ppcam."
-            })
+            }, 409
             
         new_pad = Pad(
             lu = request.json['lu'],
@@ -38,10 +33,10 @@ class PadApi(Resource):
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
-            return jsonify({
+            return {
                 "status" : "Fail",
                 "msg" : "IntegrityError"
-            })
+            }, 409
         return pad_schema.dump(new_pad), 200
 
     @confirm_account
@@ -49,10 +44,10 @@ class PadApi(Resource):
         selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id).first()
 
         if not selected_pad:
-            return jsonify({
+            return {
                 "status" : "Fail",
                 "msg" : "Pad not found."
-            })
+            }, 404
 
         return pad_schema.dump(selected_pad), 200
 
@@ -62,10 +57,10 @@ class PadApi(Resource):
         selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id).first()
 
         if not selected_pad:
-            return jsonify({
+            return {
                 "status" : "Fail",
                 "msg" : "Pad not found."
-            })
+            }, 404
 
         try:
             selected_pad.lu = request.json['lu']
@@ -76,10 +71,10 @@ class PadApi(Resource):
             db.session.commit()
         except:
             db.session.rollback()
-            return jsonify({
+            return {
                 "status" : "Fail",
                 "msg" : "IntegrityError"
-            }), 400
+            }, 400
         return pad_schema.dump(selected_pad), 200
     
     @confirm_account
@@ -88,21 +83,21 @@ class PadApi(Resource):
         selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id).first()
 
         if not selected_pad:
-            return jsonify({
+            return {
                 "status" : "Fail",
                 "msg" : "Pad not found."
-            })
+            }, 404
 
         try:
             db.session.delete(selected_pad)
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
-            return jsonify({
+            return {
                 "status" : "Fail",
                 "msg" : "IntegrityError"
-            })
-        return jsonify({
+            }, 409
+        return {
             "status" : "Success",
             "msg" : "Successfully delete pad"
-        })
+        }, 200

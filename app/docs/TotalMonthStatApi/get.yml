@@ -1,6 +1,6 @@
 tags:
   - pet
-summary: get pet's weekly training report
+summary: get pet's all monthly training reports
 security: 
   - user_auth : []
 description: This can only be done by the logged in user.
@@ -18,7 +18,7 @@ responses:
     content:
       application/json:
         schema:
-          $ref: "#/components/schemas/pet_weekly_report"
+          $ref: "#/components/schemas/total_month_report"
   "404":
     description: Pet report not found
     content:

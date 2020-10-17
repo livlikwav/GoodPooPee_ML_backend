@@ -1,9 +1,9 @@
 import datetime
 from app import db
 
-class BlacklistToken(db.Model):
+class BlacklistDeviceToken(db.Model):
     # Token Model for sorting JWT tokens
-    __tablename__ = 'blacklist_tokens'
+    __tablename__ = 'blacklist_device_tokens'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     token = db.Column(db.String(500), unique=True, nullable=False)
@@ -13,7 +13,7 @@ class BlacklistToken(db.Model):
     @staticmethod
     def check_blacklist(auth_token):
         # check whether auth token has been blacklisted
-        res = BlacklistToken.query.filter_by(token=str(auth_token)).first()
+        res = BlacklistDeviceToken.query.filter_by(token=str(auth_token)).first()
         if res:
             return True
         else:

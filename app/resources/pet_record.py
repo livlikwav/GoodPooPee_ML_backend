@@ -1,30 +1,22 @@
-from flask import request, jsonify
+import logging
+from app.utils.datetime import string_to_datetime
+from flask import request
 from flask_restful import Resource
 from app.models.pet import Pet
-from app.models.pet_record import PetRecord
-from app.utils.decorators import device_permission_required, confirm_account
-from app import db, ma
+from app.models.pet_record import DelPetRecordSchema, PetRecord, PetRecordSchema, RecordQuerySchema
+from app.utils.decorators import confirm_account, confirm_device
+from app import db
 import datetime
-
-class PetRecordSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = PetRecord
-        include_fk = True
-
-class RecordQuerySchema(ma.Schema):
-    class Meta:
-        fields = ["timestamp"]
-
 
 # make instances of schemas
 pet_record_schema = PetRecordSchema()
 # pet_records_schema = PetRecordSchema(many=True)
-deleted_record_schema = PetRecordSchema(only=("timestamp", "pet_id", "user_id"))
+deleted_record_schema = DelPetRecordSchema()
 record_query_schema = RecordQuerySchema()
 
 class PetRecordApi(Resource):
-    # @device_permission_required
-    def post(self, pet_id):
+    @confirm_device
+    def post(self, pet_id: int):
         """
         Post new pet record by Ppcam(device)
         TEST by form-data, not raw JSON
@@ -32,13 +24,15 @@ class PetRecordApi(Resource):
         :Param pet_id: pet id of the record
         """
         from sqlalchemy.exc import IntegrityError
+        logging.debug(request.form)
+
         # find user by pet_id
         selected_pet = Pet.query.filter_by(id = pet_id).first()
-        if not selected_pet:
-            return jsonify({
-                "status" : "Fail",
-                "msg" : "Invalid pet_id"
-            })
+        # check 404
+        if selected_pet is None:
+            return {
+                "msg" : "Pet not found"
+            }, 404
         # make new record object
         new_record = PetRecord(
             timestamp = request.form['timestamp'],
@@ -51,10 +45,9 @@ class PetRecordApi(Resource):
         if image_uuid:
             new_record.image_uuid = image_uuid
         else:
-            return jsonify({
-                "status" : "Fail",
+            return {
                 "msg" : "Fail to upload record image."
-            })
+            }, 500
         # persistancy
         try:
             db.session.add(new_record)
@@ -62,28 +55,32 @@ class PetRecordApi(Resource):
         except IntegrityError as e:
             new_record.delete_record_image()
             db.session.rollback()
-            return jsonify({
-                "status" : "Fail",
+            logging.error(f'POST: {e}')
+            return {
                 "msg" : "IntegrityError on post new pet_record, check primary keys"
-            })
+            }, 409
         # update stat tables
-        new_record.update_stats(request.form['timestamp'])
-        return pet_record_schema.dump(new_record), 200
+        PetRecord.update_stats(new_record.pet_id, new_record.user_id, new_record.timestamp, string_to_datetime(request.form['timestamp']))
+        return pet_record_schema.dump(new_record)
 
     @confirm_account
     def get(self, pet_id):
         # validate query string by ma
         errors = record_query_schema.validate(request.args)
         if errors:
-            return jsonify({
-                "status" : "fail",
+            return {
                 "msg" : "error in get method - query schema validation"
-            })
+            }, 400
         # get timestamp in query string
         timestamp = request.args.get("timestamp")
         # get record by timestamp
         selected_record = PetRecord.query.filter_by(timestamp = timestamp, pet_id = pet_id).first()
-        return pet_record_schema.dump(selected_record)
+        if(selected_record is None):
+            return {
+                "msg" : "Pet record not found"
+            }, 404
+        else:
+            return pet_record_schema.dump(selected_record)
 
 
     @confirm_account
@@ -92,14 +89,18 @@ class PetRecordApi(Resource):
         # validate query string by ma
         errors = record_query_schema.validate(request.args)
         if errors:
-            return jsonify({
+            return {
                 "status" : "fail",
                 "msg" : "error in put method - query schema validation"
-            })
-        # get timestamp in query string
-        last_timestamp = request.args.get("timestamp")
+            }, 400
+        # get old datetime in query string
+        old_datetime = request.args.get("timestamp")
         # querying record
-        selected_record = PetRecord.query.filter_by(timestamp = last_timestamp, pet_id = pet_id).first()
+        selected_record = PetRecord.query.filter_by(timestamp = old_datetime, pet_id = pet_id).first()
+        if(selected_record is None):
+            return {
+                "msg" : "Pet record not found"
+            }, 404
         # update selected-record
         try:
             selected_record.timestamp = request.json['timestamp']
@@ -108,12 +109,11 @@ class PetRecordApi(Resource):
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
-            return jsonify({
-                "status" : "Fail",
-                "msg" : "Error in PetRecord, Put Api, check primary_keys"
-            })
+            return {
+                "msg" : "IntegrityError in put pet_record"
+            }, 409
         # update stat tables
-        selected_record.update_stats(last_timestamp)
+        PetRecord.update_stats(selected_record.pet_id, selected_record.user_id, selected_record.timestamp, string_to_datetime(old_datetime))
         return pet_record_schema.dump(selected_record)
 
     @confirm_account
@@ -122,27 +122,31 @@ class PetRecordApi(Resource):
         # validate query string by ma
         errors = record_query_schema.validate(request.args)
         if errors:
-            return jsonify({
-                "status" : "fail",
+            return {
                 "msg" : "error in delete method - query schema validation"
-            })
+            }, 400
         # get timestamp in query string
-        last_timestamp = request.args.get("timestamp")
-        selected_record = PetRecord.query.filter_by(timestamp = last_timestamp, pet_id = pet_id).first()
+        old_datetime = request.args.get("timestamp")
+        selected_record = PetRecord.query.filter_by(timestamp = old_datetime, pet_id = pet_id).first()
+        # check 404
+        if(selected_record is None):
+            return {
+                "msg" : "Pet record not found"
+            }, 404
+        deleted_pet_id = pet_id
+        deleted_user_id = selected_record.user_id
         try:
             db.session.delete(selected_record)
             db.session.commit()
+            # delete record image in S3
+            selected_record.delete_record_image()
         except IntegrityError as e:
             db.session.rollback()
-            return jsonify({
-                "status" : "Fail",
-                "msg" : "IntegrityError at deleting pet record"
-            })
-        # delete record image in S3
-        selected_record.delete_record_image()
+            return {
+                "msg" : "IntegrityError of deleting pet record"
+            }, 409
         # update stat tables
-        selected_record.update_stats(last_timestamp)
-        return jsonify({
-            "status" : "success",
+        PetRecord.update_stats(deleted_pet_id, deleted_user_id, string_to_datetime(old_datetime), string_to_datetime(old_datetime))
+        return {
             "msg" : "successfully delete selected record"
-        })
+        }, 200

@@ -1,25 +1,26 @@
-from flask import request, jsonify
+from flask import request
 from flask_restful import Resource
-from flasgger import swag_from
-import bcrypt
 
-from app import db, ma
-from app.models.user import User
-from app.models.blacklisttoken import BlacklistToken
+from app import db
+from app.models.user import User, UserSchema
+from app.models.pet import Pet, PetSchema
+from app.models.blacklist_user_token import BlacklistUserToken
 from app.utils.decorators import confirm_account
 
-
-class UserSchema(ma.SQLAlchemyAutoSchema):
-    class Meta:
-        model = User
-        
 # make instances of schemas
 user_schema = UserSchema()
-# users_schema = UserSchema(many=True)
+pet_schema = PetSchema()
 
 class RegisterApi(Resource):
     def post(self):
         from sqlalchemy.exc import IntegrityError
+        # check that email already exist
+        exist_user = User.query.filter_by(email = request.json['email']).first()
+        if(exist_user is not None):
+            return {
+                "msg" : "this email already exists"
+            }, 409
+        # create new user profile
         new_user = User(
             # id = request.json['id'], < auto-increasing
             email = request.json['email'],
@@ -32,25 +33,37 @@ class RegisterApi(Resource):
         try: 
             db.session.commit()
         except IntegrityError:
-            return jsonify({
-                "status" : "Fail",
-                "msg" : "this email already exists"
-            })
+            return {
+                "msg" : "Fail to register user because of IntegrityError on db"
+            }, 400
         return user_schema.dump(new_user)
 
 class LoginApi(Resource):
     def post(self):
+        # parsing request
         user_email = request.json['email']
         user_pw = request.json['password']
-
+        # query related info of user
         login_user = User.query.filter_by(email = user_email).first()
+        # check user profile existency and password
         if login_user is not None and login_user.verify_password(user_pw):
             token = login_user.encode_auth_token(login_user.id)
-            return jsonify({
-                'access_token' : token.decode('UTF-8')
-            })
+            return {
+                'access_token' : token.decode('UTF-8'),
+                'user' : user_schema.dump(login_user),
+                'pet' : pet_schema.dump(self.get_pet(login_user.id)),
+            }, 200
         else:
-            return '', 401
+            return {
+                "msg" : "Fail to authentication"
+            }, 401
+
+    def get_pet(self, user_id: int) -> str:
+        owned_pet = Pet.query.filter_by(user_id = user_id).first()
+        if(owned_pet is not None):
+            return owned_pet
+        else:
+            return None
 
 class LogoutApi(Resource):
     # Logout Resource
@@ -63,17 +76,17 @@ class LogoutApi(Resource):
         else:
             auth_token = ''
         # mark the token as blacklisted
-        blacklist_token = BlacklistToken(token=auth_token)
+        blacklist_token = BlacklistUserToken(token=auth_token)
         try:
             # insert the token
             db.session.add(blacklist_token)
             db.session.commit()
-            return jsonify({
+            return {
                 'status' : 'Success',
                 'message' : 'Successfully logged out.'
-            })
+            }, 200
         except Exception as e:
-            return jsonify({
+            return {
                 'status' : 'Fail',
                 'message' : e
-            })
+            }, 400
