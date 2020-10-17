@@ -1,6 +1,6 @@
 import datetime
 import logging
-from .. import db, ma
+from app import db, ma
 
 class DailyStatistics(db.Model):
     __tablename__ = 'daily_stat'

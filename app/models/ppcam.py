@@ -1,7 +1,6 @@
 import logging
-from flask import jsonify
 import datetime
-from .. import db, ma
+from app import db, ma
 from app.models.blacklist_device_token import BlacklistDeviceToken
 import jwt
 
@@ -16,7 +15,7 @@ class Ppcam(db.Model):
     last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
 
     user = db.relationship('User',
-        backref=db.backref('ppcams', lazy = True))
+        backref=db.backref('ppcams'), lazy = True)
 
     # def __repr__(self):
     #     return f"<Ppcam : {self.id}, {self.serial_num}>"
@@ -71,12 +70,12 @@ class Ppcam(db.Model):
         """
         if(test):
             # FAKE DATA FOR TESTING
-            return jsonify({
+            return {
                 "serial_num":"thisisfakedata",
                 "connection":"True",
                 "power":"True",
                 "feedback_ratio":"1"
-            })
+            }
         else:
             pass
 

@@ -11,7 +11,7 @@ from app.utils.decorators import confirm_account
 # make instances of schemas
 user_schema = UserSchema()
 pets_schema = PetSchema(many = True)
-ppcams_schema = PpcamSchema(maney = True)
+ppcams_schema = PpcamSchema(many = True)
 
 class UserApi(Resource):
     @confirm_account

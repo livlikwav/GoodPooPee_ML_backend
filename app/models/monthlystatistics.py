@@ -6,7 +6,7 @@ But, this table 'monthly_stat' Date vals are based on KST
 import datetime
 from dateutil.relativedelta import *
 from app.models.dailystatistics import DailyStatistics
-from .. import db, ma
+from app import db, ma
 
 class MonthlyStatistics(db.Model):
     __tablename__ = 'monthly_stat'

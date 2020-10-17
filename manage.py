@@ -4,11 +4,13 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
 from app import create_app, db
-from app.models import User, Ppcam, Pet, Pad, PetRecord
+from app.models.user import User
+from app.models.pet import Pet
+from app.models.pet_record import PetRecord
+from app.models.ppcam_serial_nums import PpcamSerialNums
 # from config import config as Config
 import os
 import logging
-import sys
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 # flask-script and migrate be initialized out of __init__

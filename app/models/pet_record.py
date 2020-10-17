@@ -1,5 +1,4 @@
 from pytz import timezone, utc
-from app.utils.datetime import string_to_datetime
 import logging
 from flask import request
 from app.models.dailystatistics import DailyStatistics

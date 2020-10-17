@@ -1,7 +1,7 @@
 import logging
 import pytz
 import datetime
-from .. import db, ma
+from app import db, ma
 
 class Pet(db.Model):
     __tablename__ = 'pet'
