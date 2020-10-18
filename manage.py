@@ -39,41 +39,51 @@ def set_test_env_1():
     Pet.generate_fake(count=10)
     PetRecord.generate_fake(id=1)
     PpcamSerialNums.generate_fake()
+    PpsnackSerialNums.generate_fake()
 
-@manager.option(
-    '-n',
-    '--number-users',
-    default=10,
-    type=int,
-    help='Num of each model type to create',
-    dest='number_users'
-)
-def add_fake_data(number_users):
-    "Adds fake data to the db"
-    User.generate_fake(count=number_users)
-    Pet.generate_fake(count=number_users)
+@manager.command
+def set_test_ppcam_comps():
+    Ppcam.generate_fake(count=10)
+    Pad.generate_fake(count=10)
+    Ppsnack.generate_fake(count=10)
+
+
+# @manager.option(
+#     '-i'
+#     '--ids',
+#     default=1,
+#     type=int,
+#     help='define user_id and pet_id (same)',
+#     dest='id'
+# )
+# def set_test_records(id):
+#     "Adds fake pet records to db"
+#     PetRecord.generate_fake(id=id)
+
+# @manager.option(
+#     '-n',
+#     '--number-users',
+#     default=10,
+#     type=int,
+#     help='Num of each model type to create',
+#     dest='number_users'
+# )
+# def add_fake_data(number_users):
+#     "Adds fake data to the db"
+#     User.generate_fake(count=number_users)
+#     Pet.generate_fake(count=number_users)
 
     # Dont need to make these fake datas
     # Pad.generate_fake(count=number_users)
     # Ppcam.generate_fake(count=number_users)
     # Ppsnack.generate_fake(count=number_users)
 
-@manager.option(
-    '-i'
-    '--ids',
-    default=1,
-    type=int,
-    help='define user_id and pet_id (same)',
-    dest='id'
-)
-def add_fake_pet_records(id):
-    "Adds fake pet records to db"
-    PetRecord.generate_fake(id=id)
 
-@manager.command
-def add_fake_serial_nums():
-    "Adds fake ppcam serial nums to db"
-    PpcamSerialNums.generate_fake()
+# @manager.command
+# def add_fake_serial_nums():
+#     "Adds fake ppcam serial nums to db"
+#     PpcamSerialNums.generate_fake()
+#     PpsnackSerialNums.generate_fake()
 
 @manager.command
 def setup_prod():

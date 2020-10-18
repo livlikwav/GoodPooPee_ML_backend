@@ -9,7 +9,7 @@ class Ppsnack(db.Model):
     ppcam_id = db.Column(db.Integer, db.ForeignKey('ppcam.id'), nullable = False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     serial_num = db.Column(db.String(250), unique = True, nullable = False)
-    feedback_ratio = db.Column(db.Float, nullable = False)
+    feedback = db.Column(db.Float, nullable = False)
     created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
     last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
 
@@ -20,7 +20,7 @@ class Ppsnack(db.Model):
     def generate_fake(count):
         # Generate a number of fake ppcams for testing
         from sqlalchemy.exc import IntegrityError
-        from random import seed, choice
+        from random import seed
         from faker import Faker
         from app.statics.test_samples import ppsnack_samples
         import random
@@ -31,7 +31,7 @@ class Ppsnack(db.Model):
         for i in range(count):
             p = Ppsnack(
                 serial_num = ppsnack_samples[(i % 10)], # 10 is number of samples
-                feedback_ratio = random.random(), # 0.0 ~ 1.0
+                feedback = random.random(), # 0.0 ~ 1.0
                 # match one foreign_key by one user
                 # user id start from 1
                 user_id = i+1,

@@ -62,39 +62,6 @@ class Ppcam(db.Model):
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.'
 
-    def get_ppsnack(self, test=False):
-        """
-        request ppcam to get method for ppsnack
-        params Boolean
-        returns JSON(ppsnack data)
-        """
-        if(test):
-            # FAKE DATA FOR TESTING
-            return {
-                "serial_num":"thisisfakedata",
-                "connection":"True",
-                "power":"True",
-                "feedback_ratio":"1"
-            }
-        else:
-            pass
-
-    def put_ppsnack(self, feedback_ratio, test=False):
-        """
-        request ppcam to put method for ppsnack
-        params Float, Boolean
-        returns Boolean
-        """
-        if(test):
-            # FAKE SUCCESS MSG TEMPLATE
-            {
-                "status":"FAKESUCCESS",
-                "msg":"this is fake success"
-            }
-            return True
-        else:
-            pass
-
     @staticmethod
     def generate_fake(count):
         # Generate a number of fake ppcams for testing
