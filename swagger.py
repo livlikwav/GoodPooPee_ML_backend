@@ -372,7 +372,7 @@ swagger_template = {
                     },
                     "serial_num": {
                         "type": "string",
-                        "example": "PC1K1P210101N001",
+                        "example": "PC1K1P210101N001"
                     },
                     "ip_address": {
                         "type": "string",
@@ -390,18 +390,19 @@ swagger_template = {
             },
             "register_ppcam": {
                 "type": "object",
-                "required": ["ppcamId", "userEmail", "serialNum"],
+                "required": ["ppcam_id", "user_id", "serial_num"],
                 "properties": {
-                    "ppcamId": {
+                    "ppcam_id": {
                         "type": "integer",
-                        "format": "int64"
+                        "format": "int32"
                     },
-                    "userEmail": {
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "serial_num": {
                         "type": "String",
-                    },
-                    "serialNum": {
-                        "type": "integer",
-                        "format": "int64"
+                        "example": "PC1K1P210101N001",
                     }
                 }
             },
@@ -429,21 +430,51 @@ swagger_template = {
                     }
                 }
             },
-            "ppsnack_config": {
+            "ppsnack": {
                 "type": "object",
-                "required": ["serial_num", "feedback_ratio", "ppcam_id"],
+                "required": ["id", "ppcam_id", "user_id", "serial_num", "feedback"],
                 "properties": {
-                    "serial_num": {
-                        "type": "string",
-                        "example": "ADW23123124124"
-                    },
-                    "feedback_ratio": {
-                        "type": "number",
-                        "example": "0~1 %"
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
                     },
                     "ppcam_id": {
                         "type": "integer",
                         "format": "int64"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "serial_num": {
+                        "type": "string",
+                        "example": "PC1K1P210101N001"
+                    },
+                    "feedback": {
+                        "type": "float",
+                        "example": "0.0 ~ 1.0",
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
+                    },
+                    "last_modified_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
+                    }
+                }
+            },
+            "put_ppsnack": {
+                "type": "object",
+                "required": ["serial_num", "feedback"],
+                "properties": {
+                    "serial_num": {
+                        "type": "string",
+                        "example": "PC1K1P210101N001"
+                    },
+                    "feedback": {
+                        "type": "float",
+                        "example": "0.0 ~ 1.0",
                     }
                 }
             },

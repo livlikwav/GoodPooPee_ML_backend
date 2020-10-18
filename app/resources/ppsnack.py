@@ -12,9 +12,11 @@ class PpsnackApi(Resource):
     def get(self, ppcam_id):
         '''
             Return ppsnack data by ppcam id
+            :path: ppcam_id: int
+            :body: None
         '''
         from sqlalchemy.exc import IntegrityError
-        ppsnack = Ppsnack.query.filter_by(id = ppcam_id).first()
+        ppsnack = Ppsnack.query.filter_by(ppcam_id = ppcam_id).first()
         if(ppsnack is None):
             return {
                 "msg" : "ppsnack not found"
@@ -25,11 +27,11 @@ class PpsnackApi(Resource):
     def put(self, ppcam_id):
         '''
             Update ppsnack data by request body
-            - serial_num: str
-            - feedback: float
+            :path: ppcam_id: int
+            :body: serial_num: str, feedback: float
         '''
         from sqlalchemy.exc import IntegrityError
-        ppsnack = Ppsnack.query.filter_by(id=ppcam_id).first()
+        ppsnack = Ppsnack.query.filter_by(ppcam_id=ppcam_id).first()
         if(ppsnack is None):
             return {
                 "msg" : "ppsnack not found"

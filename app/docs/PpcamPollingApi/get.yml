@@ -1,23 +1,23 @@
 tags:
   - ppcam
-summary: Get ppsnack config
+summary: ppcam request polling api at every 3 seconds
 security: 
-  - user_auth : []
-description: This can only be done by the logged in user.
+  - device_auth : []
+description: This can only be done by the logged in device.
 parameters:
   - name: ppcam_id
     in: path
-    description: ppcam id to get ppsnack config
+    description: ppcam id
     required: true
     schema:
       type: integer
 responses:
   "200":
     description: Successful operation
-    content:
-      application/json:
-        schema:
-          $ref: "#/components/schemas/ppsnack"
+    # content:
+    #   application/json:
+    #     schema:
+    #       $ref: "#/components/schemas/ppsnack"
   "404":
     description: Ppsnack config not found
     content:

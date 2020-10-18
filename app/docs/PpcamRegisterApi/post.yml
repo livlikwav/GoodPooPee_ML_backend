@@ -7,7 +7,7 @@ responses:
     content:
       application/json:
         schema:
-          $ref: "#/components/schemas/register_ppcam"
+          $ref: "#/components/schemas/ppcam"
   "404":
     description: Serial number or user email is invalid. check again.
     content:
@@ -24,6 +24,6 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: "#/components/schemas/ppcam"
+        $ref: "#/components/schemas/register_ppcam"
   description: Ppcam object(user_id delivered by app to raspb)
   required: true

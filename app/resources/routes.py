@@ -12,6 +12,7 @@ def init_routes(api):
     from .pad import PadApi
     from .ppsnack import PpsnackApi
     from .statistics import DailyStatApi, WeeklyStatApi, MonthlyStatApi, TotalMonthStatApi
+    from .polling import PpcamPollingApi
 
     # Helloworld
     api.add_resource(HelloWorld, '/')
@@ -34,6 +35,7 @@ def init_routes(api):
     api.add_resource(PpcamRegisterApi, '/ppcam/register')
     api.add_resource(PpcamLoginApi, '/ppcam/login')
     api.add_resource(PpcamApi, '/ppcam/<int:ppcam_id>')
+    api.add_resource(PpcamPollingApi, '/ppcam/<int:ppcam_id>/polling')
     # Pad
     api.add_resource(PadApi, '/ppcam/<int:ppcam_id>/pad')
     # Ppsnack
