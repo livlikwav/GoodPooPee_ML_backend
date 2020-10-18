@@ -11,16 +11,22 @@ parameters:
     required: true
     schema:
       type: integer
-      format: int64
+      format: int32
 responses:
   "200":
-    description: Successful operation
+    description: Success to delete pad
     content:
       application/json:
         schema:
           $ref: "#/components/schemas/api_response"
   "404":
     description: Pad not found
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/api_fail_response"
+  "409":
+    description: Fail to delete pad(IntegrityError).
     content:
       application/json:
         schema:

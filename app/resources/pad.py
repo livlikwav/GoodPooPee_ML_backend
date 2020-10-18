@@ -56,63 +56,77 @@ class PadApi(Resource):
 
     @confirm_account
     def get(self, ppcam_id):
+        '''
+            ppcam/<int:ppcam_id>/pad
+            Get pad profile
+            :path: ppcam_id: int
+            :body: None
+        '''
         selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id).first()
-
-        if not selected_pad:
+        # check that pad exist
+        if selected_pad is None:
             return {
-                "status" : "Fail",
                 "msg" : "Pad not found."
             }, 404
-
         return pad_schema.dump(selected_pad), 200
 
     @confirm_account
     def put(self, ppcam_id):
+        '''
+            ppcam/<int:ppcam_id>/pad
+            Put pad profile
+            :path: ppcam_id: int
+            :body: (int) ldx, ldy, lux, luy, rdx, rdy, rux, ruy
+        '''
         from sqlalchemy.exc import IntegrityError
         selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id).first()
-
-        if not selected_pad:
+        # check that pad exist
+        if selected_pad is None:
             return {
-                "status" : "Fail",
                 "msg" : "Pad not found."
             }, 404
-
+        # put new pad profile
         try:
-            selected_pad.lu = request.json['lu']
-            selected_pad.ld = request.json['ld']
-            selected_pad.ru = request.json['ru']
-            selected_pad.rd = request.json['rd']
+            selected_pad.lux = request.json['lux']
+            selected_pad.luy = request.json['luy']
+            selected_pad.ldx = request.json['ldx']
+            selected_pad.ldy = request.json['ldy']
+            selected_pad.rux = request.json['rux']
+            selected_pad.ruy = request.json['ruy']
+            selected_pad.rdx = request.json['rdx']
+            selected_pad.rdy = request.json['rdy']
             selected_pad.last_modified_date = datetime.datetime.utcnow()
             db.session.commit()
         except:
             db.session.rollback()
             return {
-                "status" : "Fail",
-                "msg" : "IntegrityError"
-            }, 400
+                "msg" : "Fail to update pad profile(IntegrityError)."
+            }, 409
         return pad_schema.dump(selected_pad), 200
     
     @confirm_account
     def delete(self, ppcam_id):
+        '''
+            ppcam/<int:ppcam_id>/pad
+            Delete pad profile
+            :path: ppcam_id: int
+            :body: None
+        '''
         from sqlalchemy.exc import IntegrityError
         selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id).first()
-
-        if not selected_pad:
+        # Check that pad exists
+        if selected_pad is None:
             return {
-                "status" : "Fail",
                 "msg" : "Pad not found."
             }, 404
-
         try:
             db.session.delete(selected_pad)
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
             return {
-                "status" : "Fail",
-                "msg" : "IntegrityError"
+                "msg" : "Fail to delete pad(IntegrityError)."
             }, 409
         return {
-            "status" : "Success",
-            "msg" : "Successfully delete pad"
+            "msg" : "Success to delete pad"
         }, 200

@@ -19,12 +19,6 @@ responses:
       application/json:
         schema:
           $ref: "#/components/schemas/pad"
-  "400":
-    description: Invalid pad object supplied
-    content:
-      application/json:
-        schema:
-          $ref: "#/components/schemas/api_fail_response"
   "404":
     description: Pad not found
     content:
