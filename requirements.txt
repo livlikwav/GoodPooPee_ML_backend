@@ -13,3 +13,4 @@ pytz
 python-dateutil
 boto3
 flasgger
+redis

@@ -1,5 +1,5 @@
 
-serial_num_samples = [
+ppcam_samples = [
     'PC1K1P210101N001',
     'PC1K1P210101N002',
     'PC1K1P210101N003',
@@ -10,6 +10,19 @@ serial_num_samples = [
     'PC1K1P210101N008',
     'PC1K1P210101N009',
     'PC1K1P210101N010',
+]
+
+ppsnack_samples = [
+    'PS1K1P210101N001',
+    'PS1K1P210101N002',
+    'PS1K1P210101N003',
+    'PS1K1P210101N004',
+    'PS1K1P210101N005',
+    'PS1K1P210101N006',
+    'PS1K1P210101N007',
+    'PS1K1P210101N008',
+    'PS1K1P210101N009',
+    'PS1K1P210101N010',
 ]
 
 breed_samples = [

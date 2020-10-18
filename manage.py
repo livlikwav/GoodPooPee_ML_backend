@@ -1,13 +1,8 @@
-from app.models.ppcam_serial_nums import PpcamSerialNums
-from flask import abort, request
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
 from app import create_app, db
-from app.models.user import User
-from app.models.pet import Pet
-from app.models.pet_record import PetRecord
-from app.models.ppcam_serial_nums import PpcamSerialNums
+from app.models import *
 # from config import config as Config
 import os
 import logging
@@ -61,6 +56,7 @@ def add_fake_data(number_users):
     # Dont need to make these fake datas
     # Pad.generate_fake(count=number_users)
     # Ppcam.generate_fake(count=number_users)
+    # Ppsnack.generate_fake(count=number_users)
 
 @manager.option(
     '-i'
