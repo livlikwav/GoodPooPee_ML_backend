@@ -1,0 +1,33 @@
+tags:
+  - ppcam
+summary: Post ppsnack
+security: 
+  - device_auth : []
+description: This can only be done by the logged in device.
+parameters:
+  - name: ppcam_id
+    in: path
+    description: ppcam id to post ppsnack
+    required: true
+    schema:
+      type: integer
+responses:
+  "200":
+    description: Successful operation
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/ppsnack"
+  "404":
+    description: Ppsnack config not found
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/api_fail_response"
+requestBody:
+  content:
+    application/json:
+      schema:
+        $ref: "#/components/schemas/put_ppsnack"
+  description: Ppsnack object
+  required: true
