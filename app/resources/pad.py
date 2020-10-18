@@ -1,3 +1,5 @@
+import logging
+from app.models.redis_client import RedisClient
 from app.models.ppcam import Ppcam
 from flask import request
 from flask_restful import Resource
@@ -5,6 +7,7 @@ from app.models.pad import Pad, PadSchema
 from app.utils.decorators import confirm_account
 from app import db
 import datetime
+import json
 
 # make instances of schemas
 pad_schema = PadSchema()
@@ -17,6 +20,7 @@ class PadApi(Resource):
             Set pad profile by user, not ppcam
             :path: ppcam_id: int
             :body: (int) ldx, ldy, lux, luy, rdx, rdy, rux, ruy
+            *** Persist state of pad ***
         '''
         from sqlalchemy.exc import IntegrityError
         # check that ppcam exist
@@ -47,6 +51,9 @@ class PadApi(Resource):
         try:
             db.session.add(new_pad)
             db.session.commit()
+            # *** Persist state of pad ***
+            redis_client = RedisClient()
+            redis_client.save_pad(ppcam_id=ppcam_id, data = json.dumps(pad_schema.dump(new_pad)))
         except IntegrityError as e:
             db.session.rollback()
             return {
@@ -77,6 +84,7 @@ class PadApi(Resource):
             Put pad profile
             :path: ppcam_id: int
             :body: (int) ldx, ldy, lux, luy, rdx, rdy, rux, ruy
+            *** Persist state of pad ***
         '''
         from sqlalchemy.exc import IntegrityError
         selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id).first()
@@ -97,6 +105,9 @@ class PadApi(Resource):
             selected_pad.rdy = request.json['rdy']
             selected_pad.last_modified_date = datetime.datetime.utcnow()
             db.session.commit()
+            # *** Persist state of pad ***
+            redis_client = RedisClient()
+            redis_client.save_pad(ppcam_id=ppcam_id, data = json.dumps(pad_schema.dump(selected_pad)))
         except:
             db.session.rollback()
             return {

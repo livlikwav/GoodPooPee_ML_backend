@@ -55,9 +55,7 @@ class PpsnackApi(Resource):
             db.session.commit()
             # *** Persist state of ppsnack ***
             redis_client = RedisClient()
-            redis_client.rd.hset(ppcam_id, 'ppsnack', json.dumps(ppsnack_schema.dump(new_ppsnack)))
-            # redis debug that succeed
-            logging.info('redis check: ' + json.loads(redis_client.rd.hget(ppcam_id, 'ppsnack')))
+            redis_client.save_ppsnack(ppcam_id=ppcam_id, data=json.dumps(ppsnack_schema.dump(new_ppsnack)))
         except IntegrityError as e:
             db.session.rollback()
             return {
@@ -100,9 +98,7 @@ class PpsnackApi(Resource):
             db.session.commit()
             # *** Persist state of ppsnack ***
             redis_client = RedisClient()
-            redis_client.rd.hset(ppcam_id, 'ppsnack', json.dumps(ppsnack_schema.dump(ppsnack)))
-            # redis debug that succeed
-            logging.info('redis check: ' + json.loads(redis_client.rd.hget(ppcam_id, 'ppsnack')))
+            redis_client.save_ppsnack(ppcam_id=ppcam_id, data=json.dumps(ppsnack_schema.dump(ppsnack)))
         except IntegrityError as e:
             db.session.rollback()
             return {

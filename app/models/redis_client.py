@@ -9,6 +9,8 @@
     Field: Model name (Pad or ppsnack)
     Value: JSON(data)
 '''
+import json
+import logging
 import redis
 
 class RedisClient:
@@ -27,3 +29,19 @@ class RedisClient:
             dbsize() return number of keys
         '''
         return self.rd.dbsize()
+    
+    def save_ppsnack(self, ppcam_id: int, data: str):
+        '''
+            Persist ppsnack (POST or PUT)
+        '''
+        self.rd.hset(ppcam_id, 'ppsnack', data)
+        # DEBUG: check that successfully added on redis
+        # logging.info(json.loads(self.rd.hget(ppcam_id, 'ppsnack')))
+
+    def save_pad(self, ppcam_id: int, data: str):
+        '''
+            Persist pad (POST or PUT)
+        '''
+        self.rd.hset(ppcam_id, 'pad', data)
+        # DEBUG: check that successfully added on redis
+        # logging.info(json.loads(self.rd.hget(ppcam_id, 'pad')))
