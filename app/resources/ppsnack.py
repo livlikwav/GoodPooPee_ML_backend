@@ -1,3 +1,5 @@
+import logging
+from app.models.redis_client import RedisClient
 from app.models.ppcam import Ppcam
 from app.models.ppsnack_serial_nums import PpsnackSerialNums
 from app.utils.decorators import confirm_account, confirm_device
@@ -6,6 +8,7 @@ from flask import request
 from flask_restful import Resource
 import datetime
 from app import db
+import json
 
 ppsnack_schema = PpsnackSchema()
 
@@ -17,6 +20,7 @@ class PpsnackApi(Resource):
             Register ppsnack by ppcam
             :path: ppcam_id: int
             :body: serial_num: str, feedback: float
+            *** Persist state of ppsnack ***
         '''
         from sqlalchemy.exc import IntegrityError
 
@@ -49,11 +53,17 @@ class PpsnackApi(Resource):
             # save that the serial number is used
             exist_serial.registered = 1
             db.session.commit()
+            # *** Persist state of ppsnack ***
+            redis_client = RedisClient()
+            redis_client.rd.hset(ppcam_id, 'ppsnack', json.dumps(ppsnack_schema.dump(new_ppsnack)))
+            # redis debug that succeed
+            logging.info('redis check: ' + json.loads(redis_client.rd.hget(ppcam_id, 'ppsnack')))
         except IntegrityError as e:
             db.session.rollback()
             return {
                 "msg" : "Fail to add new ppcam(IntegrityError)."
             }, 409
+        # Return response
         return ppsnack_schema.dump(new_ppsnack), 200
 
     @confirm_account
@@ -75,7 +85,8 @@ class PpsnackApi(Resource):
         '''
             Update ppsnack data by request body
             :path: ppcam_id: int
-            :body: serial_num: str, feedback: float
+            :body: feedback: float
+            *** Persist state of ppsnack ***
         '''
         from sqlalchemy.exc import IntegrityError
         ppsnack = Ppsnack.query.filter_by(ppcam_id=ppcam_id).first()
@@ -84,10 +95,14 @@ class PpsnackApi(Resource):
                 "msg" : "ppsnack not found"
             }, 404
         try:
-            ppsnack.serial_num = request.json['serial_num']
             ppsnack.feedback = request.json['feedback']
             ppsnack.last_modified_date = datetime.datetime.utcnow()
             db.session.commit()
+            # *** Persist state of ppsnack ***
+            redis_client = RedisClient()
+            redis_client.rd.hset(ppcam_id, 'ppsnack', json.dumps(ppsnack_schema.dump(ppsnack)))
+            # redis debug that succeed
+            logging.info('redis check: ' + json.loads(redis_client.rd.hget(ppcam_id, 'ppsnack')))
         except IntegrityError as e:
             db.session.rollback()
             return {

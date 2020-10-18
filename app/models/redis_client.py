@@ -1,3 +1,14 @@
+'''
+    Redis for state management
+    Persist to request of updating models.
+    1. Pad
+    2. Ppsnack
+
+    Use Redis hashes
+    Key: Ppcam_id
+    Field: Model name (Pad or ppsnack)
+    Value: JSON(data)
+'''
 import redis
 
 class RedisClient:
@@ -6,9 +17,9 @@ class RedisClient:
     '''
     def __init__(self):
         '''
-            host='localhost', port=6379, db=0
+            host='host.docker.internal', port=6379, db=0
         '''
-        self.rd = redis.Redis(host='localhost', port=6379, db=0)
+        self.rd = redis.Redis(host='host.docker.internal', port=6379, db=0)
 
     def size(self):
         '''

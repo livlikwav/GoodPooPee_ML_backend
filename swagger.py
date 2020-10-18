@@ -510,12 +510,8 @@ swagger_template = {
             },
             "put_ppsnack": {
                 "type": "object",
-                "required": ["serial_num", "feedback"],
+                "required": ["feedback"],
                 "properties": {
-                    "serial_num": {
-                        "type": "string",
-                        "example": "PC1K1P210101N001"
-                    },
                     "feedback": {
                         "type": "float",
                         "example": "0.0 ~ 1.0",
