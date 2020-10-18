@@ -39,6 +39,12 @@ class PpcamRegisterApi(Resource):
             return {
                 "msg" : "User id is invalid. please check again."
             }, 404
+        # check that ppcam already exist
+        exist_ppcam = Ppcam.query.filter_by(user_id = request.json['user_id']).first()
+        if(exist_ppcam is not None):
+            return {
+                "msg" : "User's ppcam already exist. Please check again."
+            }, 409
         # create new ppcam profile
         new_ppcam = Ppcam(
             serial_num = request.json['serial_num'],

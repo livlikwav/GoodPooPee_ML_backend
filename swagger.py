@@ -408,24 +408,68 @@ swagger_template = {
             },
             "pad": {
                 "type": "object",
-                "required": ["padId", "ppcamId", "lu", "ld", "ru", "rd"],
                 "properties": {
-                    "padId": {
+                    "id": {
                         "type": "integer"
                     },
-                    "ppcamId": {
+                    "user_id": {
                         "type": "integer"
                     },
-                    "lu": {
+                    "ppcam_id": {
                         "type": "integer"
                     },
-                    "ld": {
+                    "lux": {
                         "type": "integer"
                     },
-                    "ru": {
+                    "luy": {
                         "type": "integer"
                     },
-                    "rd": {
+                    "ldx": {
+                        "type": "integer"
+                    },
+                    "ldy": {
+                        "type": "integer"
+                    },
+                    "rux": {
+                        "type": "integer"
+                    },
+                    "ruy": {
+                        "type": "integer"
+                    },
+                    "rdx": {
+                        "type": "integer"
+                    },
+                    "rdy": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "register_pad": {
+                "type": "object",
+                "required": ["lux", "luy", "ldx", "ldy", "rux", "ruy", "rdx", "rdy"],
+                "properties": {
+                    "lux": {
+                        "type": "integer"
+                    },
+                    "luy": {
+                        "type": "integer"
+                    },
+                    "ldx": {
+                        "type": "integer"
+                    },
+                    "ldy": {
+                        "type": "integer"
+                    },
+                    "rux": {
+                        "type": "integer"
+                    },
+                    "ruy": {
+                        "type": "integer"
+                    },
+                    "rdx": {
+                        "type": "integer"
+                    },
+                    "rdy": {
                         "type": "integer"
                     }
                 }

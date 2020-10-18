@@ -1,3 +1,4 @@
+from app.models.ppcam import Ppcam
 from flask import request
 from flask_restful import Resource
 from app.models.pad import Pad, PadSchema
@@ -7,26 +8,41 @@ import datetime
 
 # make instances of schemas
 pad_schema = PadSchema()
-pads_schema = PadSchema(many=True)
 
 class PadApi(Resource):
     @confirm_account
     def post(self, ppcam_id):
+        '''
+            ppcam/<int:ppcam_id>/pad
+            Set pad profile by user, not ppcam
+            :path: ppcam_id: int
+            :body: (int) ldx, ldy, lux, luy, rdx, rdy, rux, ruy
+        '''
         from sqlalchemy.exc import IntegrityError
-        existed_pad = Pad.query.filter_by(ppcam_id=ppcam_id).first()
-        if existed_pad:
+        # check that ppcam exist
+        exist_ppcam = Ppcam.query.filter_by(id=ppcam_id).first()
+        if (exist_ppcam is None):
             return {
-                "status" : "Fail",
-                "msg" : "Pad profile already exists in that ppcam."
+                "msg" : "Invalid ppcam id. please check again."
+            }, 404
+        # check that pad already exist
+        exist_pad = Pad.query.filter_by(ppcam_id=ppcam_id).first()
+        if (exist_pad is not None):
+            return {
+                "msg" : "Ppcam's pad already exist. Please check again."
             }, 409
-            
+        # Create new pad profile
         new_pad = Pad(
-            lu = request.json['lu'],
-            ld = request.json['ld'],
-            ru = request.json['ru'],
-            rd = request.json['rd'],
-            user_id = request.json['user_id'],
-            ppcam_id = ppcam_id
+            lux = request.json['lux'],
+            luy = request.json['luy'],
+            ldx = request.json['ldx'],
+            ldy = request.json['ldy'],
+            rux = request.json['rux'],
+            ruy = request.json['ruy'],
+            rdx = request.json['rdx'],
+            rdy = request.json['rdy'],
+            ppcam_id = ppcam_id,
+            user_id = exist_ppcam.user_id
         )
         try:
             db.session.add(new_pad)
@@ -34,8 +50,7 @@ class PadApi(Resource):
         except IntegrityError as e:
             db.session.rollback()
             return {
-                "status" : "Fail",
-                "msg" : "IntegrityError"
+                "msg" : "Fail to add new pad profile(IntegrityError)"
             }, 409
         return pad_schema.dump(new_pad), 200
 
