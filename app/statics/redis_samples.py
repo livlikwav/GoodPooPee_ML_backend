@@ -17,7 +17,8 @@
         'rdy' :  0,
         'rux' :  0,
         'ruy' :  0
-    }
+    },
+    'feeding' : 3
 }
 # empty sample
 {}

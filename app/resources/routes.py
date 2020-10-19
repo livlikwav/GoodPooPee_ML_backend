@@ -1,5 +1,6 @@
-# from .helloworld import HelloWorld
-# from .user import UserApi, RegisterApi
+'''
+    Be careful to circular import
+'''
 
 def init_routes(api):
     from .helloworld import HelloWorld
@@ -10,7 +11,7 @@ def init_routes(api):
     from .pet_record_image import PetRecordImageApi
     from .ppcam import PpcamRegisterApi, PpcamLoginApi, PpcamApi
     from .pad import PadApi
-    from .ppsnack import PpsnackApi
+    from .ppsnack import PpsnackApi, PpsnackFeedApi
     from .statistics import DailyStatApi, WeeklyStatApi, MonthlyStatApi, TotalMonthStatApi
     from .polling import PpcamPollingApi
 
@@ -40,6 +41,7 @@ def init_routes(api):
     api.add_resource(PadApi, '/ppcam/<int:ppcam_id>/pad')
     # Ppsnack
     api.add_resource(PpsnackApi, '/ppcam/<int:ppcam_id>/ppsnack')
+    api.add_resource(PpsnackFeedApi, '/ppcam/<int:ppcam_id>/ppsnack/feeding')
     # Statistics
     api.add_resource(DailyStatApi, '/pet/<int:pet_id>/report/daily')
     api.add_resource(WeeklyStatApi, '/pet/<int:pet_id>/report/weekly')

@@ -92,6 +92,16 @@ swagger_template = {
                     }
                 }
             },
+            "feeding": {
+                "type": "object",
+                "properties": {
+                    "feeding": {
+                        "type": "integer",
+                        "format" : "int32",
+                        "example" : 3
+                    }
+                }
+            },
             "api_response": {
                 "type": "object",
                 "properties": {

@@ -1,0 +1,32 @@
+tags:
+  - ppcam
+summary: Set state for ppsnack to feed pet
+security: 
+  - user_auth : []
+description: This can only be done by the logged in user
+parameters:
+  - name: ppcam_id
+    in: path
+    description: ppcam id of ppsnack
+    required: true
+    schema:
+      type: integer
+responses:
+  "200":
+    description: Successful operation
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/feeding"
+  "404":
+    description: Ppsnack not found
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/api_fail_response"
+  "409":
+    description: Error on save state of feeding
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/api_fail_response"

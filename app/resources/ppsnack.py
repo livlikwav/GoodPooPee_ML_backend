@@ -105,3 +105,35 @@ class PpsnackApi(Resource):
                 "msg" : "IntegrityError on updating ppsnack"
             }, 409
         return ppsnack_schema.dump(ppsnack), 200
+
+
+class PpsnackFeedApi(Resource):
+    @confirm_account
+    def post(self, ppcam_id):
+        '''
+            /ppcam/<int:ppcam_id>/ppsnack/feeding
+            Signal ppsnack to feed pet
+            :path: ppcam_id: int
+            :body: None
+            *** Persist state of feeding ***
+        '''
+        # check ppsnack is valid
+        ppsnack = Ppsnack.query.filter_by(ppcam_id = ppcam_id).first()
+        if (ppsnack is None):
+            return {
+                "msg" : "ppsnack not found"
+            }, 404
+        # Set state of feeding
+        try:
+            redis_client = RedisClient()
+            resp = redis_client.save_feeding(ppcam_id=ppcam_id)
+        except Exception as e:
+            logging.error(e)
+            return {
+                "msg" : "Fail to save feeding state"
+            }, 409
+        if(resp is None):
+            return {
+                "msg" : "Error on saving feeding state"
+            }, 500
+        return resp, 200

@@ -3,6 +3,7 @@
     Persist to request of updating models.
     1. Pad
     2. Ppsnack
+    3. Feeding
 
     Use Redis hashes
     Key: Ppcam_id
@@ -30,18 +31,39 @@ class RedisClient:
         '''
         return self.rd.dbsize()
     
-    def save_ppsnack(self, ppcam_id: int, data: str):
+    def save_ppsnack(self, ppcam_id: int, data: str) -> bool:
         '''
             Persist ppsnack (POST or PUT)
         '''
         self.rd.hset(ppcam_id, 'ppsnack', data)
-        # DEBUG: check that successfully added on redis
-        # logging.info(json.loads(self.rd.hget(ppcam_id, 'ppsnack')))
+        # check that successfully added on redis
+        if(self.rd.hget(ppcam_id, 'ppsnack') is not None):
+            return True
+        else:
+            raise Exception('Fail to get ppsnack state from redis')
 
-    def save_pad(self, ppcam_id: int, data: str):
+    def save_pad(self, ppcam_id: int, data: str) -> bool:
         '''
             Persist pad (POST or PUT)
         '''
         self.rd.hset(ppcam_id, 'pad', data)
-        # DEBUG: check that successfully added on redis
-        # logging.info(json.loads(self.rd.hget(ppcam_id, 'pad')))
+        # check that successfully added on redis
+        if(self.rd.hget(ppcam_id, 'pad') is not None):
+            return True
+        else:
+            raise Exception('Fail to get pad state from redis')
+
+    def save_feeding(self, ppcam_id: int) -> dict:
+        '''
+            Persist feeding command of app for ppsnack (POST)
+            Return dict for count of feeding command
+        '''
+        self.rd.hincrby(ppcam_id, 'feeding') # default amount = 1
+        # check that successfully added on redis
+        feeding_count = self.rd.hget(ppcam_id, 'feeding').decode() # redis return val is byte. so decode
+        if(feeding_count is not None):
+            return {
+                "feeding" : feeding_count,
+            }
+        else:
+            raise Exception('Fail to get feeding state from redis')
