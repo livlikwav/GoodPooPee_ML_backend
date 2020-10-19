@@ -24,9 +24,12 @@ class RedisClient:
     '''
     def __init__(self):
         '''
-            host='host.docker.internal', port=6379, db=0
+            host='gpp-redis', port=6379, db=0
+            
+            Docker-compose make service names. And it resolve name to the correct container IP address
+            I named redis container 'gpp-redis'. So, use it.
         '''
-        self.rd = redis.Redis(host='host.docker.internal', port=6379, db=0)
+        self.rd = redis.Redis(host='gpp-redis', port=6379, db=0)
 
     def size(self):
         '''
