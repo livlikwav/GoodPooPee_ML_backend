@@ -1,6 +1,6 @@
 tags:
   - user
-summary: get user's pet profiles
+summary: get user's pet profile
 security: 
   - user_auth : []
 description: This can only be done by the logged in user.
@@ -17,9 +17,7 @@ responses:
     content:
       application/json:
         schema:
-          type: array
-          items:
-            $ref: "#/components/schemas/pet"
+          $ref: "#/components/schemas/pet"
   "400":
     description: Invalid userid supplied
     content:

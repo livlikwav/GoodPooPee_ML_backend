@@ -23,8 +23,8 @@ def init_routes(api):
     api.add_resource(LogoutApi, '/user/logout')
     # User
     api.add_resource(UserApi, '/user/<int:user_id>')
-    api.add_resource(UserPetApi, '/user/<int:user_id>/pets')
-    api.add_resource(UserPpcamApi, '/user/<int:user_id>/ppcams')
+    api.add_resource(UserPetApi, '/user/<int:user_id>/pet')
+    api.add_resource(UserPpcamApi, '/user/<int:user_id>/ppcam')
     # Pet
     api.add_resource(PetRegisterApi, '/pet/register')
     api.add_resource(PetApi, '/pet/<int:pet_id>')

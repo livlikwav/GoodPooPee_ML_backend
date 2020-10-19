@@ -1,6 +1,6 @@
 tags:
   - user
-summary: get user's poopeecam profiles
+summary: get user's poopeecam profile
 security: 
   - user_auth : []
 description: This can only be done by the logged in user.
@@ -17,9 +17,7 @@ responses:
     content:
       application/json:
         schema:
-          type: array
-          items:
-            $ref: "#/components/schemas/ppcam"
+          $ref: "#/components/schemas/ppcam"
   "400":
     description: Invalid userid supplied
     content:

@@ -10,8 +10,8 @@ from app.utils.decorators import confirm_account
 
 # make instances of schemas
 user_schema = UserSchema()
-pets_schema = PetSchema(many = True)
-ppcams_schema = PpcamSchema(many = True)
+pet_schema = PetSchema()
+ppcam_schema = PpcamSchema()
 
 class UserApi(Resource):
     @confirm_account
@@ -70,19 +70,25 @@ class UserApi(Resource):
 class UserPetApi(Resource):
     @confirm_account
     def get(self, user_id):
-        selected_pets = Pet.query.filter_by(user_id=user_id).all()
-        if(selected_pets is None):
+        '''
+            Return only 1 pet of user
+        '''
+        selected_pet = Pet.query.filter_by(user_id=user_id).first()
+        if(selected_pet is None):
             return {
-                "msg" : "Pets not found"
+                "msg" : "Pet not found"
             }, 404
-        return pets_schema.dump(selected_pets), 200
+        return pet_schema.dump(selected_pet), 200
 
 class UserPpcamApi(Resource):
     @confirm_account
     def get(self, user_id):
-        selected_ppcams = Ppcam.query.filter_by(user_id=user_id).all()
-        if(selected_ppcams is None):
+        '''
+            Return only 1 ppcam of user
+        '''
+        selected_ppcam = Ppcam.query.filter_by(user_id=user_id).first()
+        if(selected_ppcam is None):
             return {
-                "msg" : "Ppcams not found"
+                "msg" : "Ppcam not found"
             }, 404
-        return ppcams_schema.dump(selected_ppcams), 200
+        return ppcam_schema.dump(selected_ppcam), 200
