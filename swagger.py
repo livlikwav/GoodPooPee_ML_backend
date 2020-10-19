@@ -530,17 +530,19 @@ swagger_template = {
             },
             "polling": {
                 "type": "object",
-                "required": ["request_code", "message"],
                 "properties": {
-                    "request_code": {
-                        "type": "integer",
-                        "format": "int64",
-                        "example": "0 (ex: 0 is none, 1 is capture, 2 is streaming ...)"
+                    "ppsnack" : {
+                        "type" : "object",
+                        "$ref" : "#/components/schemas/ppsnack"
                     },
-                    "message": {
-                        "type": "string",
-                        "example": "None"
-                    }
+                    "pad" : {
+                        "type" : "object",
+                        "$ref" : "#/components/schemas/pad"
+                    },
+                    "feeding" : {
+                        "type" : "integer",
+                        "example" : 3
+                    },
                 }
             },
             "stream_info": {

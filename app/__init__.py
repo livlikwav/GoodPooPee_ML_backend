@@ -14,8 +14,8 @@ import os
 db = SQLAlchemy()
 ma = Marshmallow()
 api = Api()
-swagger = Swagger(template=swagger_template, parse=True)
-# swagger = Swagger(template_file='gpp.json', parse=True)
+# swagger = Swagger(template=swagger_template, parse=True)
+swagger = Swagger(template_file='gpp.json', parse=True)
 
 def create_app(config):
     app = Flask(__name__)

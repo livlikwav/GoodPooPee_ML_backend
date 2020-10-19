@@ -1,3 +1,4 @@
+from app.models.redis_client import RedisClient
 from flask_restful import Resource
 from app.utils.decorators import confirm_device
 from app.models.ppcam import Ppcam
@@ -15,12 +16,8 @@ class PpcamPollingApi(Resource):
             return {
                 "msg" : "Ppcam not found"
             }, 404
-
-        # ===== Return queued request from app in redis =====
-
-        # ==========
-
+        # Get all state from redis
+        redis_client = RedisClient()
+        resp = redis_client.get_all(ppcam_id=ppcam_id)
         # fake resp
-        return {
-            "msg" : "Fake succeess. Polling API not finished"
-        }, 200
+        return resp, 200

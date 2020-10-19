@@ -14,12 +14,12 @@ parameters:
 responses:
   "200":
     description: Successful operation
-    # content:
-    #   application/json:
-    #     schema:
-    #       $ref: "#/components/schemas/ppsnack"
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/polling"
   "404":
-    description: Ppsnack config not found
+    description: Ppcam not found
     content:
       application/json:
         schema:

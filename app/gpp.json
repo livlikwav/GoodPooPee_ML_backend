@@ -40,6 +40,16 @@
         }, 
         "type": "object"
       }, 
+      "feeding": {
+        "properties": {
+          "feeding": {
+            "example": 3, 
+            "format": "int32", 
+            "type": "integer"
+          }
+        }, 
+        "type": "object"
+      }, 
       "login_device": {
         "properties": {
           "serial_num": {
@@ -64,33 +74,40 @@
       }, 
       "pad": {
         "properties": {
-          "ld": {
+          "id": {
             "type": "integer"
           }, 
-          "lu": {
+          "ldx": {
             "type": "integer"
           }, 
-          "padId": {
+          "ldy": {
             "type": "integer"
           }, 
-          "ppcamId": {
+          "lux": {
             "type": "integer"
           }, 
-          "rd": {
+          "luy": {
             "type": "integer"
           }, 
-          "ru": {
+          "ppcam_id": {
+            "type": "integer"
+          }, 
+          "rdx": {
+            "type": "integer"
+          }, 
+          "rdy": {
+            "type": "integer"
+          }, 
+          "rux": {
+            "type": "integer"
+          }, 
+          "ruy": {
+            "type": "integer"
+          }, 
+          "user_id": {
             "type": "integer"
           }
         }, 
-        "required": [
-          "padId", 
-          "ppcamId", 
-          "lu", 
-          "ld", 
-          "ru", 
-          "rd"
-        ], 
         "type": "object"
       }, 
       "pet": {
@@ -252,20 +269,19 @@
       }, 
       "polling": {
         "properties": {
-          "message": {
-            "example": "None", 
-            "type": "string"
-          }, 
-          "request_code": {
-            "example": "0 (ex: 0 is none, 1 is capture, 2 is streaming ...)", 
-            "format": "int64", 
+          "feeding": {
+            "example": 3, 
             "type": "integer"
+          }, 
+          "pad": {
+            "$ref": "#/components/schemas/pad", 
+            "type": "object"
+          }, 
+          "ppsnack": {
+            "$ref": "#/components/schemas/ppsnack", 
+            "type": "object"
           }
         }, 
-        "required": [
-          "request_code", 
-          "message"
-        ], 
         "type": "object"
       }, 
       "ppcam": {
@@ -305,25 +321,94 @@
         ], 
         "type": "object"
       }, 
-      "ppsnack_config": {
+      "ppsnack": {
         "properties": {
-          "feedback_ratio": {
-            "example": "0~1 %", 
-            "type": "number"
+          "created_date": {
+            "example": "2020-08-15T16:28:39", 
+            "type": "string"
+          }, 
+          "feedback": {
+            "example": "0.0 ~ 1.0", 
+            "type": "float"
+          }, 
+          "id": {
+            "format": "int64", 
+            "type": "integer"
+          }, 
+          "last_modified_date": {
+            "example": "2020-08-15T16:28:39", 
+            "type": "string"
           }, 
           "ppcam_id": {
             "format": "int64", 
             "type": "integer"
           }, 
           "serial_num": {
-            "example": "ADW23123124124", 
+            "example": "PC1K1P210101N001", 
             "type": "string"
+          }, 
+          "user_id": {
+            "format": "int64", 
+            "type": "integer"
           }
         }, 
         "required": [
+          "id", 
+          "ppcam_id", 
+          "user_id", 
           "serial_num", 
-          "feedback_ratio", 
-          "ppcam_id"
+          "feedback"
+        ], 
+        "type": "object"
+      }, 
+      "put_ppsnack": {
+        "properties": {
+          "feedback": {
+            "example": "0.0 ~ 1.0", 
+            "type": "float"
+          }
+        }, 
+        "required": [
+          "feedback"
+        ], 
+        "type": "object"
+      }, 
+      "register_pad": {
+        "properties": {
+          "ldx": {
+            "type": "integer"
+          }, 
+          "ldy": {
+            "type": "integer"
+          }, 
+          "lux": {
+            "type": "integer"
+          }, 
+          "luy": {
+            "type": "integer"
+          }, 
+          "rdx": {
+            "type": "integer"
+          }, 
+          "rdy": {
+            "type": "integer"
+          }, 
+          "rux": {
+            "type": "integer"
+          }, 
+          "ruy": {
+            "type": "integer"
+          }
+        }, 
+        "required": [
+          "lux", 
+          "luy", 
+          "ldx", 
+          "ldy", 
+          "rux", 
+          "ruy", 
+          "rdx", 
+          "rdy"
         ], 
         "type": "object"
       }, 
@@ -361,22 +446,23 @@
       }, 
       "register_ppcam": {
         "properties": {
-          "ppcamId": {
-            "format": "int64", 
+          "ppcam_id": {
+            "format": "int32", 
             "type": "integer"
           }, 
-          "serialNum": {
-            "format": "int64", 
-            "type": "integer"
-          }, 
-          "userEmail": {
+          "serial_num": {
+            "example": "PC1K1P210101N001", 
             "type": "String"
+          }, 
+          "user_id": {
+            "format": "int32", 
+            "type": "integer"
           }
         }, 
         "required": [
-          "ppcamId", 
-          "userEmail", 
-          "serialNum"
+          "ppcam_id", 
+          "user_id", 
+          "serial_num"
         ], 
         "type": "object"
       }, 
@@ -1241,16 +1327,6 @@
             }, 
             "description": "successful operation"
           }, 
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/api_fail_response"
-                }
-              }
-            }, 
-            "description": "This device is not registered"
-          }, 
           "404": {
             "content": {
               "application/json": {
@@ -1259,7 +1335,7 @@
                 }
               }
             }, 
-            "description": "Serial number is invalid"
+            "description": "Registered ppcam not found"
           }
         }, 
         "summary": "Logs ppcam into the system", 
@@ -1274,7 +1350,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ppcam"
+                "$ref": "#/components/schemas/register_ppcam"
               }
             }
           }, 
@@ -1286,7 +1362,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/register_ppcam"
+                  "$ref": "#/components/schemas/ppcam"
                 }
               }
             }, 
@@ -1510,7 +1586,7 @@
             "name": "ppcamid", 
             "required": true, 
             "schema": {
-              "format": "int64", 
+              "format": "int32", 
               "type": "integer"
             }
           }
@@ -1524,7 +1600,7 @@
                 }
               }
             }, 
-            "description": "Successful operation"
+            "description": "Success to delete pad"
           }, 
           "404": {
             "content": {
@@ -1535,6 +1611,16 @@
               }
             }, 
             "description": "Pad not found"
+          }, 
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api_fail_response"
+                }
+              }
+            }, 
+            "description": "Fail to delete pad(IntegrityError)."
           }
         }, 
         "security": [
@@ -1572,16 +1658,6 @@
             }, 
             "description": "Successful operation"
           }, 
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/api_fail_response"
-                }
-              }
-            }, 
-            "description": "Invalid pad object supplied"
-          }, 
           "404": {
             "content": {
               "application/json": {
@@ -1609,13 +1685,24 @@
           {
             "description": "ppcam id to post pad", 
             "in": "path", 
-            "name": "ppcamid", 
+            "name": "ppcam_id", 
             "required": true, 
             "schema": {
               "type": "integer"
             }
           }
         ], 
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/register_pad"
+              }
+            }
+          }, 
+          "description": "Pad object", 
+          "required": true
+        }, 
         "responses": {
           "200": {
             "content": {
@@ -1627,7 +1714,7 @@
             }, 
             "description": "Successful operation"
           }, 
-          "400": {
+          "404": {
             "content": {
               "application/json": {
                 "schema": {
@@ -1635,7 +1722,17 @@
                 }
               }
             }, 
-            "description": "Invalid pad object supplied"
+            "description": "Invalid ppcam id. please check again."
+          }, 
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api_fail_response"
+                }
+              }
+            }, 
+            "description": "Ppcam's pad already exist. Please check again."
           }
         }, 
         "security": [
@@ -1654,7 +1751,7 @@
           {
             "description": "ppcam id", 
             "in": "path", 
-            "name": "ppcamid", 
+            "name": "ppcam_id", 
             "required": true, 
             "schema": {
               "example": "1", 
@@ -1666,7 +1763,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/pad"
+                "$ref": "#/components/schemas/register_pad"
               }
             }
           }, 
@@ -1684,16 +1781,6 @@
             }, 
             "description": "Successful operation"
           }, 
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/api_fail_response"
-                }
-              }
-            }, 
-            "description": "Invalid pad object supplied"
-          }, 
           "404": {
             "content": {
               "application/json": {
@@ -1702,7 +1789,17 @@
                 }
               }
             }, 
-            "description": "Pad not found"
+            "description": "Pad not found."
+          }, 
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api_fail_response"
+                }
+              }
+            }, 
+            "description": "Fail to update pad profile(IntegrityError)."
           }
         }, 
         "security": [
@@ -1716,14 +1813,14 @@
         ]
       }
     }, 
-    "/ppcam/{ppcam_id}/ppsnack": {
+    "/ppcam/{ppcam_id}/polling": {
       "get": {
-        "description": "This can only be done by the logged in user.", 
+        "description": "This can only be done by the logged in device.", 
         "parameters": [
           {
-            "description": "ppcam id to get ppsnack config", 
+            "description": "ppcam id", 
             "in": "path", 
-            "name": "ppcamid", 
+            "name": "ppcam_id", 
             "required": true, 
             "schema": {
               "type": "integer"
@@ -1735,7 +1832,54 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ppsnack_config"
+                  "$ref": "#/components/schemas/polling"
+                }
+              }
+            }, 
+            "description": "Successful operation"
+          }, 
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api_fail_response"
+                }
+              }
+            }, 
+            "description": "Ppcam not found"
+          }
+        }, 
+        "security": [
+          {
+            "device_auth": []
+          }
+        ], 
+        "summary": "ppcam request polling api at every 3 seconds", 
+        "tags": [
+          "ppcam"
+        ]
+      }
+    }, 
+    "/ppcam/{ppcam_id}/ppsnack": {
+      "get": {
+        "description": "This can only be done by the logged in user.", 
+        "parameters": [
+          {
+            "description": "ppcam id to get ppsnack config", 
+            "in": "path", 
+            "name": "ppcam_id", 
+            "required": true, 
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ], 
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ppsnack"
                 }
               }
             }, 
@@ -1762,13 +1906,69 @@
           "ppcam"
         ]
       }, 
+      "post": {
+        "description": "This can only be done by the logged in device.", 
+        "parameters": [
+          {
+            "description": "ppcam id to post ppsnack", 
+            "in": "path", 
+            "name": "ppcam_id", 
+            "required": true, 
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ], 
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/put_ppsnack"
+              }
+            }
+          }, 
+          "description": "Ppsnack object", 
+          "required": true
+        }, 
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ppsnack"
+                }
+              }
+            }, 
+            "description": "Successful operation"
+          }, 
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api_fail_response"
+                }
+              }
+            }, 
+            "description": "Ppsnack config not found"
+          }
+        }, 
+        "security": [
+          {
+            "device_auth": []
+          }
+        ], 
+        "summary": "Post ppsnack", 
+        "tags": [
+          "ppcam"
+        ]
+      }, 
       "put": {
         "description": "This can only be done by the logged in user.", 
         "parameters": [
           {
             "description": "ppcam id to request put ppsnack config", 
             "in": "path", 
-            "name": "ppcamid", 
+            "name": "ppcam_id", 
             "required": true, 
             "schema": {
               "example": "1", 
@@ -1780,7 +1980,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ppsnack_config"
+                "$ref": "#/components/schemas/put_ppsnack"
               }
             }
           }, 
@@ -1792,13 +1992,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ppsnack_config"
+                  "$ref": "#/components/schemas/ppsnack"
                 }
               }
             }, 
             "description": "Successful operation"
           }, 
-          "400": {
+          "404": {
             "content": {
               "application/json": {
                 "schema": {
@@ -1806,7 +2006,54 @@
                 }
               }
             }, 
-            "description": "Invalid ppsnack config object supplied"
+            "description": "ppsnack not found"
+          }, 
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api_fail_response"
+                }
+              }
+            }, 
+            "description": "IntegrityError on updating ppsnack"
+          }
+        }, 
+        "security": [
+          {
+            "user_auth": []
+          }
+        ], 
+        "summary": "request ppcam to put ppsnack config", 
+        "tags": [
+          "ppcam"
+        ]
+      }
+    }, 
+    "/ppcam/{ppcam_id}/ppsnack/feeding": {
+      "post": {
+        "description": "This can only be done by the logged in user", 
+        "parameters": [
+          {
+            "description": "ppcam id of ppsnack", 
+            "in": "path", 
+            "name": "ppcam_id", 
+            "required": true, 
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ], 
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/feeding"
+                }
+              }
+            }, 
+            "description": "Successful operation"
           }, 
           "404": {
             "content": {
@@ -1817,6 +2064,16 @@
               }
             }, 
             "description": "Ppsnack not found"
+          }, 
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api_fail_response"
+                }
+              }
+            }, 
+            "description": "Error on save state of feeding"
           }
         }, 
         "security": [
@@ -1824,7 +2081,7 @@
             "user_auth": []
           }
         ], 
-        "summary": "request ppcam to put ppsnack config", 
+        "summary": "Set state for ppsnack to feed pet", 
         "tags": [
           "ppcam"
         ]
@@ -2127,7 +2384,7 @@
         ]
       }
     }, 
-    "/user/{user_id}/pets": {
+    "/user/{user_id}/pet": {
       "get": {
         "description": "This can only be done by the logged in user.", 
         "parameters": [
@@ -2146,10 +2403,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/pet"
-                  }, 
-                  "type": "array"
+                  "$ref": "#/components/schemas/pet"
                 }
               }
             }, 
@@ -2181,13 +2435,13 @@
             "user_auth": []
           }
         ], 
-        "summary": "get user's pet profiles", 
+        "summary": "get user's pet profile", 
         "tags": [
           "user"
         ]
       }
     }, 
-    "/user/{user_id}/ppcams": {
+    "/user/{user_id}/ppcam": {
       "get": {
         "description": "This can only be done by the logged in user.", 
         "parameters": [
@@ -2206,10 +2460,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/ppcam"
-                  }, 
-                  "type": "array"
+                  "$ref": "#/components/schemas/ppcam"
                 }
               }
             }, 
@@ -2241,7 +2492,7 @@
             "user_auth": []
           }
         ], 
-        "summary": "get user's poopeecam profiles", 
+        "summary": "get user's poopeecam profile", 
         "tags": [
           "user"
         ]
