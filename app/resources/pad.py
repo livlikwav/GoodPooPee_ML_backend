@@ -51,13 +51,20 @@ class PadApi(Resource):
         try:
             db.session.add(new_pad)
             db.session.commit()
-            # *** Persist state of pad ***
-            redis_client = RedisClient()
-            redis_client.save_pad(ppcam_id=ppcam_id, data = json.dumps(pad_schema.dump(new_pad)))
         except IntegrityError as e:
             db.session.rollback()
+            logging.error(e)
             return {
                 "msg" : "Fail to add new pad profile(IntegrityError)"
+            }, 409
+        # *** Persist state of pad ***
+        try:
+            redis_client = RedisClient()
+            redis_client.save_pad(ppcam_id=ppcam_id, data = json.dumps(pad_schema.dump(new_pad)))
+        except Exception as e:
+            logging.error(e)
+            return {
+                "msg" : "Fail to save pad state from redis"
             }, 409
         return pad_schema.dump(new_pad), 200
 
@@ -105,13 +112,20 @@ class PadApi(Resource):
             selected_pad.rdy = request.json['rdy']
             selected_pad.last_modified_date = datetime.datetime.utcnow()
             db.session.commit()
-            # *** Persist state of pad ***
-            redis_client = RedisClient()
-            redis_client.save_pad(ppcam_id=ppcam_id, data = json.dumps(pad_schema.dump(selected_pad)))
-        except:
+        except Exception as e:
             db.session.rollback()
+            logging.error(e)
             return {
                 "msg" : "Fail to update pad profile(IntegrityError)."
+            }, 409
+        # *** Persist state of pad ***
+        try:
+            redis_client = RedisClient()
+            redis_client.save_pad(ppcam_id=ppcam_id, data = json.dumps(pad_schema.dump(selected_pad)))
+        except Exception as e:
+            logging.error(e)
+            return {
+                "msg" : "Fail to save pad state from redis"
             }, 409
         return pad_schema.dump(selected_pad), 200
     
@@ -135,6 +149,7 @@ class PadApi(Resource):
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
+            logging.error(e)
             return {
                 "msg" : "Fail to delete pad(IntegrityError)."
             }, 409

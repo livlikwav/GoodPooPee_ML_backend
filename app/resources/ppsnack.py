@@ -53,13 +53,20 @@ class PpsnackApi(Resource):
             # save that the serial number is used
             exist_serial.registered = 1
             db.session.commit()
-            # *** Persist state of ppsnack ***
-            redis_client = RedisClient()
-            redis_client.save_ppsnack(ppcam_id=ppcam_id, data=json.dumps(ppsnack_schema.dump(new_ppsnack)))
         except IntegrityError as e:
             db.session.rollback()
+            logging.error(e)
             return {
                 "msg" : "Fail to add new ppcam(IntegrityError)."
+            }, 409
+        # *** Persist state of ppsnack ***
+        try:
+            redis_client = RedisClient()
+            redis_client.save_ppsnack(ppcam_id=ppcam_id, data=json.dumps(ppsnack_schema.dump(new_ppsnack)))
+        except Exception as e:
+            logging.error(e)
+            return {
+                "msg" : "Fail to save ppsnack state from redis"
             }, 409
         # Return response
         return ppsnack_schema.dump(new_ppsnack), 200
@@ -96,13 +103,20 @@ class PpsnackApi(Resource):
             ppsnack.feedback = request.json['feedback']
             ppsnack.last_modified_date = datetime.datetime.utcnow()
             db.session.commit()
-            # *** Persist state of ppsnack ***
-            redis_client = RedisClient()
-            redis_client.save_ppsnack(ppcam_id=ppcam_id, data=json.dumps(ppsnack_schema.dump(ppsnack)))
         except IntegrityError as e:
             db.session.rollback()
+            logging.error(e)
             return {
                 "msg" : "IntegrityError on updating ppsnack"
+            }, 409
+        # *** Persist state of ppsnack ***
+        try:
+            redis_client = RedisClient()
+            redis_client.save_ppsnack(ppcam_id=ppcam_id, data=json.dumps(ppsnack_schema.dump(ppsnack)))
+        except Exception as e:
+            logging.error(e)
+            return {
+                "msg" : "Fail to save ppsnack state from redis"
             }, 409
         return ppsnack_schema.dump(ppsnack), 200
 

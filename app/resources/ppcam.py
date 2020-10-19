@@ -1,3 +1,4 @@
+import logging
 from app.models.pet import Pet
 from app.models.user import User
 from app.models.ppcam_serial_nums import PpcamSerialNums
@@ -58,6 +59,7 @@ class PpcamRegisterApi(Resource):
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
+            logging.error(e)
             return {
                 "msg" : "Fail to add new ppcam(IntegrityError)."
             }, 409
@@ -116,6 +118,7 @@ class PpcamApi(Resource):
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
+            logging.error(e)
             return {
                 "msg" : 'IntegrityError on updating ppcam'
             }, 409
@@ -134,6 +137,7 @@ class PpcamApi(Resource):
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
+            logging.error(e)
             return {
                 "msg" : "IntegrityError on that ppcam, maybe pad of ppcam still exists."
             }, 409
