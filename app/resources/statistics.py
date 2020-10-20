@@ -68,7 +68,7 @@ class TotalMonthStatApi(Resource):
     def get(self, pet_id: int) -> str:
         records = MonthlyStatistics.query.filter_by(pet_id = pet_id).all()
         # check 404
-        if (records is None):
+        if len(records) == 0:
             logging.info('Monthly statistic records not found')
             return {
                 "msg" : "Monthly stat records not found"
