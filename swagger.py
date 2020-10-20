@@ -400,11 +400,11 @@ swagger_template = {
             },
             "register_ppcam": {
                 "type": "object",
-                "required": ["ppcam_id", "user_id", "serial_num"],
+                "required": ["ip_address", "user_id", "serial_num"],
                 "properties": {
-                    "ppcam_id": {
-                        "type": "integer",
-                        "format": "int32"
+                    "ip_address": {
+                        "type": "String",
+                        "example" : "172.172.172.172"
                     },
                     "user_id": {
                         "type": "integer",

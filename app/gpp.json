@@ -446,9 +446,9 @@
       }, 
       "register_ppcam": {
         "properties": {
-          "ppcam_id": {
-            "format": "int32", 
-            "type": "integer"
+          "ip_address": {
+            "example": "172.172.172.172", 
+            "type": "String"
           }, 
           "serial_num": {
             "example": "PC1K1P210101N001", 
@@ -460,7 +460,7 @@
           }
         }, 
         "required": [
-          "ppcam_id", 
+          "ip_address", 
           "user_id", 
           "serial_num"
         ], 
