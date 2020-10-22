@@ -76,7 +76,8 @@ class Ppcam(db.Model):
         for i in range(count):
             p = Ppcam(
                 serial_num = ppcam_samples[(i % 10)], # 10 is number of samples
-                ip_address = fake.ipv4(),
+                ip_address = 'http://beachreachpeach.iptime.org:9981', # ppcam ip that already set
+                # ip_address = fake.ipv4(),
                 # match one foreign_key by one user
                 # user id start from 1
                 user_id = i+1

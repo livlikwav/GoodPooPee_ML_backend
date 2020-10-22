@@ -1,11 +1,10 @@
 '''
     Be careful to circular import
 '''
-
 def init_routes(api):
     from .helloworld import HelloWorld
     from .auth import RegisterApi, LoginApi, LogoutApi
-    from .user import UserApi, UserPetApi, UserPpcamApi
+    from .user import UserApi, UserPetApi, UserPpcamApi, UserPadApi
     from .pet import PetRegisterApi, PetApi
     from .pet_record import PetRecordApi
     from .pet_record_image import PetRecordImageApi
@@ -25,6 +24,7 @@ def init_routes(api):
     api.add_resource(UserApi, '/user/<int:user_id>')
     api.add_resource(UserPetApi, '/user/<int:user_id>/pet')
     api.add_resource(UserPpcamApi, '/user/<int:user_id>/ppcam')
+    api.add_resource(UserPadApi, '/user/<int:user_id>/pad')
     # Pet
     api.add_resource(PetRegisterApi, '/pet/register')
     api.add_resource(PetApi, '/pet/<int:pet_id>')

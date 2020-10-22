@@ -2384,6 +2384,53 @@
         ]
       }
     }, 
+    "/user/{user_id}/pad": {
+      "get": {
+        "description": "This can only be done by the logged in user.", 
+        "parameters": [
+          {
+            "description": "Use 1 for testing.", 
+            "in": "path", 
+            "name": "userid", 
+            "required": true, 
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ], 
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/pad"
+                }
+              }
+            }, 
+            "description": "successful operation"
+          }, 
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/api_fail_response"
+                }
+              }
+            }, 
+            "description": "Pad not found"
+          }
+        }, 
+        "security": [
+          {
+            "user_auth": []
+          }
+        ], 
+        "summary": "get user's pad profile", 
+        "tags": [
+          "user"
+        ]
+      }
+    }, 
     "/user/{user_id}/pet": {
       "get": {
         "description": "This can only be done by the logged in user.", 
@@ -2409,16 +2456,6 @@
             }, 
             "description": "successful operation"
           }, 
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/api_fail_response"
-                }
-              }
-            }, 
-            "description": "Invalid userid supplied"
-          }, 
           "404": {
             "content": {
               "application/json": {
@@ -2427,7 +2464,7 @@
                 }
               }
             }, 
-            "description": "User not found"
+            "description": "Pet not found"
           }
         }, 
         "security": [
@@ -2466,16 +2503,6 @@
             }, 
             "description": "successful operation"
           }, 
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/api_fail_response"
-                }
-              }
-            }, 
-            "description": "Invalid userid supplied"
-          }, 
           "404": {
             "content": {
               "application/json": {
@@ -2484,7 +2511,7 @@
                 }
               }
             }, 
-            "description": "User not found"
+            "description": "Ppcam not found"
           }
         }, 
         "security": [

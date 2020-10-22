@@ -6,12 +6,14 @@ from app import db
 from app.models.user import User, UserSchema
 from app.models.pet import Pet, PetSchema
 from app.models.ppcam import Ppcam, PpcamSchema
+from app.models.pad import Pad, PadSchema
 from app.utils.decorators import confirm_account
 
 # make instances of schemas
 user_schema = UserSchema()
 pet_schema = PetSchema()
 ppcam_schema = PpcamSchema()
+pad_schema = PadSchema()
 
 class UserApi(Resource):
     @confirm_account
@@ -92,3 +94,17 @@ class UserPpcamApi(Resource):
                 "msg" : "Ppcam not found"
             }, 404
         return ppcam_schema.dump(selected_ppcam), 200
+
+
+class UserPadApi(Resource):
+    @confirm_account
+    def get(self, user_id):
+        '''
+            Return only 1 pad of user
+        '''
+        selected_pad = Pad.query.filter_by(user_id=user_id).first()
+        if(selected_pad is None):
+            return {
+                "msg" : "Pad not found"
+            }, 404
+        return pad_schema.dump(selected_pad), 200
