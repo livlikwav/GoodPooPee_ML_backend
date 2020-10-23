@@ -1679,72 +1679,6 @@
           "ppcam"
         ]
       }, 
-      "post": {
-        "description": "This can only be done by the logged in user.", 
-        "parameters": [
-          {
-            "description": "ppcam id to post pad", 
-            "in": "path", 
-            "name": "ppcam_id", 
-            "required": true, 
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ], 
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/register_pad"
-              }
-            }
-          }, 
-          "description": "Pad object", 
-          "required": true
-        }, 
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/pad"
-                }
-              }
-            }, 
-            "description": "Successful operation"
-          }, 
-          "404": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/api_fail_response"
-                }
-              }
-            }, 
-            "description": "Invalid ppcam id. please check again."
-          }, 
-          "409": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/api_fail_response"
-                }
-              }
-            }, 
-            "description": "Ppcam's pad already exist. Please check again."
-          }
-        }, 
-        "security": [
-          {
-            "user_auth": []
-          }
-        ], 
-        "summary": "post pad profile", 
-        "tags": [
-          "ppcam"
-        ]
-      }, 
       "put": {
         "description": "This can only be done by the logged in user.", 
         "parameters": [
@@ -1771,7 +1705,7 @@
           "required": true
         }, 
         "responses": {
-          "200": {
+          "201": {
             "content": {
               "application/json": {
                 "schema": {
@@ -1779,7 +1713,17 @@
                 }
               }
             }, 
-            "description": "Successful operation"
+            "description": "Succeed to create new pad profile"
+          }, 
+          "204": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/pad"
+                }
+              }
+            }, 
+            "description": "Succeed to update pad profile"
           }, 
           "404": {
             "content": {

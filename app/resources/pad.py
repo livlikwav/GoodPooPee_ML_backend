@@ -14,61 +14,6 @@ pad_schema = PadSchema()
 
 class PadApi(Resource):
     @confirm_account
-    def post(self, ppcam_id):
-        '''
-            ppcam/<int:ppcam_id>/pad
-            Set pad profile by user, not ppcam
-            :path: ppcam_id: int
-            :body: (int) ldx, ldy, lux, luy, rdx, rdy, rux, ruy
-            *** Persist state of pad ***
-        '''
-        from sqlalchemy.exc import IntegrityError
-        # check that ppcam exist
-        exist_ppcam = Ppcam.query.filter_by(id=ppcam_id).first()
-        if (exist_ppcam is None):
-            return {
-                "msg" : "Invalid ppcam id. please check again."
-            }, 404
-        # check that pad already exist
-        exist_pad = Pad.query.filter_by(ppcam_id=ppcam_id).first()
-        if (exist_pad is not None):
-            return {
-                "msg" : "Ppcam's pad already exist. Please check again."
-            }, 409
-        # Create new pad profile
-        new_pad = Pad(
-            lux = request.json['lux'],
-            luy = request.json['luy'],
-            ldx = request.json['ldx'],
-            ldy = request.json['ldy'],
-            rux = request.json['rux'],
-            ruy = request.json['ruy'],
-            rdx = request.json['rdx'],
-            rdy = request.json['rdy'],
-            ppcam_id = ppcam_id,
-            user_id = exist_ppcam.user_id
-        )
-        try:
-            db.session.add(new_pad)
-            db.session.commit()
-        except IntegrityError as e:
-            db.session.rollback()
-            logging.error(e)
-            return {
-                "msg" : "Fail to add new pad profile(IntegrityError)"
-            }, 409
-        # *** Persist state of pad ***
-        try:
-            redis_client = RedisClient()
-            redis_client.save_pad(ppcam_id=ppcam_id, data = json.dumps(pad_schema.dump(new_pad)))
-        except Exception as e:
-            logging.error(e)
-            return {
-                "msg" : "Fail to save pad state from redis"
-            }, 409
-        return pad_schema.dump(new_pad), 200
-
-    @confirm_account
     def get(self, ppcam_id):
         '''
             ppcam/<int:ppcam_id>/pad
@@ -76,58 +21,84 @@ class PadApi(Resource):
             :path: ppcam_id: int
             :body: None
         '''
-        selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id).first()
+        pad = Pad.query.filter_by(ppcam_id = ppcam_id).first()
         # check that pad exist
-        if selected_pad is None:
+        if pad is None:
             return {
                 "msg" : "Pad not found."
             }, 404
-        return pad_schema.dump(selected_pad), 200
+        return pad_schema.dump(pad), 200
 
     @confirm_account
     def put(self, ppcam_id):
         '''
             ppcam/<int:ppcam_id>/pad
-            Put pad profile
+            Put pad profile (Create new pad or update pad that exist)
             :path: ppcam_id: int
             :body: (int) ldx, ldy, lux, luy, rdx, rdy, rux, ruy
+            :response code: 201 or 204
             *** Persist state of pad ***
         '''
         from sqlalchemy.exc import IntegrityError
-        selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id).first()
-        # check that pad exist
-        if selected_pad is None:
+        # Check that the ppcam exists first
+        exist_ppcam = Ppcam.query.filter_by(id=ppcam_id).first()
+        if (exist_ppcam is None):
             return {
-                "msg" : "Pad not found."
+                "msg" : "Ppcam not found"
             }, 404
-        # put new pad profile
+        # check that pad
+        pad = Pad.query.filter_by(ppcam_id = ppcam_id).first()
+        if pad is None:
+            # Create new pad
+            self.is_pad_new = True
+            pad = Pad(
+                lux = request.json['lux'],
+                luy = request.json['luy'],
+                ldx = request.json['ldx'],
+                ldy = request.json['ldy'],
+                rux = request.json['rux'],
+                ruy = request.json['ruy'],
+                rdx = request.json['rdx'],
+                rdy = request.json['rdy'],
+                ppcam_id = ppcam_id,
+                user_id = exist_ppcam.user_id
+            )
+            db.session.add(pad)
+        else:
+            # Update
+            self.is_pad_new = False
+            pad.lux = request.json['lux']
+            pad.luy = request.json['luy']
+            pad.ldx = request.json['ldx']
+            pad.ldy = request.json['ldy']
+            pad.rux = request.json['rux']
+            pad.ruy = request.json['ruy']
+            pad.rdx = request.json['rdx']
+            pad.rdy = request.json['rdy']
+            pad.last_modified_date = datetime.datetime.utcnow()
+        # Persistancy
         try:
-            selected_pad.lux = request.json['lux']
-            selected_pad.luy = request.json['luy']
-            selected_pad.ldx = request.json['ldx']
-            selected_pad.ldy = request.json['ldy']
-            selected_pad.rux = request.json['rux']
-            selected_pad.ruy = request.json['ruy']
-            selected_pad.rdx = request.json['rdx']
-            selected_pad.rdy = request.json['rdy']
-            selected_pad.last_modified_date = datetime.datetime.utcnow()
             db.session.commit()
         except Exception as e:
             db.session.rollback()
             logging.error(e)
             return {
-                "msg" : "Fail to update pad profile(IntegrityError)."
+                "msg" : "Fail to PUT pad profile(IntegrityError)."
             }, 409
-        # *** Persist state of pad ***
+        # Pad state management
         try:
             redis_client = RedisClient()
-            redis_client.save_pad(ppcam_id=ppcam_id, data = json.dumps(pad_schema.dump(selected_pad)))
+            redis_client.save_pad(ppcam_id=ppcam_id, data = json.dumps(pad_schema.dump(pad)))
         except Exception as e:
             logging.error(e)
             return {
                 "msg" : "Fail to save pad state from redis"
             }, 409
-        return pad_schema.dump(selected_pad), 200
+        # Check proper status code
+        if(self.is_pad_new):
+            return pad_schema.dump(pad), 201
+        else:
+            return pad_schema.dump(pad), 204
     
     @confirm_account
     def delete(self, ppcam_id):

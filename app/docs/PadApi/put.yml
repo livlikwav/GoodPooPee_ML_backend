@@ -13,12 +13,18 @@ parameters:
       type: integer
       example: "1"
 responses:
-  "200":
-    description: Successful operation
+  "201":
+    description: Succeed to create new pad profile
     content:
       application/json:
         schema:
           $ref: "#/components/schemas/pad"
+  "204":
+    description: Succeed to update pad profile
+    # content: 204 == no content
+    #   application/json:
+    #     schema:
+    #       $ref: "#/components/schemas/pad"
   "404":
     description: Pad not found.
     content:
