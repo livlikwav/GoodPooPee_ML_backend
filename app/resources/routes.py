@@ -6,7 +6,7 @@ def init_routes(api):
     from .auth import RegisterApi, LoginApi, LogoutApi
     from .user import UserApi, UserPetApi, UserPpcamApi, UserPadApi
     from .pet import PetRegisterApi, PetApi
-    from .pet_record import PetRecordApi
+    from .pet_record import PetRecordApi, PetRecordsApi
     from .pet_record_image import PetRecordImageApi
     from .ppcam import PpcamRegisterApi, PpcamLoginApi, PpcamApi
     from .pad import PadApi
@@ -30,6 +30,7 @@ def init_routes(api):
     api.add_resource(PetApi, '/pet/<int:pet_id>')
     # PetRecord
     api.add_resource(PetRecordApi, '/pet/<int:pet_id>/record')
+    api.add_resource(PetRecordsApi, '/pet/<int:pet_id>/records')
     # PetRecordImage
     api.add_resource(PetRecordImageApi, '/pet/<int:pet_id>/record/image')
     # Ppcam

@@ -1,5 +1,5 @@
 import logging
-from app.utils.datetime import string_to_datetime
+from app.utils.datetime import string_to_date, string_to_datetime
 from flask import request
 from flask_restful import Resource
 from app.models.pet import Pet
@@ -10,7 +10,7 @@ import datetime
 
 # make instances of schemas
 pet_record_schema = PetRecordSchema()
-# pet_records_schema = PetRecordSchema(many=True)
+pet_records_schema = PetRecordSchema(many=True)
 deleted_record_schema = DelPetRecordSchema()
 record_query_schema = RecordQuerySchema()
 
@@ -150,3 +150,33 @@ class PetRecordApi(Resource):
         return {
             "msg" : "successfully delete selected record"
         }, 200
+
+class PetRecordsApi(Resource):
+    @confirm_account
+    def get(self, pet_id):
+        '''
+            /pet/<int:pet_id>/records
+            Get all records at the date
+            :Query param: timestamp: str
+        '''
+        # validate query string by ma
+        errors = record_query_schema.validate(request.args)
+        if errors:
+            return {
+                "msg" : "error in get method - query schema validation"
+            }, 400
+        # get timestamp in query string
+        date = string_to_date(request.args.get("timestamp"))
+        min_timestamp = datetime.datetime.combine(date, datetime.time.min)
+        max_timestamp = datetime.datetime.combine(date, datetime.time.max)
+        # get all records in that date
+        selected_records = PetRecord.query.filter_by(pet_id = pet_id).\
+            filter(PetRecord.timestamp <= max_timestamp).\
+                filter(PetRecord.timestamp >= min_timestamp).\
+                    all()
+        if len(selected_records) == 0:
+            return {
+                "msg" : "Pet records not found"
+            }, 404
+        else:
+            return pet_records_schema.dump(selected_records), 200
