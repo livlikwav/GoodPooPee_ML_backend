@@ -17,7 +17,7 @@ def upload_fileobj(file_obj, file_name):
     # Upload the file
     s3_client = boto3.client('s3')
     try:
-        response = s3_client.upload_fileobj(file_obj, bucket_name, file_name)
+        response = s3_client.upload_fileobj(file_obj, bucket_name, file_name, ExtraArgs={'ACL':'public-read'})
     except ClientError as e:
         logging.error(e)
         return False
