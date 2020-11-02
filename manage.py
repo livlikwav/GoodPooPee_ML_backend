@@ -1,3 +1,11 @@
+'''
+manager commands
+- recreate_db()
+- set_fake_profiles(count: int)
+- set_fake_records(id: int)
+- set_fake_ppcam_comps(count: int)
+
+'''
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
@@ -32,20 +40,44 @@ def recreate_db():
     db.session.commit()
     logging.warning('DB was recreated')
 
+@manager.option(
+    '-c',
+    '--count',
+    default = 10,
+    type = int,
+    help = 'how many profiles do you set',
+    dest = 'count'
+)
+def set_fake_profiles(count: int):
+    User.generate_fake(count)
+    Pet.generate_fake(count)
+    PpcamSerialNums.generate_fake(count)
+    PpsnackSerialNums.generate_fake(count)
 
-@manager.command
-def set_test_env_1():
-    User.generate_fake(count=10)
-    Pet.generate_fake(count=10)
-    PetRecord.generate_fake(id=1)
-    PpcamSerialNums.generate_fake()
-    PpsnackSerialNums.generate_fake()
+@manager.option(
+    '-i',
+    '--id',
+    default = 5,
+    type = int,
+    help = 'Id number of user that you want to update',
+    dest = 'id'
+)
+def set_fake_records(id: int):
+    "Add fake pet records"
+    PetRecord.generate_fake(id)
 
-@manager.command
-def set_test_ppcam_comps():
-    Ppcam.generate_fake(count=10)
-    Pad.generate_fake(count=10)
-    Ppsnack.generate_fake(count=10)
+@manager.option(
+    '-c',
+    '--count',
+    default = 10,
+    type = int,
+    help = 'how many profiles do you set',
+    dest = 'count'
+)
+def set_fake_ppcam_comps(count: int):
+    Ppcam.generate_fake(count)
+    Pad.generate_fake(count)
+    Ppsnack.generate_fake(count)
 
 
 # @manager.option(

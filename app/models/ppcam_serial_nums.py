@@ -21,14 +21,17 @@ class PpcamSerialNums(db.Model):
     last_modified_date = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.datetime.utcnow())
     
     @staticmethod
-    def generate_fake() -> None:
+    def generate_fake(count: int) -> None:
         '''
         Generate a fake serial numbers for dev
         '''
         from sqlalchemy.exc import IntegrityError
         from app.statics.test_samples import ppcam_samples
         
-        for i in range(len(ppcam_samples)):
+        if(count > len(ppcam_samples)):
+            raise Exception('PpcamSerialNums have only 10 profiles')
+
+        for i in range(count):
             fake_record = PpcamSerialNums(
                 serial_num = ppcam_samples[i]
                 # other fields have default values

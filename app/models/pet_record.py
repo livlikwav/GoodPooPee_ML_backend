@@ -1,3 +1,4 @@
+from app.models.pet import Pet
 from pytz import timezone, utc
 import logging
 from flask import request
@@ -63,10 +64,9 @@ class PetRecord(db.Model):
             return False
     
     @staticmethod
-    def generate_fake(id):
+    def generate_fake(id: int):
         '''
-        user_id and pet_id is same (id)
-        number of records == count var
+        :param: user_id
         '''
         from sqlalchemy.exc import IntegrityError
         from random import seed, choice
@@ -96,6 +96,11 @@ class PetRecord(db.Model):
         # get random kst datetime for test
         datetime_now = utc.localize(datetime.datetime.utcnow()).astimezone(timezone('Asia/Seoul'))
         logging.info(f'datetime_now = ${datetime_now}')
+        # Check pet existency
+        pet = Pet.query.filter_by(user_id = id).first()
+        if(pet is None):
+            raise Exception("Fake user doesn't have pet id")
+        # Create fake records
         for i in range(len(delta_samples)):
             gen_time = datetime_now - delta_samples[i]
             logging.info(f'gen_time : {gen_time}')
@@ -104,9 +109,9 @@ class PetRecord(db.Model):
                 result = choice(['SUCCESS', 'FAIL']),
                 image_uuid = '(FAKE)' + fake.uuid4(),
 
-                # only for user 1 and pet 1
-                pet_id=id,
-                user_id=id
+                # id param
+                user_id=id,
+                pet_id=pet.id
             )
             try:
                 db.session.add(new_record)

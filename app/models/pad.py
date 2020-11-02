@@ -30,7 +30,7 @@ class Pad(db.Model):
         backref = db.backref('pads'), lazy = True)
 
     @staticmethod
-    def generate_fake(count):
+    def generate_fake(count: int):
         # Generate a number of fake pads for testing
         from sqlalchemy.exc import IntegrityError
         from random import seed, randint

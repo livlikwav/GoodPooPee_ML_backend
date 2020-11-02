@@ -21,14 +21,17 @@ class PpsnackSerialNums(db.Model):
     last_modified_date = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.datetime.utcnow())
     
     @staticmethod
-    def generate_fake() -> None:
+    def generate_fake(count: int) -> None:
         '''
         Generate a fake serial numbers for dev
         '''
         from sqlalchemy.exc import IntegrityError
         from app.statics.test_samples import ppsnack_samples
+
+        if(count > len(ppsnack_samples)):
+            raise Exception('PpsnackSerialNums have only 10 profiles')
         
-        for i in range(len(ppsnack_samples)):
+        for i in range(count):
             fake_record = PpsnackSerialNums(
                 serial_num = ppsnack_samples[i]
                 # other fields have default values

@@ -63,7 +63,7 @@ class Ppcam(db.Model):
             return 'Invalid token. Please log in again.'
 
     @staticmethod
-    def generate_fake(count):
+    def generate_fake(count: int):
         # Generate a number of fake ppcams for testing
         from sqlalchemy.exc import IntegrityError
         from random import seed, choice
