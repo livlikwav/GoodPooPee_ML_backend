@@ -1,32 +1,31 @@
 tags:
   - ppcam
-summary: Deletes pad profile
+summary: Set state for ppsnack to feed pet
 security: 
   - user_auth : []
-description: This can only be done by the logged in user.
+description: This can only be done by the logged in user
 parameters:
-  - name: ppcamid
+  - name: ppcam_id
     in: path
-    description: Ppcamid which has pad profile
+    description: ppcam id of ppsnack
     required: true
     schema:
       type: integer
-      format: int32
 responses:
   "200":
-    description: Success to delete pad
+    description: Successful operation
     content:
       application/json:
         schema:
-          $ref: "#/components/schemas/api_response"
+          $ref: "#/components/schemas/feeding"
   "404":
-    description: Pad not found
+    description: Ppsnack not found
     content:
       application/json:
         schema:
           $ref: "#/components/schemas/api_fail_response"
   "409":
-    description: Fail to delete pad(IntegrityError).
+    description: Error on save state of feeding
     content:
       application/json:
         schema:

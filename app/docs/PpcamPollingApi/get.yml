@@ -1,13 +1,13 @@
 tags:
   - ppcam
-summary: post pad profile
+summary: ppcam request polling api at every 3 seconds
 security: 
-  - user_auth : []
-description: This can only be done by the logged in user.
+  - device_auth : []
+description: This can only be done by the logged in device.
 parameters:
-  - name: ppcamid
+  - name: ppcam_id
     in: path
-    description: ppcam id to post pad
+    description: ppcam id
     required: true
     schema:
       type: integer
@@ -17,9 +17,9 @@ responses:
     content:
       application/json:
         schema:
-          $ref: "#/components/schemas/pad"
-  "400":
-    description: Invalid pad object supplied
+          $ref: "#/components/schemas/polling"
+  "404":
+    description: Ppcam not found
     content:
       application/json:
         schema:

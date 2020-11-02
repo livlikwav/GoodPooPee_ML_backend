@@ -2,14 +2,21 @@
 # These imports enable us to make all defined models members of the models module
 # (as opposed to just thier python files)
 # """
-# from .user import *
-# from .pet import *
-# from .pad import *
-# from .pet_record import *
-# from .ppcam import *
-# from .dailystatistics import *
-# from .monthlystatistics import *
-# from .blacklist_user_token import *
+# Dependancy of order
+from .user import User
+from .pet import Pet
+from .ppcam import Ppcam
+from .ppsnack import Ppsnack
+from .pad import Pad
+from .pet_record import PetRecord
+from .dailystatistics import DailyStatistics
+from .monthlystatistics import MonthlyStatistics
+# No dependancy
+from .ppcam_serial_nums import PpcamSerialNums
+from .ppsnack_serial_nums import PpsnackSerialNums
+from .blacklist_user_token import BlacklistUserToken
+from .blacklist_device_token import BlacklistDeviceToken
 
-# ===== Comment Out =====
-# To avoid circular import error
+# ======= To avoid circular import error
+# Dont import each model in manage.py
+# Just use this init.py

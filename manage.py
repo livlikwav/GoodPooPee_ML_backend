@@ -1,13 +1,16 @@
-from app.models.ppcam_serial_nums import PpcamSerialNums
-from flask import abort, request
+'''
+manager commands
+- recreate_db()
+- set_fake_profiles(count: int)
+- set_fake_records(id: int)
+- set_fake_ppcam_comps(count: int)
+
+'''
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
 from app import create_app, db
-from app.models.user import User
-from app.models.pet import Pet
-from app.models.pet_record import PetRecord
-from app.models.ppcam_serial_nums import PpcamSerialNums
+from app.models import *
 # from config import config as Config
 import os
 import logging
@@ -37,47 +40,82 @@ def recreate_db():
     db.session.commit()
     logging.warning('DB was recreated')
 
-
-@manager.command
-def set_test_env_1():
-    User.generate_fake(count=10)
-    Pet.generate_fake(count=10)
-    PetRecord.generate_fake(id=1)
-    PpcamSerialNums.generate_fake()
+@manager.option(
+    '-c',
+    '--count',
+    default = 10,
+    type = int,
+    help = 'how many profiles do you set',
+    dest = 'count'
+)
+def set_fake_profiles(count: int):
+    User.generate_fake(count)
+    Pet.generate_fake(count)
+    PpcamSerialNums.generate_fake(count)
+    PpsnackSerialNums.generate_fake(count)
 
 @manager.option(
-    '-n',
-    '--number-users',
-    default=10,
-    type=int,
-    help='Num of each model type to create',
-    dest='number_users'
+    '-i',
+    '--id',
+    default = 5,
+    type = int,
+    help = 'Id number of user that you want to update',
+    dest = 'id'
 )
-def add_fake_data(number_users):
-    "Adds fake data to the db"
-    User.generate_fake(count=number_users)
-    Pet.generate_fake(count=number_users)
+def set_fake_records(id: int):
+    "Add fake pet records"
+    PetRecord.generate_fake(id)
+
+@manager.option(
+    '-c',
+    '--count',
+    default = 10,
+    type = int,
+    help = 'how many profiles do you set',
+    dest = 'count'
+)
+def set_fake_ppcam_comps(count: int):
+    Ppcam.generate_fake(count)
+    Pad.generate_fake(count)
+    Ppsnack.generate_fake(count)
+
+
+# @manager.option(
+#     '-i'
+#     '--ids',
+#     default=1,
+#     type=int,
+#     help='define user_id and pet_id (same)',
+#     dest='id'
+# )
+# def set_test_records(id):
+#     "Adds fake pet records to db"
+#     PetRecord.generate_fake(id=id)
+
+# @manager.option(
+#     '-n',
+#     '--number-users',
+#     default=10,
+#     type=int,
+#     help='Num of each model type to create',
+#     dest='number_users'
+# )
+# def add_fake_data(number_users):
+#     "Adds fake data to the db"
+#     User.generate_fake(count=number_users)
+#     Pet.generate_fake(count=number_users)
 
     # Dont need to make these fake datas
     # Pad.generate_fake(count=number_users)
     # Ppcam.generate_fake(count=number_users)
+    # Ppsnack.generate_fake(count=number_users)
 
-@manager.option(
-    '-i'
-    '--ids',
-    default=1,
-    type=int,
-    help='define user_id and pet_id (same)',
-    dest='id'
-)
-def add_fake_pet_records(id):
-    "Adds fake pet records to db"
-    PetRecord.generate_fake(id=id)
 
-@manager.command
-def add_fake_serial_nums():
-    "Adds fake ppcam serial nums to db"
-    PpcamSerialNums.generate_fake()
+# @manager.command
+# def add_fake_serial_nums():
+#     "Adds fake ppcam serial nums to db"
+#     PpcamSerialNums.generate_fake()
+#     PpsnackSerialNums.generate_fake()
 
 @manager.command
 def setup_prod():

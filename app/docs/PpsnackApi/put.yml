@@ -5,7 +5,7 @@ security:
   - user_auth : []
 description: This can only be done by the logged in user.
 parameters:
-  - name: ppcamid
+  - name: ppcam_id
     in: path
     description: ppcam id to request put ppsnack config
     required: true
@@ -18,15 +18,15 @@ responses:
     content:
       application/json:
         schema:
-          $ref: "#/components/schemas/ppsnack_config"
-  "400":
-    description: Invalid ppsnack config object supplied
+          $ref: "#/components/schemas/ppsnack"
+  "404":
+    description: ppsnack not found
     content:
       application/json:
         schema:
           $ref: "#/components/schemas/api_fail_response"
-  "404":
-    description: Ppsnack not found
+  "409":
+    description: IntegrityError on updating ppsnack
     content:
       application/json:
         schema:
@@ -35,6 +35,6 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: "#/components/schemas/ppsnack_config"
+        $ref: "#/components/schemas/put_ppsnack"
   description: Modified ppsnack config object to update
   required: true

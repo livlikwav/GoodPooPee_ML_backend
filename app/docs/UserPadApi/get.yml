@@ -1,6 +1,6 @@
 tags:
   - user
-summary: get user's pet profile
+summary: get user's pad profile
 security: 
   - user_auth : []
 description: This can only be done by the logged in user.
@@ -17,9 +17,9 @@ responses:
     content:
       application/json:
         schema:
-          $ref: "#/components/schemas/pet"
+          $ref: "#/components/schemas/pad"
   "404":
-    description: Pet not found
+    description: Pad not found
     content:
       application/json:
         schema:

@@ -28,7 +28,7 @@ class Pet(db.Model):
         from sqlalchemy.exc import IntegrityError
         from random import seed, choice
         from faker import Faker
-        from .test_samples import dog_name_samples, breed_samples
+        from app.statics.test_samples import dog_name_samples, breed_samples
         
         fake = Faker()
 

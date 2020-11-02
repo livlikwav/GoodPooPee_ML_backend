@@ -92,6 +92,16 @@ swagger_template = {
                     }
                 }
             },
+            "feeding": {
+                "type": "object",
+                "properties": {
+                    "feeding": {
+                        "type": "integer",
+                        "format" : "int32",
+                        "example" : 3
+                    }
+                }
+            },
             "api_response": {
                 "type": "object",
                 "properties": {
@@ -372,7 +382,7 @@ swagger_template = {
                     },
                     "serial_num": {
                         "type": "string",
-                        "example": "PC1K1P210101N001",
+                        "example": "PC1K1P210101N001"
                     },
                     "ip_address": {
                         "type": "string",
@@ -390,76 +400,149 @@ swagger_template = {
             },
             "register_ppcam": {
                 "type": "object",
-                "required": ["ppcamId", "userEmail", "serialNum"],
+                "required": ["ip_address", "user_id", "serial_num"],
                 "properties": {
-                    "ppcamId": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "userEmail": {
+                    "ip_address": {
                         "type": "String",
+                        "example" : "172.172.172.172"
                     },
-                    "serialNum": {
+                    "user_id": {
                         "type": "integer",
-                        "format": "int64"
+                        "format": "int32"
+                    },
+                    "serial_num": {
+                        "type": "String",
+                        "example": "PC1K1P210101N001",
                     }
                 }
             },
             "pad": {
                 "type": "object",
-                "required": ["padId", "ppcamId", "lu", "ld", "ru", "rd"],
                 "properties": {
-                    "padId": {
+                    "id": {
                         "type": "integer"
                     },
-                    "ppcamId": {
+                    "user_id": {
                         "type": "integer"
                     },
-                    "lu": {
+                    "ppcam_id": {
                         "type": "integer"
                     },
-                    "ld": {
+                    "lux": {
                         "type": "integer"
                     },
-                    "ru": {
+                    "luy": {
                         "type": "integer"
                     },
-                    "rd": {
+                    "ldx": {
+                        "type": "integer"
+                    },
+                    "ldy": {
+                        "type": "integer"
+                    },
+                    "rux": {
+                        "type": "integer"
+                    },
+                    "ruy": {
+                        "type": "integer"
+                    },
+                    "rdx": {
+                        "type": "integer"
+                    },
+                    "rdy": {
                         "type": "integer"
                     }
                 }
             },
-            "ppsnack_config": {
+            "register_pad": {
                 "type": "object",
-                "required": ["serial_num", "feedback_ratio", "ppcam_id"],
+                "required": ["lux", "luy", "ldx", "ldy", "rux", "ruy", "rdx", "rdy"],
                 "properties": {
-                    "serial_num": {
-                        "type": "string",
-                        "example": "ADW23123124124"
+                    "lux": {
+                        "type": "integer"
                     },
-                    "feedback_ratio": {
-                        "type": "number",
-                        "example": "0~1 %"
+                    "luy": {
+                        "type": "integer"
+                    },
+                    "ldx": {
+                        "type": "integer"
+                    },
+                    "ldy": {
+                        "type": "integer"
+                    },
+                    "rux": {
+                        "type": "integer"
+                    },
+                    "ruy": {
+                        "type": "integer"
+                    },
+                    "rdx": {
+                        "type": "integer"
+                    },
+                    "rdy": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "ppsnack": {
+                "type": "object",
+                "required": ["id", "ppcam_id", "user_id", "serial_num", "feedback"],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
                     },
                     "ppcam_id": {
                         "type": "integer",
                         "format": "int64"
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "serial_num": {
+                        "type": "string",
+                        "example": "PC1K1P210101N001"
+                    },
+                    "feedback": {
+                        "type": "float",
+                        "example": "0.0 ~ 1.0",
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
+                    },
+                    "last_modified_date": {
+                        "type": "string",
+                        "example": "2020-08-15T16:28:39"
+                    }
+                }
+            },
+            "put_ppsnack": {
+                "type": "object",
+                "required": ["feedback"],
+                "properties": {
+                    "feedback": {
+                        "type": "float",
+                        "example": "0.0 ~ 1.0",
                     }
                 }
             },
             "polling": {
                 "type": "object",
-                "required": ["request_code", "message"],
                 "properties": {
-                    "request_code": {
-                        "type": "integer",
-                        "format": "int64",
-                        "example": "0 (ex: 0 is none, 1 is capture, 2 is streaming ...)"
+                    "ppsnack" : {
+                        "type" : "object",
+                        "$ref" : "#/components/schemas/ppsnack"
                     },
-                    "message": {
-                        "type": "string",
-                        "example": "None"
-                    }
+                    "pad" : {
+                        "type" : "object",
+                        "$ref" : "#/components/schemas/pad"
+                    },
+                    "feeding" : {
+                        "type" : "integer",
+                        "example" : 3
+                    },
                 }
             },
             "stream_info": {

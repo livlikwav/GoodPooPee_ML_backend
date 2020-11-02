@@ -5,7 +5,7 @@ security:
   - user_auth : []
 description: This can only be done by the logged in user.
 parameters:
-  - name: ppcamid
+  - name: ppcam_id
     in: path
     description: ppcam id
     required: true
@@ -13,20 +13,26 @@ parameters:
       type: integer
       example: "1"
 responses:
-  "200":
-    description: Successful operation
+  "201":
+    description: Succeed to create new pad profile
     content:
       application/json:
         schema:
           $ref: "#/components/schemas/pad"
-  "400":
-    description: Invalid pad object supplied
+  "204":
+    description: Succeed to update pad profile
+    # content: 204 == no content
+    #   application/json:
+    #     schema:
+    #       $ref: "#/components/schemas/pad"
+  "404":
+    description: Pad not found.
     content:
       application/json:
         schema:
           $ref: "#/components/schemas/api_fail_response"
-  "404":
-    description: Pad not found
+  "409":
+    description: Fail to update pad profile(IntegrityError).
     content:
       application/json:
         schema:
@@ -35,6 +41,6 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: "#/components/schemas/pad"
+        $ref: "#/components/schemas/register_pad"
   description: Modified pad object to update
   required: true

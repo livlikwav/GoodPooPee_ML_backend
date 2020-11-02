@@ -4,6 +4,20 @@ volumes:
     db_master:
 
 services:
+    flask:
+        container_name: "gpp-flask"
+        build:
+            context: .
+            dockerfile: ./compose/Dockerfile-dev
+        ports:
+            - "80:80"
+        depends_on:
+            - "mysql"
+            - "redis"
+        volumes:
+            - .:/gppserver
+            - ~/.aws:/root/.aws
+
     mysql:
         container_name: "gpp-db"
         image: mysql:5.7
@@ -20,20 +34,10 @@ services:
             - --character-set-server=utf8mb4
             - --collation-server=utf8mb4_unicode_ci
 
-    flask:
-        container_name: "gpp-flask"
-        build:
-            context: .
-            dockerfile: ./compose/Dockerfile-dev
+
+    redis:
+        container_name: "gpp-redis"
+        image: redis:6.0-alpine
         ports:
-            - "80:80"
-        volumes:
-            - .:/gppserver
-            - ~/.aws:/root/.aws
-        # wait for init of db
-        command:
-            - bash
-            - -c
-            - |
-                /wait-for-it.sh mysql:3306 -t 10
-                python manage.py run
+            - "6379:6379"
+        command: ["redis-server"]
