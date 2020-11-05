@@ -3,7 +3,7 @@
 
 # Update codes
 # Still need gitlab ID and PW (will be updated)
-git checkout feature/intg
+git checkout develop
 git pull
 
 # Run docker-compose
