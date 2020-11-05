@@ -71,6 +71,8 @@ class PetRecord(db.Model):
         from sqlalchemy.exc import IntegrityError
         from random import seed, choice
         from faker import Faker
+
+        logging.info(f'PetRecord.generate_fake: id={id}, is_today={is_today}')
         
         fake = Faker()
         today_dt_deltas = [
