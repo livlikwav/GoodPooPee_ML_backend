@@ -64,7 +64,7 @@ class PetRecord(db.Model):
             return False
     
     @staticmethod
-    def generate_fake(id: int):
+    def generate_fake(id: int, is_today:bool=False):
         '''
         :param: user_id
         '''
@@ -73,23 +73,41 @@ class PetRecord(db.Model):
         from faker import Faker
         
         fake = Faker()
-        delta_samples = [
+        today_dt_deltas = [
+            # today
             datetime.timedelta(hours = 0),
             datetime.timedelta(hours = 1),
             datetime.timedelta(hours = 2),
             datetime.timedelta(hours = 3),
+        ]
+        past_dt_deltas = [
+            # weekdays
             datetime.timedelta(days = 1),
             datetime.timedelta(days = 1, hours = 1),
             datetime.timedelta(days = 2),
             datetime.timedelta(days = 2, hours = 1),
+            datetime.timedelta(days = 3),
+            datetime.timedelta(days = 3, hours = 1),
+            datetime.timedelta(days = 4),
+            datetime.timedelta(days = 4, hours = 1),
+            datetime.timedelta(days = 5),
+            datetime.timedelta(days = 5, hours = 1),
+            # week
             datetime.timedelta(weeks = 1),
             datetime.timedelta(weeks = 1, hours = 1),
             datetime.timedelta(weeks = 2),
             datetime.timedelta(weeks = 2, hours = 1),
+            # month
             datetime.timedelta(days = 31),
             datetime.timedelta(days = 31, hours = 1),
             datetime.timedelta(days = 31 * 2),
             datetime.timedelta(days = 31 * 2, hours = 1),
+            datetime.timedelta(days = 31 * 3),
+            datetime.timedelta(days = 31 * 3, hours = 1),
+            datetime.timedelta(days = 31 * 4),
+            datetime.timedelta(days = 31 * 4, hours = 1),
+            datetime.timedelta(days = 31 * 5),
+            datetime.timedelta(days = 31 * 5, hours = 1),
         ]
 
         seed()
@@ -101,27 +119,51 @@ class PetRecord(db.Model):
         if(pet is None):
             raise Exception("Fake user doesn't have pet id")
         # Create fake records
-        for i in range(len(delta_samples)):
-            gen_time = datetime_now - delta_samples[i]
-            logging.info(f'gen_time : {gen_time}')
-            new_record = PetRecord(
-                timestamp = gen_time,
-                result = choice(['SUCCESS', 'FAIL']),
-                image_uuid = '(FAKE)' + fake.uuid4(),
+        if(is_today):
+            for i in range(len(today_dt_deltas)):
+                gen_time = datetime_now - today_dt_deltas[i]
+                logging.info(f'gen_time : {gen_time}')
+                new_record = PetRecord(
+                    timestamp = gen_time,
+                    result = choice(['SUCCESS', 'FAIL']),
+                    image_uuid = '(FAKE)' + fake.uuid4(),
 
-                # id param
-                user_id=id,
-                pet_id=pet.id
-            )
-            try:
-                db.session.add(new_record)
-                db.session.commit()
-            except Exception as e:
-                db.session.rollback()
-                logging.error(e)
-            
-            # update stat tables
-            PetRecord.update_stats(id, id, gen_time, gen_time)
+                    # id param
+                    user_id=id,
+                    pet_id=pet.id
+                )
+                try:
+                    db.session.add(new_record)
+                    db.session.commit()
+                except Exception as e:
+                    db.session.rollback()
+                    logging.error(e)
+                
+                # update stat tables
+                PetRecord.update_stats(id, id, gen_time, gen_time)
+        else:
+            for i in range(len(past_dt_deltas)):
+                gen_time = datetime_now - past_dt_deltas[i]
+                logging.info(f'gen_time : {gen_time}')
+                new_record = PetRecord(
+                    timestamp = gen_time,
+                    result = choice(['SUCCESS', 'FAIL']),
+                    image_uuid = '(FAKE)' + fake.uuid4(),
+
+                    # id param
+                    user_id=id,
+                    pet_id=pet.id
+                )
+                try:
+                    db.session.add(new_record)
+                    db.session.commit()
+                except Exception as e:
+                    db.session.rollback()
+                    logging.error(e)
+                
+                # update stat tables
+                PetRecord.update_stats(id, id, gen_time, gen_time)
+
 
 
         logging.info('Successed to set fake pet records')

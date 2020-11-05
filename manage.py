@@ -2,7 +2,7 @@
 manager commands
 - recreate_db()
 - set_fake_profiles(count: int)
-- set_fake_records(id: int)
+- set_fake_records(id: int, is_today:bool=False)
 - set_fake_ppcam_comps(count: int)
 
 '''
@@ -57,14 +57,22 @@ def set_fake_profiles(count: int):
 @manager.option(
     '-i',
     '--id',
-    default = 5,
+    default = 1,
     type = int,
     help = 'Id number of user that you want to update',
     dest = 'id'
 )
-def set_fake_records(id: int):
+@manager.option(
+    '-t',
+    '--is_today',
+    default = False,
+    type = bool,
+    help = "True: Only set today's record/ False: Except today's record",
+    dest = 'is_today'
+)
+def set_fake_records(id: int, is_today:bool=False):
     "Add fake pet records"
-    PetRecord.generate_fake(id)
+    PetRecord.generate_fake(id=id, is_today=is_today)
 
 @manager.option(
     '-c',
