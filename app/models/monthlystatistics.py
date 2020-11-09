@@ -18,8 +18,8 @@ class MonthlyStatistics(db.Model):
     success = db.Column(db.Integer, nullable = False)
     ratio = db.Column(db.Float, nullable = False)
     # (timezone=True) make DATETIME to TIMESTAMP in Mysql
-    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
-    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
+    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.now())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.now())
 
     pet = db.relationship('Pet',
         backref = db.backref('montly_stats'), lazy = True )
@@ -80,7 +80,7 @@ class MonthlyStatistics(db.Model):
             month_record.count = count
             month_record.success = success
             month_record.ratio = success/count
-            month_record.last_modified_date = datetime.datetime.utcnow()
+            month_record.last_modified_date = datetime.datetime.now()
         else: # first month record
             for day in daily_records:
                 count += day.count

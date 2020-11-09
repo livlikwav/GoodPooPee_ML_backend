@@ -23,8 +23,8 @@ class Pad(db.Model):
     rdy = db.Column(db.Integer, nullable = False)
     rux = db.Column(db.Integer, nullable = False)
     ruy = db.Column(db.Integer, nullable = False)
-    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
-    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
+    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.now())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.now())
 
     ppcam = db.relationship('Ppcam',
         backref = db.backref('pads'), lazy = True)

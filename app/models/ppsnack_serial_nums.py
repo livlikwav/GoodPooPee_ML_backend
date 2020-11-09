@@ -17,8 +17,8 @@ class PpsnackSerialNums(db.Model):
     serial_num = db.Column(db.String(16), primary_key = True)
     production = db.Column(db.Integer, nullable = False, default=0)
     registered = db.Column(db.Integer, nullable = False, default=0)
-    created_date = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.datetime.utcnow())
-    last_modified_date = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.datetime.utcnow())
+    created_date = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.datetime.now())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.datetime.now())
     
     @staticmethod
     def generate_fake(count: int) -> None:

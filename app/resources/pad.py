@@ -75,7 +75,7 @@ class PadApi(Resource):
             pad.ruy = request.json['ruy']
             pad.rdx = request.json['rdx']
             pad.rdy = request.json['rdy']
-            pad.last_modified_date = datetime.datetime.utcnow()
+            pad.last_modified_date = datetime.datetime.now()
         # Persistancy
         try:
             db.session.commit()

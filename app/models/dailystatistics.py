@@ -12,8 +12,8 @@ class DailyStatistics(db.Model):
     success = db.Column(db.Integer, nullable = False)
     ratio = db.Column(db.Float, nullable = False)
     # (timezone=True) make DATETIME to TIMESTAMP in Mysql
-    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
-    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
+    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.now())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.now())
 
     pet = db.relationship('Pet',
         backref = db.backref('daily_stats'), lazy = True )
@@ -77,7 +77,7 @@ class DailyStatistics(db.Model):
             day_record.success = total_success
             logging.debug(f'not first: {total_success}, {total_count}')
             day_record.ratio = total_success/total_count
-            day_record.last_modified_date = datetime.datetime.utcnow()
+            day_record.last_modified_date = datetime.datetime.now()
         else: # first day record
             for r in pet_records:
                 total_count += 1

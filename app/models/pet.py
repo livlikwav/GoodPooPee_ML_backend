@@ -13,8 +13,8 @@ class Pet(db.Model):
     gender = db.Column(db.String(250), nullable = False)
     birth = db.Column(db.DateTime(timezone=True), nullable = True)
     adoption = db.Column(db.DateTime(timezone=True), nullable = True)
-    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default = datetime.datetime.utcnow())
-    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default = datetime.datetime.utcnow())
+    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default = datetime.datetime.now())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default = datetime.datetime.now())
 
     user = db.relationship('User',
         backref = db.backref('pets'), lazy = True)

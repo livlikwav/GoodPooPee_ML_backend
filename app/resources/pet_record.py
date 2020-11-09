@@ -105,7 +105,7 @@ class PetRecordApi(Resource):
         try:
             selected_record.timestamp = request.json['timestamp']
             selected_record.result = request.json['result']
-            selected_record.last_modified_date = datetime.datetime.utcnow()
+            selected_record.last_modified_date = datetime.datetime.now()
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()

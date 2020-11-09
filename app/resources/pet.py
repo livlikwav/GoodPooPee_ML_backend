@@ -55,7 +55,7 @@ class PetApi(Resource):
             updated_pet.gender = request.json['gender']
             updated_pet.birth = request.json['birth']
             updated_pet.adoption = request.json['adoption']
-            updated_pet.last_modified_date = datetime.datetime.utcnow()
+            updated_pet.last_modified_date = datetime.datetime.now()
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()

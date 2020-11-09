@@ -11,8 +11,8 @@ class Ppcam(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     serial_num = db.Column(db.String(250), unique = True, nullable = False)
     ip_address = db.Column(db.String(250), nullable = False)
-    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
-    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
+    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.now())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.now())
 
     user = db.relationship('User',
         backref=db.backref('ppcams'), lazy = True)
@@ -29,8 +29,8 @@ class Ppcam(db.Model):
         '''
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=0),
-                'iat': datetime.datetime.utcnow(),
+                'exp': datetime.datetime.now() + datetime.timedelta(days=1, seconds=0),
+                'iat': datetime.datetime.now(),
                 'sub': ppcam_id
             }
             from manage import app

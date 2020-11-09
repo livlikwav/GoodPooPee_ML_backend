@@ -10,8 +10,8 @@ class Ppsnack(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False)
     serial_num = db.Column(db.String(250), unique = True, nullable = False)
     feedback = db.Column(db.Float, nullable = False)
-    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
-    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.utcnow())
+    created_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.now())
+    last_modified_date = db.Column(db.DateTime(timezone=True), nullable = False, default=datetime.datetime.now())
 
     ppcam = db.relationship('Ppcam',
         backref = db.backref('ppsnacks'), lazy = True)

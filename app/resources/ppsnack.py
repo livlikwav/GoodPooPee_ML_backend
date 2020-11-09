@@ -101,7 +101,7 @@ class PpsnackApi(Resource):
             }, 404
         try:
             ppsnack.feedback = request.json['feedback']
-            ppsnack.last_modified_date = datetime.datetime.utcnow()
+            ppsnack.last_modified_date = datetime.datetime.now()
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()

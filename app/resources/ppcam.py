@@ -114,7 +114,7 @@ class PpcamApi(Resource):
         try:
             updated_ppcam.serial_num = request.json['serial_num']
             updated_ppcam.ip_address = request.json['ip_address']
-            updated_ppcam.last_modified_date = datetime.datetime.utcnow()
+            updated_ppcam.last_modified_date = datetime.datetime.now()
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()

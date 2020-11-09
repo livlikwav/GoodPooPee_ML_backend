@@ -37,7 +37,7 @@ class UserApi(Resource):
             updated_user.email = request.json['email']
             updated_user.first_name = request.json['first_name']
             updated_user.last_name = request.json['last_name']
-            updated_user.last_modified_date = datetime.datetime.utcnow()
+            updated_user.last_modified_date = datetime.datetime.now()
             db.session.commit()
         except IntegrityError as e:
             db.session.rollback()
