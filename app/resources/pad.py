@@ -8,6 +8,7 @@ from app.utils.decorators import confirm_account
 from app import db
 import datetime
 import json
+from sqlalchemy.exc import IntegrityError
 
 # make instances of schemas
 pad_schema = PadSchema()
@@ -39,7 +40,6 @@ class PadApi(Resource):
             :response code: 201 or 204
             *** Persist state of pad ***
         '''
-        from sqlalchemy.exc import IntegrityError
         # Check that the ppcam exists first
         exist_ppcam = Ppcam.query.filter_by(id=ppcam_id).first()
         if (exist_ppcam is None):
@@ -108,7 +108,6 @@ class PadApi(Resource):
             :path: ppcam_id: int
             :body: None
         '''
-        from sqlalchemy.exc import IntegrityError
         selected_pad = Pad.query.filter_by(ppcam_id = ppcam_id).first()
         # Check that pad exists
         if selected_pad is None:

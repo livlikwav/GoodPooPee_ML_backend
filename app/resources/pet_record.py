@@ -7,6 +7,7 @@ from app.models.pet_record import DelPetRecordSchema, PetRecord, PetRecordSchema
 from app.utils.decorators import confirm_account, confirm_device
 from app import db
 import datetime
+from sqlalchemy.exc import IntegrityError
 
 # make instances of schemas
 pet_record_schema = PetRecordSchema()
@@ -23,7 +24,6 @@ class PetRecordApi(Resource):
 
         :Param pet_id: pet id of the record
         """
-        from sqlalchemy.exc import IntegrityError
         logging.debug(request.form)
 
         # find user by pet_id
@@ -85,7 +85,6 @@ class PetRecordApi(Resource):
 
     @confirm_account
     def put(self, pet_id):
-        from sqlalchemy.exc import IntegrityError
         # validate query string by ma
         errors = record_query_schema.validate(request.args)
         if errors:
@@ -118,7 +117,6 @@ class PetRecordApi(Resource):
 
     @confirm_account
     def delete(self, pet_id):
-        from sqlalchemy.exc import IntegrityError
         # validate query string by ma
         errors = record_query_schema.validate(request.args)
         if errors:

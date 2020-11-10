@@ -8,6 +8,7 @@ from app.models.pet import Pet, PetSchema
 from app.models.ppcam import Ppcam, PpcamSchema
 from app.models.pad import Pad, PadSchema
 from app.utils.decorators import confirm_account
+from sqlalchemy.exc import IntegrityError
 
 # make instances of schemas
 user_schema = UserSchema()
@@ -27,7 +28,6 @@ class UserApi(Resource):
 
     @confirm_account
     def put(self, user_id):
-        from sqlalchemy.exc import IntegrityError
         updated_user = User.query.filter_by(id = user_id).first()
         if(updated_user is None):
             return {
@@ -49,7 +49,6 @@ class UserApi(Resource):
 
     @confirm_account
     def delete(self, user_id):
-        from sqlalchemy.exc import IntegrityError
         deleted_user = User.query.filter_by(id = user_id).first()
         if(deleted_user is None):
             return {

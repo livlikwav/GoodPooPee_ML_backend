@@ -4,6 +4,7 @@ from app.models.pet import Pet, PetSchema
 from app import db
 from app.utils.decorators import confirm_account
 import datetime
+from sqlalchemy.exc import IntegrityError
 
 # make instances of schemas
 pet_schema = PetSchema()
@@ -40,7 +41,6 @@ class PetApi(Resource):
 
     @confirm_account
     def put(self, pet_id):
-        from sqlalchemy.exc import IntegrityError
         # check that pet's name already exists
         # check with updated user_id
         duplicated_pet = Pet.query.filter_by(user_id=request.json['user_id'], name=request.json['name']).first()
@@ -67,7 +67,6 @@ class PetApi(Resource):
 
     @confirm_account
     def delete(self, pet_id):
-        from sqlalchemy.exc import IntegrityError
         deleted_pet = Pet.query.filter_by(id = pet_id).first()
         try:
             db.session.delete(deleted_pet)

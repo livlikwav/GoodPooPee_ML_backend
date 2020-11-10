@@ -6,6 +6,7 @@ from app.models.user import User, UserSchema
 from app.models.pet import Pet, PetSchema
 from app.models.blacklist_user_token import BlacklistUserToken
 from app.utils.decorators import confirm_account
+from sqlalchemy.exc import IntegrityError
 
 # make instances of schemas
 user_schema = UserSchema()
@@ -13,7 +14,6 @@ pet_schema = PetSchema()
 
 class RegisterApi(Resource):
     def post(self):
-        from sqlalchemy.exc import IntegrityError
         # check that email already exist
         exist_user = User.query.filter_by(email = request.json['email']).first()
         if(exist_user is not None):

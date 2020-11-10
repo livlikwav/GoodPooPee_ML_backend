@@ -9,6 +9,7 @@ from flask_restful import Resource
 import datetime
 from app import db
 import json
+from sqlalchemy.exc import IntegrityError
 
 ppsnack_schema = PpsnackSchema()
 
@@ -22,7 +23,6 @@ class PpsnackApi(Resource):
             :body: serial_num: str, feedback: float
             *** Persist state of ppsnack ***
         '''
-        from sqlalchemy.exc import IntegrityError
 
         # check serial nums is valid
         exist_serial = PpsnackSerialNums.query.filter_by(serial_num = request.json['serial_num']).first()
@@ -93,7 +93,6 @@ class PpsnackApi(Resource):
             :body: feedback: float
             *** Persist state of ppsnack ***
         '''
-        from sqlalchemy.exc import IntegrityError
         ppsnack = Ppsnack.query.filter_by(ppcam_id=ppcam_id).first()
         if(ppsnack is None):
             return {
