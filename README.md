@@ -52,6 +52,7 @@ SW Maestro 11기 팀 우릴봐
 - MYSQL
 - Docker-compose
 - AWS S3
+- Jupyter notebook
 
 <!-- GETTING STARTED -->
 ## Getting Started
