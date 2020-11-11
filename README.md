@@ -16,7 +16,6 @@ SW Maestro 11기 팀 우릴봐
 - 오은석
 - 최광선
 
-<!-- TABLE OF CONTENTS -->
 ## Table of Contents
 
 - [Backend & Machine Learning Repo](#backend--machine-learning-repo)
@@ -31,9 +30,6 @@ SW Maestro 11기 팀 우릴봐
   - [Contact](#contact)
     - [팀 우릴봐](#팀-우릴봐)
 
-
-
-<!-- ABOUT THE PROJECT -->
 ## About The Project
 
 ![gpp_backend](readme_media/gpp_backend.jpeg)
@@ -41,6 +37,7 @@ SW Maestro 11기 팀 우릴봐
 ### Backend
 
 푸피캠과 굿푸피 앱을 위한 REST API 서버를 개발합니다.
+Docker-compose를 사용하여, Flask 서버, MySQL, REDIS를 각각 독립적인 컨테이너로 실행하여 개발환경을 구성하였습니다.
 
 ### Deep learning
 
@@ -87,13 +84,31 @@ SW Maestro 11기 팀 우릴봐
 
 ### Built With
 
-- Flask
-- MYSQL
 - Docker-compose
-- AWS S3
-- Jupyter notebook
+  - Flask container
+  - MYSQL container
+  - REDIS container
+- Python
+  - flask_sqlalchemy
+  - flask-restful
+  - flask-marshmallow
+  - marshmallow_sqlalchemy
+  - flask_script
+  - flask_migrate
+  - pymysql
+  - faker
+  - bcrypt
+  - pyjwt
+  - pytz
+  - python-dateutil
+  - boto3
+  - flasgger
+  - redis
+- Tools
+  - Swagger UI Editor
+  - ERD Cloud
+  - Postman
 
-<!-- GETTING STARTED -->
 ## Getting Started
 
 ### Prerequisites
@@ -104,24 +119,18 @@ SW Maestro 11기 팀 우릴봐
 
 ### Installation
 
-<!-- 1. Get a free API Key at [https://example.com](https://example.com) -->
 1. Clone the repo
+
 ```sh
 git clone https://git.swmgit.org/swmaestro/urillbwa-1.git
 ```
-2. Just 'docker-compose up'
+
+1. Just 'docker-compose up'
+
 ```sh
 docker-compose up -d
 ```
 
-<!-- USAGE EXAMPLES -->
-<!-- ## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_ -->
-
-<!-- CONTACT -->
 ## Contact
 
 ### 팀 우릴봐
