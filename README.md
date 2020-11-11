@@ -72,6 +72,19 @@ SW Maestro 11기 팀 우릴봐
 
         강아지 사진을 입력으로 받아 "poo", "pee", "nothing" 중 하나의 결과로 판단하는 mobileNet 기반 자세 판단 모델의 edge TPU 전용 버전. Google coral과 같은 **edge TPU 환경에서 사용**하는 모델
 
+- deeplabcut
+    1. saved_model_from_deeplabcut.ipynb
+
+        동물의 스켈레톤을 예측하는 DeepLabCut 모듈에서 강아지의 스켈레톤을 예측하는 모델만 .pb 파일로 저장
+
+    2. predict_by_saved_model.ipynb
+
+        saved_model_from_deeplabcut.ipynb으로 저장한 모델 파일을 이용하여 강아지 사진의 스켈레톤을 예측
+
+    3. predict_video.ipynb
+
+        saved_model_from_deeplabcut.ipynb으로 저장한 모델 파일을 이용하여 강아지 영상의 스켈레톤을 예측
+
 ### Built With
 
 - Flask
