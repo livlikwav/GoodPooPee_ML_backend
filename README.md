@@ -42,7 +42,7 @@ SW Maestro 11기 팀 우릴봐
 
 푸피캠과 굿푸피 앱을 위한 REST API 서버를 개발합니다.
 
-### Machine learning
+### Deep learning
 
 푸피캠 라즈베리파이에 탑재할 반려견 배변 행동 및 상황 분류 모델을 개발합니다.
 
