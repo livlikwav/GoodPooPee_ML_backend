@@ -23,7 +23,7 @@ SW Maestro 11기 팀 우릴봐
   - [Table of Contents](#table-of-contents)
   - [About The Project](#about-the-project)
     - [Backend](#backend)
-    - [Machine learning](#machine-learning)
+    - [Deep learning](#deep-learning)
     - [Built With](#built-with)
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
