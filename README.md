@@ -36,6 +36,10 @@ SW Maestro 11기 팀 우릴봐
 
 ### Backend
 
+![](readme_media/gpp_system_architecture.png)
+![](readme_media/gpp_system_versioning.png)
+![](readme_media/gpp_server_architecture.png)
+
 푸피캠과 굿푸피 앱을 위한 REST API 서버를 개발합니다.
 Docker-compose를 사용하여, Flask 서버, MySQL, REDIS를 각각 독립적인 컨테이너로 실행하여 개발환경을 구성하였습니다.
 
